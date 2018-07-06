@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/days"
+        android:prompt="@string/day_prompt" />
+
+    <TextView
+        android:layout_marginTop="@dimen/divider_margin"
+        android:layout_marginStart="@dimen/horizontal_margin"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/large_font"
+        android:text="@string/select_tine_period_prompt" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_marginStart="@dimen/horizontal_margin"
+        android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/from_hour_input"
+            android:focusable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/from_hour_hint"
+            android:inputType="time"
+            android:textSize="@dimen/regular_size"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/horizontal_margin"
+        android:layout_marginEnd="@dimen/horizontal_margin" >
+
+        <EditText
+            android:id="@+id/to_hour_input"
+            android:focusable="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/to_hour_hint"
+            android:inputType="time"
+            android:textSize="@dimen/regular_size"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_marginTop="@dimen/divider_margin"
+        android:layout_marginStart="@dimen/horizontal_margin"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="@dimen/large_font"
+        android:layout_marginBottom="@dimen/divider_margin"
+        android:text="@string/or" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_all_day_prompt"
+        android:textColor="@color/secondary_text"/>
+</LinearLayout>

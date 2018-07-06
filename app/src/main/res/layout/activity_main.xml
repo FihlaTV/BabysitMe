@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/header_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/baby_icon"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/galada"
+        android:rotation="@dimen/small_rotation"
+        android:text="@string/app_name"
+        android:textColor="@color/primary_text"
+        android:textSize="@dimen/h2_size" />
+
+    <ImageView
+        android:id="@+id/baby_icon"
+        android:layout_width="@dimen/large_icon_dimen"
+        android:layout_height="@dimen/large_icon_dimen"
+        android:layout_above="@+id/log_in_wrapper_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/vertical_margin"
+        android:layout_marginTop="@dimen/minus_margin_large_icon"
+        android:src="@drawable/ic_baby" />
+
+    <LinearLayout
+        android:id="@+id/log_in_wrapper_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/ripple_primary"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="@dimen/horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_log_in"
+            android:gravity="center_vertical"
+            android:text="@string/log_in"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/register_wrapper_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/log_in_wrapper_layout"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:background="@drawable/ripple_primary_dark"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="@dimen/horizontal_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_register_alternative"
+            android:gravity="center_vertical"
+            android:text="@string/register"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.greece.nasiakouts.babysitterfinder">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAnAtybbXPnt0EBUmyEYe_h3muPpEr8oag" />
+
+        <activity
+            android:name=".Activities.MainActivity"
+            android:theme="@style/LaunchActivityTheme"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".Activities.RegistrationCommonActivity"
+            android:parentActivityName=".Activities.MainActivity"
+            android:launchMode="singleTop">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".Activities.SitterRegisterMainActivity"
+            android:parentActivityName=".Activities.RegistrationCommonActivity"
+            android:launchMode="singleTop">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.RegistrationCommonActivity" />
+        </activity>
+
+        <activity android:name=".Activities.AddTimeSlotActivity"></activity>
+    </application>
+
+</manifest>

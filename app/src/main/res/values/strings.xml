@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">BabysitterFinder</string>
+
+    <!-- Main Activity -->
+    <string name="log_in">Log In</string>
+    <string name="register">Register</string>
+
+    <!-- Registration Common Screen -->
+    <string name="registration">Registration</string>
+    <string name="interest_prompt">Select your interest below:</string>
+    <string name="babysitter_response">I am looking for a job as babysitter</string>
+    <string name="user_response">I am looking for a babysitter</string>
+    <string name="personal_info_prompt">Fill in your personal info bellow:</string>
+    <string name="full_name_hint">Full Name</string>
+    <string name="email_hint">Email Address</string>
+    <string name="phone_hint">Phone Number</string>
+    <string name="password_hint">Password (min 4 chars)</string>
+    <string name="confirm_password_hint">Confirm password</string>
+    <string name="born_hint">Date Born</string>
+    <string name="next">next</string>
+    <string name="sex_prompt">Select your sex:</string>
+
+    <!-- Registration Common Screen - Java Side -->
+    <string name="no_interest_selected">You have to select your interest to continue</string>
+    <string name="no_all_info_filled">Fill in the unfilled info about you to continue</string>
+    <string name="no_valid_mail">Please enter a valid email address in order to continue</string>
+    <string name="no_sex_selected">You have to select your sex to continue</string>
+    <string name="no_valid_number">Please enter a valid phone number in order to continue</string>
+    <string name="no_enough_chars_password">Password must consist of at least 4 chars</string>
+    <string name="mismatch_passwords">Mismatched occurred on password confirmation</string>
+    <string name="born_date_not_accepted">You either too young for this app or you misentered your birthday</string>
+
+    <!-- Registration Sitter Main Screen -->
+    <string name="additional_sitter_info_prompt">Fill in the following info to be able to get job offers:</string>
+    <string name="street_address_hint">Street address</string>
+    <string name="charging_per_hour_hint">Charging per hour</string>
+    <string name="working_hours_prompt">Select your working hours:</string>
+    <string name="all_day">All day (6:00 - 24:00)</string>
+    <string name="add_new_timeslot_title">Add New TimeSlot</string>
+    <string name="set_possitive_dialog">SET</string>
+
+    <!-- Intent Extras -->
+    <string name="interest_key">InterestKey</string>
+    <string name="sitter_value">Sitter</string>
+
+    <!-- Add new TimeSlot -->
+    <string name="day_prompt">Choose a day</string>
+    <string name="from_hour_hint">From hour</string>
+    <string name="to_hour_hint">To Hour</string>
+    <string name="select_tine_period_prompt">Select Tine Period</string>
+    <string name="or">Or</string>
+    <string name="select_all_day_prompt">Select All Day (6:00 - 24:00)</string>
+
+    <string-array name="days">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+    </string-array>
+
+</resources>

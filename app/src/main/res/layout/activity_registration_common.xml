@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/bottom_costume_navigation_height"
+            android:paddingTop="@dimen/divider_margin">
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/interest_prompt" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_interest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <RadioButton
+                    android:id="@+id/radio_babysitter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/babysitter_response" />
+
+                <RadioButton
+                    android:id="@+id/radio_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_response" />
+
+            </RadioGroup>
+
+            <include layout="@layout/horizontal_divider" />
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/personal_info_prompt" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/horizontal_margin"
+                    android:drawableStart="@drawable/ic_person"
+                    android:hint="@string/full_name_hint"
+                    android:inputType="textPersonName" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/mail_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/horizontal_margin"
+                    android:drawableStart="@drawable/ic_mail"
+                    android:hint="@string/email_hint"
+                    android:inputType="textEmailAddress" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/phone_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/horizontal_margin"
+                    android:drawableStart="@drawable/ic_smartphone"
+                    android:hint="@string/phone_hint"
+                    android:inputType="phone" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/password_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/horizontal_margin"
+                    android:drawableStart="@drawable/ic_password"
+                    android:hint="@string/password_hint"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/confirm_password_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/horizontal_margin"
+                    android:drawableStart="@drawable/ic_password"
+                    android:hint="@string/confirm_password_hint"
+                    android:inputType="textPassword" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/year_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/horizontal_margin"
+                    android:drawableStart="@drawable/ic_date_range"
+                    android:hint="@string/born_hint"
+                    android:inputType="date" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <include layout="@layout/horizontal_divider" />
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/sex_prompt" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/horizontal_margin"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/divider_margin"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <RadioButton
+                    android:id="@+id/radio_female"
+                    android:layout_width="@dimen/regular_clickable_size"
+                    android:layout_height="@dimen/regular_clickable_size"
+                    android:layout_marginEnd="@dimen/horizontal_margin"
+                    android:background="@drawable/custom_radio_female"
+                    android:button="@null" />
+
+                <RadioButton
+                    android:id="@+id/radio_male"
+                    android:layout_width="@dimen/regular_clickable_size"
+                    android:layout_height="@dimen/regular_clickable_size"
+                    android:layout_marginStart="@dimen/horizontal_margin"
+                    android:background="@drawable/custom_radio_male"
+                    android:button="@null" />
+
+            </RadioGroup>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/bottom_border_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_costume_navigation_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/icons"
+        android:elevation="@dimen/bottom_elevation">
+
+        <View
+            android:id="@+id/vertical_bottom_divider"
+            android:layout_width="@dimen/horizontal_divider_height"
+            android:layout_height="match_parent"
+            android:background="@color/divider"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/common_screen_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_light"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_chevron"
+            android:focusable="true"
+            android:gravity="center"
+            android:minWidth="@dimen/min_width_next"
+            android:padding="@dimen/horizontal_margin"
+            android:text="@string/next"
+            android:textAllCaps="true"
+            android:textColor="@color/primary_text"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/vertical_bottom_divider"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>

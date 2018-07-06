@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/horizontal_divider_height"
+        android:background="@color/colorPrimaryDark"
+        android:layout_marginTop="@dimen/divider_margin"
+        android:layout_marginBottom="@dimen/divider_margin"
+        android:layout_marginStart="@dimen/anti_horizontal_margin"
+        android:layout_marginEnd="@dimen/anti_horizontal_margin"/>
+</FrameLayout>
