@@ -30,12 +30,16 @@
                     android:id="@+id/radio_babysitter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:text="@string/babysitter_response" />
 
                 <RadioButton
                     android:id="@+id/radio_user"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:text="@string/user_response" />
 
             </RadioGroup>
@@ -45,6 +49,10 @@
             <TextView
                 style="@style/PromptTextView"
                 android:text="@string/personal_info_prompt" />
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="0dp" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -96,7 +104,6 @@
                     android:inputType="phone" />
 
             </android.support.design.widget.TextInputLayout>
-
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -171,17 +178,18 @@
                     android:layout_width="@dimen/regular_clickable_size"
                     android:layout_height="@dimen/regular_clickable_size"
                     android:layout_marginEnd="@dimen/horizontal_margin"
-                    android:background="@drawable/custom_radio_female"
-                    android:button="@null" />
+                    android:button="@drawable/custom_radio_female"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" />
 
                 <RadioButton
                     android:id="@+id/radio_male"
                     android:layout_width="@dimen/regular_clickable_size"
                     android:layout_height="@dimen/regular_clickable_size"
                     android:layout_marginStart="@dimen/horizontal_margin"
-                    android:background="@drawable/custom_radio_male"
-                    android:button="@null" />
-
+                    android:button="@drawable/custom_radio_male"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" />
             </RadioGroup>
 
         </LinearLayout>
@@ -203,7 +211,7 @@
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent" />
 
-        <TextView
+        <Button
             android:id="@+id/common_screen_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -211,6 +219,7 @@
             android:clickable="true"
             android:drawableEnd="@drawable/ic_chevron"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="center"
             android:minWidth="@dimen/min_width_next"
             android:padding="@dimen/horizontal_margin"

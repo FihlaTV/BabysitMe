@@ -37,22 +37,47 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/divider_margin"
-                android:paddingStart="@dimen/divider_margin">
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/sitter_charges"
-                    android:layout_width="match_parent"
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="@dimen/horizontal_margin"
-                    android:drawableStart="@drawable/ic_purse"
-                    android:hint="@string/charging_per_hour_hint"
-                    android:inputType="number" />
+                    android:layout_weight="2"
+                    android:paddingEnd="@dimen/divider_margin"
+                    android:paddingStart="@dimen/divider_margin">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/sitter_charges"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/horizontal_margin"
+                        android:drawableStart="@drawable/ic_purse"
+                        android:hint="@string/charging_per_hour_hint"
+                        android:inputType="number" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingEnd="@dimen/divider_margin"
+                    android:paddingStart="@dimen/divider_margin">
+
+                    <EditText
+                        android:id="@+id/currency_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="@dimen/horizontal_margin"
+                        android:hint="@string/currency_hint"
+                        android:inputType="text" />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
 
             <include layout="@layout/horizontal_divider" />
 
@@ -64,7 +89,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/divider_margin"
-                android:layout_marginStart="@dimen/divider_margin">
+                android:layout_marginStart="@dimen/divider_margin"
+                android:paddingBottom="@dimen/vertical_margin">
                 <android.support.design.widget.FloatingActionButton
                     android:elevation="@dimen/fab_elavation"
                     android:id="@+id/addWorkingSlot"
@@ -100,14 +126,15 @@
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintStart_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/common_screen_next"
+        <Button
+            android:id="@+id/sitter_main_screen_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple_light"
             android:clickable="true"
             android:drawableEnd="@drawable/ic_chevron"
             android:focusable="true"
+            android:focusableInTouchMode="true"
             android:gravity="center"
             android:minWidth="@dimen/min_width_next"
             android:padding="@dimen/horizontal_margin"

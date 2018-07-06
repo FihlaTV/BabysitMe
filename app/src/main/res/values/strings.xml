@@ -35,10 +35,9 @@
     <string name="street_address_hint">Street address</string>
     <string name="charging_per_hour_hint">Charging per hour</string>
     <string name="working_hours_prompt">Select your working hours:</string>
-    <string name="all_day">All day (6:00 - 24:00)</string>
+    <string name="all_day">All day (6:00 – 24:00)</string>
     <string name="add_new_timeslot_title">Add New TimeSlot</string>
-    <string name="set_possitive_dialog">SET</string>
-
+    <string name="currency_hint">Currency</string>
     <!-- Intent Extras -->
     <string name="interest_key">InterestKey</string>
     <string name="sitter_value">Sitter</string>
@@ -49,7 +48,8 @@
     <string name="to_hour_hint">To Hour</string>
     <string name="select_tine_period_prompt">Select Tine Period</string>
     <string name="or">Or</string>
-    <string name="select_all_day_prompt">Select All Day (6:00 - 24:00)</string>
+    <string name="select_all_day_prompt">Select All Day (6:00 – 24:00)</string>
+
 
     <string-array name="days">
         <item>Monday</item>
