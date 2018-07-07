@@ -65,7 +65,7 @@ public class SitterRegisterMainActivity extends AppCompatActivity
         adapter = new WorkingHoursRvAdapter(null);
         workingSlotsRv.setAdapter(adapter);
         workingSlotsRv.addItemDecoration(new DividerItemDecoration(workingSlotsRv.getContext(),
-                DividerItemDecoration.VERTICAL);
+                DividerItemDecoration.VERTICAL));
         workingSlotsRv.setLayoutManager(new LinearLayoutManager(this));
 
         currencyEditText.setOnFocusChangeListener(this);
