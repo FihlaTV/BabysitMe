@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/divider_margin">
+
+    <TextView
+        style="@style/PromptTextView"
+        android:text="@string/account_info_prompt" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/divider_margin"
+        android:paddingStart="@dimen/divider_margin">
+
+        <EditText
+            android:id="@+id/mail_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_mail"
+            android:hint="@string/email_hint"
+            android:inputType="textEmailAddress" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/divider_margin"
+        android:paddingStart="@dimen/divider_margin">
+
+        <EditText
+            android:id="@+id/password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_password"
+            android:hint="@string/password_hint"
+            android:inputType="textPassword" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/divider_margin"
+        android:paddingStart="@dimen/divider_margin">
+
+        <EditText
+            android:id="@+id/confirm_password_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_password"
+            android:hint="@string/confirm_password_hint"
+            android:inputType="textPassword" />
+
+    </android.support.design.widget.TextInputLayout>
+
+</LinearLayout>

@@ -11,6 +11,7 @@
     <string name="babysitter_response">I am looking for a job as babysitter</string>
     <string name="user_response">I am looking for a babysitter</string>
     <string name="personal_info_prompt">Fill in your personal info bellow:</string>
+    <string name="account_info_prompt">Fill in your account info bellow:</string>
     <string name="full_name_hint">Full Name</string>
     <string name="email_hint">Email Address</string>
     <string name="phone_hint">Phone Number</string>
@@ -58,6 +59,8 @@
     <string name="day_toast">Please select a day</string>
     <string name="timeslot_toast">Please select time slot</string>
     <string name="timeslot_added">Time Slot Added</string>
+    <string name="previous">previous</string>
+    <string name="cancel">cancel</string>
 
     <string-array name="days">
         <item>Choose a day</item>

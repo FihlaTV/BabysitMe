@@ -52,6 +52,17 @@
                 android:value=".Activities.RegistrationCommonActivity" />
         </activity>
 
+        <activity
+            android:name=".Activities.RegisterActivity"
+            android:parentActivityName=".Activities.MainActivity"
+            android:launchMode="singleTop">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activities.MainActivity" />
+        </activity>
+
         <activity android:name=".Activities.AddTimeSlotActivity"></activity>
     </application>
 

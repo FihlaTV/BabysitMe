@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.greece.nasiakouts.babysitterfinder.Controls.NoScrollViewPager
+        android:id="@+id/register_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bottom_costume_navigation_height"/>
+
+    <LinearLayout
+        android:id="@+id/bottom_border_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_costume_navigation_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/icons"
+        android:orientation="horizontal"
+        android:elevation="@dimen/bottom_elevation">
+
+        <Button
+            android:id="@+id/common_screen_previous"
+            android:layout_width="@dimen/zero_margin"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/ripple_light"
+            android:clickable="true"
+            android:drawableStart="@drawable/ic_chevron_left"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:minWidth="@dimen/min_width_next"
+            android:padding="@dimen/horizontal_margin"
+            android:text="@string/previous"
+            android:textAllCaps="true"
+            android:textColor="@color/primary_text"/>
+
+        <View
+            android:id="@+id/vertical_bottom_divider"
+            android:layout_width="@dimen/horizontal_divider_height"
+            android:layout_height="match_parent"
+            android:background="@color/divider"/>
+
+        <Button
+            android:id="@+id/common_screen_next"
+            android:layout_width="@dimen/zero_margin"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/ripple_light"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_chevron_right"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:minWidth="@dimen/min_width_next"
+            android:padding="@dimen/horizontal_margin"
+            android:text="@string/next"
+            android:textAllCaps="true"
+            android:textColor="@color/primary_text"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

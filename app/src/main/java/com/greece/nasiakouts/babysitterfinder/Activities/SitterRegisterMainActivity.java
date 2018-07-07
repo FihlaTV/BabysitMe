@@ -1,7 +1,6 @@
 package com.greece.nasiakouts.babysitterfinder.Activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,8 +29,6 @@ import static com.greece.nasiakouts.babysitterfinder.Constants.ADD_TIMESLOT_REQU
 public class SitterRegisterMainActivity extends AppCompatActivity
         implements View.OnTouchListener, View.OnFocusChangeListener {
 
-    Activity currentActiviy;
-
     @BindView(R.id.sitter_address)
     EditText addressEditText;
 
@@ -59,8 +56,6 @@ public class SitterRegisterMainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         if(getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.registration);
-
-        currentActiviy = this;
 
         adapter = new WorkingHoursRvAdapter(null);
         workingSlotsRv.setAdapter(adapter);

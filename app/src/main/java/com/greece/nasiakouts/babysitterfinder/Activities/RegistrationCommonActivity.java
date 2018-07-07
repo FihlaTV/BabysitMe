@@ -1,7 +1,6 @@
 package com.greece.nasiakouts.babysitterfinder.Activities;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,10 +16,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.R;
 import com.greece.nasiakouts.babysitterfinder.Utils;
 
@@ -30,12 +29,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class RegistrationCommonActivity extends AppCompatActivity
         implements View.OnFocusChangeListener, View.OnTouchListener {
-
-    Activity currentActivity;
 
     @BindView(R.id.radio_group_interest)
     RadioGroup radioGroupInterest;
@@ -72,8 +68,6 @@ public class RegistrationCommonActivity extends AppCompatActivity
 
         if(getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.registration);
 
-        currentActivity = this;
-
         inputs.get(Constants.INDEX_DATE_BORN_INPUT).setOnFocusChangeListener(this);
 
         for (RadioButton radio : radios) {
@@ -85,7 +79,8 @@ public class RegistrationCommonActivity extends AppCompatActivity
     private void nextPressed(View view) {
         int selectedRadioInterest = radioGroupInterest.getCheckedRadioButtonId();
         int selectedRadioSex = radioGroupSex.getCheckedRadioButtonId();
-/*
+
+        //region Check
 
         // Make sure all info has been provided and are valid before continue to next screen
         if(selectedRadioInterest == -1) {
@@ -153,10 +148,12 @@ public class RegistrationCommonActivity extends AppCompatActivity
                     Toast.LENGTH_LONG).show();
             return;
         }
-        // -------------------------------------------------------------------
-*/
+
+        //endregion
+
         if(selectedRadioInterest == R.id.radio_babysitter) {
             Intent intent = new Intent(this, SitterRegisterMainActivity.class);
+            intent.putExtra(User.class.getName(), new User(emailAddressedTyped, passwordTyped));
             startActivity(intent);
         }
         else {
@@ -168,7 +165,7 @@ public class RegistrationCommonActivity extends AppCompatActivity
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
         if(hasFocus) {
-            Utils.hideKeyboard(currentActivity);
+            Utils.hideKeyboard(RegistrationCommonActivity.this);
 
             Calendar mCurrentDate = Calendar.getInstance();
 
@@ -186,7 +183,7 @@ public class RegistrationCommonActivity extends AppCompatActivity
                                     .append(year)
                                     .toString());
 
-                            Utils.hideKeyboard(currentActivity);
+                            Utils.hideKeyboard(RegistrationCommonActivity.this);
                             radios.get(Constants.INDEX_RADIO_FEMALE).requestFocus();
                         }
                     }, mCurrentDate.get(Calendar.YEAR), mCurrentDate.get(Calendar.MONTH),
@@ -195,7 +192,7 @@ public class RegistrationCommonActivity extends AppCompatActivity
             dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialogInterface) {
-                    Utils.hideKeyboard(currentActivity);
+                    Utils.hideKeyboard(RegistrationCommonActivity.this);
                     radios.get(Constants.INDEX_RADIO_FEMALE).requestFocus();
                 }
             });

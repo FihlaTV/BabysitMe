@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
 import com.greece.nasiakouts.babysitterfinder.Utils;
@@ -27,7 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.greece.nasiakouts.babysitterfinder.Constants.ADD_TIMESLOT_REQUEST_CODE;
 import static com.greece.nasiakouts.babysitterfinder.Constants.ANOKATOTELEIA;
 
 public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFocusChangeListener{
