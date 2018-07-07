@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bottom_costume_navigation_height">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/bottom_costume_navigation_height"
+            android:paddingBottom="@dimen/divider_margin"
             android:paddingTop="@dimen/divider_margin">
 
             <TextView
@@ -43,7 +43,7 @@
                 android:orientation="horizontal">
 
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/zero_margin"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:paddingEnd="@dimen/divider_margin"
@@ -61,7 +61,7 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/zero_margin"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingEnd="@dimen/divider_margin"
@@ -85,30 +85,27 @@
                 style="@style/PromptTextView"
                 android:text="@string/working_hours_prompt" />
 
-            <RelativeLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/working_slots_rv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/divider_margin"
-                android:layout_marginStart="@dimen/divider_margin"
-                android:paddingBottom="@dimen/vertical_margin">
-                <android.support.design.widget.FloatingActionButton
-                    android:elevation="@dimen/fab_elavation"
-                    android:id="@+id/addWorkingSlot"
-                    android:layout_width="@dimen/regular_fab_dimen"
-                    android:layout_height="@dimen/regular_fab_dimen"
-                    android:src="@drawable/ic_add"
-                    android:layout_alignParentEnd="true"/>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/working_slots_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </RelativeLayout>
-
+                android:layout_marginStart="@dimen/divider_margin" />
         </LinearLayout>
-
-
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/addWorkingSlot"
+        android:layout_width="@dimen/regular_fab_dimen"
+        android:layout_height="@dimen/regular_fab_dimen"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/fab_bottom_margin"
+        android:layout_marginEnd="@dimen/divider_margin"
+        android:layout_marginStart="@dimen/divider_margin"
+        android:elevation="@dimen/fab_elavation"
+        android:paddingBottom="@dimen/vertical_margin"
+        android:src="@drawable/ic_add" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/bottom_border_buttons"

@@ -50,9 +50,10 @@
                 style="@style/PromptTextView"
                 android:text="@string/personal_info_prompt" />
 
+            <!-- Avoid autoselecting the first edittext when activity opens up -->
             <EditText
-                android:layout_width="0dp"
-                android:layout_height="0dp" />
+                android:layout_width="@dimen/zero_margin"
+                android:layout_height="@dimen/zero_margin" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.Api;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
 
@@ -71,7 +70,7 @@ public class WorkingHoursRvAdapter extends RecyclerView.Adapter<WorkingHoursRvAd
             else {
                 holder.allDayCheckBox.setVisibility(View.GONE);
                 holder.hours.setVisibility(View.VISIBLE);
-                holder.hours.setText(timeSlot.getHours());
+                holder.hours.setText(timeSlot.getHourRange());
             }
         }
 

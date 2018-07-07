@@ -1,13 +1,20 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
-public class TimeSlot {
+import java.io.Serializable;
+
+import static com.greece.nasiakouts.babysitterfinder.Constants.ANOKATOTELEIA;
+import static com.greece.nasiakouts.babysitterfinder.Constants.DASH;
+
+public class TimeSlot implements Serializable {
     private String day;
-    private String hours;
+    private String fromHour;
+    private String toHour;
     private boolean allDay;
 
-    public TimeSlot(String day, String hours, boolean allDay) {
+    public TimeSlot(String day, String fromHour, String toHour, boolean allDay) {
         this.day = day;
-        this.hours = hours;
+        this.fromHour = fromHour;
+        this.toHour = toHour;
         this.allDay = allDay;
     }
 
@@ -19,12 +26,8 @@ public class TimeSlot {
         this.day = day;
     }
 
-    public String getHours() {
-        return hours;
-    }
-
-    public void setHours(String hours) {
-        this.hours = hours;
+    public String getHourRange() {
+        return fromHour + DASH + toHour;
     }
 
     public boolean isAllDay(){
@@ -35,29 +38,45 @@ public class TimeSlot {
         this.allDay = allDay;
     }
 
-    public int getStartHourInt() {
-        return Integer.parseInt(hours.split("-")[0].split(":")[0]);
+    public String getFromHour() {
+        return fromHour;
     }
 
-    public int getStartSecondsInt() {
-        return Integer.parseInt(hours.split("-")[0].split(":")[1]);
+    public void setFromHour(String fromHour) {
+        this.fromHour = fromHour;
     }
 
-    public double getStartHoursDouble(){
-        return Integer.parseInt(hours.split("-")[0].split(":")[0] +
-                (Integer.parseInt(hours.split("-")[0].split(":")[1]) / 100));
+    public String getToHour() {
+        return toHour;
     }
 
-    public int getFinishHourInt() {
-        return Integer.parseInt(hours.split("-")[1].split(":")[0]);
+    public void setToHour(String toHour) {
+        this.toHour = toHour;
     }
 
-    public int getFinishSecondsInt() {
-        return Integer.parseInt(hours.split("-")[1].split(":")[1]);
+    public int getFromOnlyHour() {
+        return Integer.parseInt(fromHour.split(ANOKATOTELEIA)[0]);
     }
 
-    public double getFinishHoursDouble(){
-        return Integer.parseInt(hours.split("-")[1].split(":")[0] +
-                (Integer.parseInt(hours.split("-")[1].split(":")[1]) / 100));
+    public int getFromOnlyMins() {
+        return Integer.parseInt(fromHour.split(ANOKATOTELEIA)[1]);
+    }
+
+    public double getFromHourDouble() {
+        return Integer.parseInt(fromHour.split(ANOKATOTELEIA)[0] +
+                (Integer.parseInt(fromHour.split(ANOKATOTELEIA)[1]) / 100));
+    }
+
+    public int getToOnlyHourInt() {
+        return Integer.parseInt(toHour.split(ANOKATOTELEIA)[0]);
+    }
+
+    public int getToOnlySecInt() {
+        return Integer.parseInt(toHour.split(ANOKATOTELEIA)[1]);
+    }
+
+    public double getToHourDouble() {
+        return Integer.parseInt(toHour.split(ANOKATOTELEIA)[0] +
+                (Integer.parseInt(toHour.split(ANOKATOTELEIA)[1]) / 100));
     }
 }

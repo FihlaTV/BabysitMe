@@ -38,6 +38,11 @@
     <string name="all_day">All day (6:00 – 24:00)</string>
     <string name="add_new_timeslot_title">Add New TimeSlot</string>
     <string name="currency_hint">Currency</string>
+
+    <!-- Registration Sitter Main Screen - Java Side -->
+    <string name="currency_picker">CURRENCY_PICKER</string>
+    <string name="select_currency_prompt">Select Currency</string>
+
     <!-- Intent Extras -->
     <string name="interest_key">InterestKey</string>
     <string name="sitter_value">Sitter</string>
@@ -46,12 +51,16 @@
     <string name="day_prompt">Choose a day</string>
     <string name="from_hour_hint">From hour</string>
     <string name="to_hour_hint">To Hour</string>
-    <string name="select_tine_period_prompt">Select Tine Period</string>
+    <string name="select_tine_period_prompt">Select Time Period</string>
     <string name="or">Or</string>
     <string name="select_all_day_prompt">Select All Day (6:00 – 24:00)</string>
-
+    <string name="ok">ok</string>
+    <string name="day_toast">Please select a day</string>
+    <string name="timeslot_toast">Please select time slot</string>
+    <string name="timeslot_added">Time Slot Added</string>
 
     <string-array name="days">
+        <item>Choose a day</item>
         <item>Monday</item>
         <item>Tuesday</item>
         <item>Wednesday</item>

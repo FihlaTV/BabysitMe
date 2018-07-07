@@ -85,7 +85,7 @@ public class RegistrationCommonActivity extends AppCompatActivity
     private void nextPressed(View view) {
         int selectedRadioInterest = radioGroupInterest.getCheckedRadioButtonId();
         int selectedRadioSex = radioGroupSex.getCheckedRadioButtonId();
-
+/*
 
         // Make sure all info has been provided and are valid before continue to next screen
         if(selectedRadioInterest == -1) {
@@ -154,7 +154,7 @@ public class RegistrationCommonActivity extends AppCompatActivity
             return;
         }
         // -------------------------------------------------------------------
-
+*/
         if(selectedRadioInterest == R.id.radio_babysitter) {
             Intent intent = new Intent(this, SitterRegisterMainActivity.class);
             startActivity(intent);

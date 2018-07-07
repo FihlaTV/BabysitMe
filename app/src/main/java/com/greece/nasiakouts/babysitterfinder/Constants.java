@@ -14,4 +14,9 @@ public class Constants {
     public static final int INDEX_RADIO_USER = 1;
     public static final int INDEX_RADIO_FEMALE = 2;
     public static final int INDEX_RADIO_MALE = 3;
+
+
+    public static final int ADD_TIMESLOT_REQUEST_CODE = 0;
+    public static final String DASH = " - ";
+    public static final String ANOKATOTELEIA = ":";
 }

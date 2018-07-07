@@ -1,70 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <Spinner
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/days"
-        android:prompt="@string/day_prompt" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/divider_margin"
+        android:paddingTop="@dimen/divider_margin">
 
-    <TextView
-        android:layout_marginTop="@dimen/divider_margin"
-        android:layout_marginStart="@dimen/horizontal_margin"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/large_font"
-        android:text="@string/select_tine_period_prompt" />
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_marginStart="@dimen/horizontal_margin"
-        android:layout_marginEnd="@dimen/horizontal_margin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/from_hour_input"
-            android:focusable="false"
+        <Spinner
+            android:id="@+id/day_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/from_hour_hint"
-            android:inputType="time"
-            android:textSize="@dimen/regular_size"/>
+            android:layout_marginEnd="@dimen/divider_margin"
+            android:layout_marginStart="@dimen/divider_margin"
+            android:entries="@array/days"
+            android:prompt="@string/day_prompt" />
 
-    </android.support.design.widget.TextInputLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/horizontal_divider_height"
+            android:layout_marginBottom="@dimen/divider_margin"
+            android:layout_marginEnd="@dimen/spinner_div_fix"
+            android:layout_marginStart="@dimen/spinner_div_fix"
+            android:background="@color/secondary_text" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/horizontal_margin"
-        android:layout_marginEnd="@dimen/horizontal_margin" >
+        <include layout="@layout/horizontal_divider" />
 
+        <!-- Avoid autoselecting the first edittext when activity opens up -->
         <EditText
-            android:id="@+id/to_hour_input"
-            android:focusable="false"
+            android:id="@+id/stub_edittext"
+            android:layout_width="@dimen/zero_margin"
+            android:layout_height="@dimen/zero_margin" />
+
+        <TextView
+            style="@style/PromptTextView"
+            android:text="@string/select_tine_period_prompt" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/to_hour_hint"
-            android:inputType="time"
-            android:textSize="@dimen/regular_size"/>
+            android:orientation="horizontal">
 
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="@dimen/zero_margin"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/vertical_margin"
+                android:layout_marginStart="@dimen/divider_margin"
+                android:layout_weight="1">
 
-    <TextView
-        android:layout_marginTop="@dimen/divider_margin"
-        android:layout_marginStart="@dimen/horizontal_margin"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/large_font"
-        android:layout_marginBottom="@dimen/divider_margin"
-        android:text="@string/or" />
+                <EditText
+                    android:id="@+id/from_hour_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/from_hour_hint"
+                    android:inputType="time" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/select_all_day_prompt"
-        android:textColor="@color/secondary_text"/>
-</LinearLayout>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="@dimen/zero_margin"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/divider_margin"
+                android:layout_marginStart="@dimen/vertical_margin"
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/to_hour_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/to_hour_hint"
+                    android:inputType="time" />
+
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+            style="@style/PromptTextView"
+            android:text="@string/or" />
+
+        <CheckBox
+            android:id="@+id/all_day_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/checkbox_fix"
+            android:layout_marginStart="@dimen/checkbox_fix"
+            android:text="@string/select_all_day_prompt"
+            android:textColor="@color/secondary_text" />
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/bottom_border_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_costume_navigation_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/icons"
+        android:elevation="@dimen/bottom_elevation">
+
+        <View
+            android:id="@+id/vertical_bottom_divider"
+            android:layout_width="@dimen/horizontal_divider_height"
+            android:layout_height="match_parent"
+            android:background="@color/divider"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent" />
+
+        <Button
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ripple_light"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_check"
+            android:focusable="true"
+            android:gravity="center"
+            android:minWidth="@dimen/min_width_next"
+            android:padding="@dimen/horizontal_margin"
+            android:text="@string/ok"
+            android:textAllCaps="true"
+            android:textColor="@color/primary_text"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/vertical_bottom_divider"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+</RelativeLayout>

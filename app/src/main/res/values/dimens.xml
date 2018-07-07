@@ -14,14 +14,18 @@
     <dimen name="large_icon_dimen">80dp</dimen>
     <dimen name="minus_margin_large_icon">-35dp</dimen>
     <dimen name="small_rotation">-5</dimen>
+    <dimen name="checkbox_fix">11dp</dimen>
+    <dimen name="spinner_div_fix">20dp</dimen>
     <dimen name="divider_margin">16dp</dimen>
     <dimen name="anti_horizontal_margin">-8dp</dimen>
     <dimen name="horizontal_divider_height">1dp</dimen>
     <dimen name="radius_button">5dp</dimen>
     <dimen name="bottom_elevation">8dp</dimen>
     <dimen name="bottom_costume_navigation_height">42dp</dimen>
+    <dimen name="fab_bottom_margin">58dp</dimen>
     <dimen name="min_width_next">150dp</dimen>
     <dimen name="regular_clickable_size">36dp</dimen>
     <dimen name="fab_elavation">6dp</dimen>
     <dimen name="regular_fab_dimen">56dp</dimen>
+    <dimen name="zero_margin">0dp</dimen>
 </resources>

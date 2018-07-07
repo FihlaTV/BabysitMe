@@ -3,34 +3,29 @@ package com.greece.nasiakouts.babysitterfinder.Activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.greece.nasiakouts.babysitterfinder.Adapters.WorkingHoursRvAdapter;
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
-import com.greece.nasiakouts.babysitterfinder.Utils;
 import com.mynameismidori.currencypicker.CurrencyPicker;
 import com.mynameismidori.currencypicker.CurrencyPickerListener;
-
-import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.greece.nasiakouts.babysitterfinder.Constants.ADD_TIMESLOT_REQUEST_CODE;
 
 public class SitterRegisterMainActivity extends AppCompatActivity
         implements View.OnTouchListener, View.OnFocusChangeListener {
@@ -47,10 +42,13 @@ public class SitterRegisterMainActivity extends AppCompatActivity
     EditText currencyEditText;
 
     @BindView(R.id.working_slots_rv)
-    RecyclerView workingSlotsRvl;
+    RecyclerView workingSlotsRv;
 
     @BindView(R.id.sitter_main_screen_next)
     Button goToNext;
+
+    WorkingHoursRvAdapter adapter;
+    TimeSlot timeSlot;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -64,8 +62,11 @@ public class SitterRegisterMainActivity extends AppCompatActivity
 
         currentActiviy = this;
 
-        WorkingHoursRvAdapter adapter = new WorkingHoursRvAdapter(null);
-        workingSlotsRvl.setAdapter(adapter);
+        adapter = new WorkingHoursRvAdapter(null);
+        workingSlotsRv.setAdapter(adapter);
+        workingSlotsRv.addItemDecoration(new DividerItemDecoration(workingSlotsRv.getContext(),
+                DividerItemDecoration.VERTICAL);
+        workingSlotsRv.setLayoutManager(new LinearLayoutManager(this));
 
         currencyEditText.setOnFocusChangeListener(this);
         goToNext.setOnTouchListener(this);
@@ -75,23 +76,16 @@ public class SitterRegisterMainActivity extends AppCompatActivity
     public void addWorkingSlot(View view){
         Intent intent = new Intent(this, AddTimeSlotActivity.class);
         intent.putExtra(getString(R.string.interest_key), getString(R.string.sitter_value));
-        startActivity(intent);
+        startActivityForResult(intent, ADD_TIMESLOT_REQUEST_CODE);
+    }
 
-        /*
-        boolean wrapInScrollView = true;
-        MaterialDialog dialog = new MaterialDialog.Builder(this)
-                .title(R.string.add_new_timeslot_title)
-                .customView(R.layout.custom_view, wrapInScrollView)
-                .positiveText(R.string.set_possitive_dialog)
-                .show()
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(MaterialDialog dialog, DialogAction which) {
-                        View view = dialog.getCustomView();
-                    }
-
-        });*/
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ADD_TIMESLOT_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                timeSlot = (TimeSlot) data.getSerializableExtra(TimeSlot.class.getName());
+                adapter.insertTimeslot(timeSlot);
+            }
+        }
     }
 
     @Override
@@ -117,8 +111,8 @@ public class SitterRegisterMainActivity extends AppCompatActivity
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
         if (hasFocus) {
-            final CurrencyPicker picker = CurrencyPicker.newInstance("Select Currency");
-            picker.show(getSupportFragmentManager(), "CURRENCY_PICKER");
+            final CurrencyPicker picker = CurrencyPicker.newInstance(getString(R.string.select_currency_prompt));
+            picker.show(getSupportFragmentManager(), getString(R.string.currency_picker));
             picker.setListener(new CurrencyPickerListener() {
                 @Override
                 public void onSelectCurrency(String name, String code, String dialCode, int flagDrawableResID) {
