@@ -5,6 +5,6 @@ import android.support.v4.app.Fragment;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
 
 public abstract class RegisterComponentFragment extends Fragment {
-    public abstract User getUser();
+    public abstract User getUser(User user);
     public abstract int getPosition();
 }

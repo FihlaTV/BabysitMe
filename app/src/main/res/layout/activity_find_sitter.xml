@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/divider_margin"
+        android:paddingTop="@dimen/divider_margin"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/sitting_needs_prompt" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/total_kids"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/num_of_kids"
+                    android:inputType="number" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/min_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/min_age"
+                    android:inputType="numberDecimal" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/street_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/horizontal_margin"
+                    android:drawableStart="@drawable/ic_location"
+                    android:hint="@string/street_address"
+                    android:inputType="textPostalAddress" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <include layout="@layout/horizontal_divider" />
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/babysitter_time_needed" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/needed_timeslots_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/divider_margin"
+                    android:layout_marginStart="@dimen/divider_margin" />
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/addNeededSlot"
+                    android:layout_width="@dimen/regular_fab_dimen"
+                    android:layout_height="@dimen/regular_fab_dimen"
+                    android:layout_alignBottom="@id/needed_timeslots_rv"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/divider_margin"
+                    android:layout_marginStart="@dimen/divider_margin"
+                    android:elevation="@dimen/fab_elavation"
+                    android:src="@drawable/ic_add"
+                    />
+            </RelativeLayout>
+
+            <include layout="@layout/horizontal_divider" />
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/preferable_sitter_sex" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_sitter_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <RadioButton
+                    android:id="@+id/radio_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:text="@string/female" />
+
+                <RadioButton
+                    android:id="@+id/radio_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:text="@string/male" />
+
+                <RadioButton
+                    android:id="@+id/radio_any"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:text="@string/any" />
+
+            </RadioGroup>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/bottom_border_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_costume_navigation_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/icons"
+        android:elevation="@dimen/bottom_elevation"
+        android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="@dimen/zero_margin"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/ripple_light"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_close"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="@dimen/min_width_next"
+        android:padding="@dimen/horizontal_margin"
+        android:text="@string/cancel"
+        android:textAllCaps="true"
+        android:textColor="@color/primary_text"/>
+
+    <View
+        android:id="@+id/vertical_bottom_divider"
+        android:layout_width="@dimen/horizontal_divider_height"
+        android:layout_height="match_parent"
+        android:background="@color/divider" />
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="@dimen/zero_margin"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/ripple_light"
+        android:clickable="true"
+        android:drawableEnd="@drawable/ic_check"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="@dimen/min_width_next"
+        android:padding="@dimen/horizontal_margin"
+        android:text="@string/ok"
+        android:textAllCaps="true"
+        android:textColor="@color/primary_text" />
+
+    </LinearLayout>
+</RelativeLayout>

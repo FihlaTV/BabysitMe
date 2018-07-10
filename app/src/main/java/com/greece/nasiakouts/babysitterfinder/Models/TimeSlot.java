@@ -7,14 +7,18 @@ import static com.greece.nasiakouts.babysitterfinder.Constants.DASH;
 
 public class TimeSlot implements Serializable {
     private String day;
-    private String fromHour;
-    private String toHour;
+    private int fromHour;
+    private int fromMin;
+    private int toHour;
+    private int toMin;
     private boolean allDay;
 
-    public TimeSlot(String day, String fromHour, String toHour, boolean allDay) {
+    public TimeSlot(String day, int fromHour, int fromMin, int toHour, int toMin, boolean allDay) {
         this.day = day;
         this.fromHour = fromHour;
+        this.fromMin = fromMin;
         this.toHour = toHour;
+        this.toMin = toMin;
         this.allDay = allDay;
     }
 
@@ -27,7 +31,10 @@ public class TimeSlot implements Serializable {
     }
 
     public String getHourRange() {
-        return fromHour + DASH + toHour;
+        return (fromHour == 0 ? "00" : "" + fromHour)
+                + ANOKATOTELEIA + (fromMin == 0 ? "00" : "" + fromMin)
+                + DASH + (toHour == 0 ? "00" : "" + toHour)
+                + ANOKATOTELEIA + (toMin == 0 ? "00" : "" + toMin);
     }
 
     public boolean isAllDay(){
@@ -38,45 +45,35 @@ public class TimeSlot implements Serializable {
         this.allDay = allDay;
     }
 
-    public String getFromHour() {
+    public int getFromHour() {
         return fromHour;
     }
 
-    public void setFromHour(String fromHour) {
+    public void setFromHour(int fromHour) {
         this.fromHour = fromHour;
     }
 
-    public String getToHour() {
+    public int getFromMin() {
+        return fromMin;
+    }
+
+    public void setFromMin(int fromMin) {
+        this.fromMin = fromMin;
+    }
+
+    public int getToHour() {
         return toHour;
     }
 
-    public void setToHour(String toHour) {
+    public void setToHour(int toHour) {
         this.toHour = toHour;
     }
 
-    public int getFromOnlyHour() {
-        return Integer.parseInt(fromHour.split(ANOKATOTELEIA)[0]);
+    public int getToMin() {
+        return toMin;
     }
 
-    public int getFromOnlyMins() {
-        return Integer.parseInt(fromHour.split(ANOKATOTELEIA)[1]);
-    }
-
-    public double getFromHourDouble() {
-        return Integer.parseInt(fromHour.split(ANOKATOTELEIA)[0] +
-                (Integer.parseInt(fromHour.split(ANOKATOTELEIA)[1]) / 100));
-    }
-
-    public int getToOnlyHourInt() {
-        return Integer.parseInt(toHour.split(ANOKATOTELEIA)[0]);
-    }
-
-    public int getToOnlySecInt() {
-        return Integer.parseInt(toHour.split(ANOKATOTELEIA)[1]);
-    }
-
-    public double getToHourDouble() {
-        return Integer.parseInt(toHour.split(ANOKATOTELEIA)[0] +
-                (Integer.parseInt(toHour.split(ANOKATOTELEIA)[1]) / 100));
+    public void setToMin(int toMin) {
+        this.toMin = toMin;
     }
 }

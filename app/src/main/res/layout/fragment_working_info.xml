@@ -1,24 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/bottom_costume_navigation_height">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:paddingBottom="@dimen/divider_margin"
             android:paddingTop="@dimen/divider_margin">
 
             <TextView
                 style="@style/PromptTextView"
-                android:text="@string/additional_sitter_info_prompt" />
+                android:text="@string/working_info_prompt" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -27,12 +24,12 @@
                 android:paddingStart="@dimen/divider_margin">
 
                 <EditText
-                    android:id="@+id/sitter_address"
+                    android:id="@+id/street_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="@dimen/horizontal_margin"
                     android:drawableStart="@drawable/ic_location"
-                    android:hint="@string/street_address_hint"
+                    android:hint="@string/street_address"
                     android:inputType="textPostalAddress" />
 
             </android.support.design.widget.TextInputLayout>
@@ -50,13 +47,13 @@
                     android:paddingStart="@dimen/divider_margin">
 
                     <EditText
-                        android:id="@+id/sitter_charges"
+                        android:id="@+id/charges"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/horizontal_margin"
                         android:drawableStart="@drawable/ic_purse"
-                        android:hint="@string/charging_per_hour_hint"
-                        android:inputType="number" />
+                        android:hint="@string/charging"
+                        android:inputType="numberDecimal" />
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -68,17 +65,29 @@
                     android:paddingStart="@dimen/divider_margin">
 
                     <EditText
-                        android:id="@+id/currency_input"
+                        android:id="@+id/currency"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="@dimen/horizontal_margin"
-                        android:hint="@string/currency_hint"
+                        android:hint="@string/currency"
                         android:inputType="text" />
 
                 </android.support.design.widget.TextInputLayout>
+
             </LinearLayout>
 
+            <!-- Stub EditText used to remove focus from all others -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="@dimen/zero_margin"
+                android:layout_height="@dimen/zero_margin"
+                android:visibility="gone">
 
+                <EditText
+                    android:id="@+id/stub"
+                    android:layout_width="@dimen/zero_margin"
+                    android:layout_height="@dimen/zero_margin" />
+
+            </android.support.design.widget.TextInputLayout>
             <include layout="@layout/horizontal_divider" />
 
             <TextView
@@ -100,49 +109,9 @@
         android:layout_height="@dimen/regular_fab_dimen"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/fab_bottom_margin"
+        android:layout_marginBottom="@dimen/divider_margin"
         android:layout_marginEnd="@dimen/divider_margin"
         android:layout_marginStart="@dimen/divider_margin"
         android:elevation="@dimen/fab_elavation"
-        android:paddingBottom="@dimen/vertical_margin"
         android:src="@drawable/ic_add" />
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/bottom_border_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_costume_navigation_height"
-        android:layout_alignParentBottom="true"
-        android:background="@color/icons"
-        android:elevation="@dimen/bottom_elevation">
-
-        <View
-            android:id="@+id/vertical_bottom_divider"
-            android:layout_width="@dimen/horizontal_divider_height"
-            android:layout_height="match_parent"
-            android:background="@color/divider"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toEndOf="parent" />
-
-        <Button
-            android:id="@+id/sitter_main_screen_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ripple_light"
-            android:clickable="true"
-            android:drawableEnd="@drawable/ic_chevron_right"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:minWidth="@dimen/min_width_next"
-            android:padding="@dimen/horizontal_margin"
-            android:text="@string/next"
-            android:textAllCaps="true"
-            android:textColor="@color/primary_text"
-            app:layout_constraintBottom_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/vertical_bottom_divider"
-            app:layout_constraintStart_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
 </RelativeLayout>

@@ -3,6 +3,7 @@
     <!-- Font sizes -->
     <dimen name="h2_size">48sp</dimen>
     <dimen name="h5_size">24sp</dimen>
+    <dimen name="huge_font">18sp</dimen>
     <dimen name="large_font">16sp</dimen>
     <dimen name="regular_size">14sp</dimen>
     <dimen name="note_size">10sp</dimen>
@@ -28,4 +29,6 @@
     <dimen name="fab_elavation">6dp</dimen>
     <dimen name="regular_fab_dimen">56dp</dimen>
     <dimen name="zero_margin">0dp</dimen>
+    <dimen name="margin12">12dp</dimen>
+    <dimen name="loading_size">60dp</dimen>
 </resources>

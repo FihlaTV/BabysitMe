@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class WorkingHoursRvAdapter extends RecyclerView.Adapter<WorkingHoursRvAdapter.WorkingHoursHolder>{
+public class TimeSlotRvAdapter extends RecyclerView.Adapter<TimeSlotRvAdapter.WorkingHoursHolder>{
         private ArrayList<TimeSlot> timeSlots;
 
         public class WorkingHoursHolder extends RecyclerView.ViewHolder{
@@ -36,12 +36,12 @@ public class WorkingHoursRvAdapter extends RecyclerView.Adapter<WorkingHoursRvAd
             }
         }
 
-        public WorkingHoursRvAdapter(ArrayList<TimeSlot> timeSlots){
+        public TimeSlotRvAdapter(ArrayList<TimeSlot> timeSlots){
             if(timeSlots == null) this.timeSlots = new ArrayList<>();
             else this.timeSlots = timeSlots;
         }
 
-        public void insertTimeslot(TimeSlot timeSlot){
+        public void insertTimeSlot(TimeSlot timeSlot){
             if(timeSlot == null) return;
 
             if(timeSlots == null) timeSlots = new ArrayList<>();
@@ -54,7 +54,7 @@ public class WorkingHoursRvAdapter extends RecyclerView.Adapter<WorkingHoursRvAd
         @Override
         public WorkingHoursHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.working_hours_item, parent, false);
+                    .inflate(R.layout.time_slot_item, parent, false);
 
             return new WorkingHoursHolder(itemView);
         }
@@ -77,5 +77,9 @@ public class WorkingHoursRvAdapter extends RecyclerView.Adapter<WorkingHoursRvAd
         @Override
         public int getItemCount() {
             return timeSlots == null ? 0 : timeSlots.size();
+        }
+
+        public ArrayList<TimeSlot> getData(){
+            return timeSlots;
         }
     }

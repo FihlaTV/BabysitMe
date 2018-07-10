@@ -9,4 +9,11 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="transparent">#00FFFFFF</color>
+
+    <color name="stroke_button">#009688</color>
+    <color name="button_fill">#CC00BFA5</color>
+    <color name="button_focused">#CC1DE9B6</color>
+    <color name="button_fill_pressed">#CC64FFDA</color>
+
+    <color name="hyperlink_color">#0B0080</color>
 </resources>

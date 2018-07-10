@@ -2,51 +2,62 @@
     <string name="app_name">BabysitterFinder</string>
 
     <!-- Main Activity -->
+    <string name="email">Email Address</string>
+    <string name="password">Password</string>
     <string name="log_in">Log In</string>
-    <string name="register">Register</string>
+    <string name="register_now">Don\'t have an account? Register</string>
+    <string name="no_register_mode_selected">You have to select what you register as to continue registration</string>
 
-    <!-- Registration Common Screen -->
-    <string name="registration">Registration</string>
-    <string name="interest_prompt">Select your interest below:</string>
+    <!-- Register Mode Dialog -->
+    <string name="mode_prompt">Register as</string>
     <string name="babysitter_response">I am looking for a job as babysitter</string>
     <string name="user_response">I am looking for a babysitter</string>
-    <string name="personal_info_prompt">Fill in your personal info bellow:</string>
-    <string name="account_info_prompt">Fill in your account info bellow:</string>
-    <string name="full_name_hint">Full Name</string>
-    <string name="email_hint">Email Address</string>
-    <string name="phone_hint">Phone Number</string>
+
+    <string name="registration">Registration</string>
+    <string name="next">next</string>
+
+    <!-- Account Info Registration -->
+    <string name="account_info_prompt">Fill in your account info bellow</string>
     <string name="password_hint">Password (min 4 chars)</string>
     <string name="confirm_password_hint">Confirm password</string>
-    <string name="born_hint">Date Born</string>
-    <string name="next">next</string>
-    <string name="sex_prompt">Select your sex:</string>
+    <string name="not_filled_email_address">Fill in your email address</string>
+    <string name="no_valid_email">Enter a valid email address</string>
+    <string name="not_filled_password">Fill in a password</string>
+    <string name="no_valid_password">Password must consist of at least 4 characters</string>
+    <string name="not_filled_confirmation">Confirm your password</string>
+    <string name="no_valid_confirmation">Password mismatched</string>
 
-    <!-- Registration Common Screen - Java Side -->
-    <string name="no_interest_selected">You have to select your interest to continue</string>
-    <string name="no_all_info_filled">Fill in the unfilled info about you to continue</string>
-    <string name="no_valid_mail">Please enter a valid email address in order to continue</string>
-    <string name="no_sex_selected">You have to select your sex to continue</string>
-    <string name="no_valid_number">Please enter a valid phone number in order to continue</string>
-    <string name="no_enough_chars_password">Password must consist of at least 4 chars</string>
-    <string name="mismatch_passwords">Mismatched occurred on password confirmation</string>
-    <string name="born_date_not_accepted">You either too young for this app or you misentered your birthday</string>
+    <!-- Personal Info Registration -->
+    <string name="personal_info_prompt">Fill in your personal info bellow</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone Number</string>
+    <string name="date_born">Date Born</string>
+    <string name="sex_prompt">Select your sex</string>
+    <string name="not_filled_name">Fill in your full name</string>
+    <string name="not_filled_phone">Fill in your phone number</string>
+    <string name="no_valid_phone">Enter a valid phone number</string>
+    <string name="not_filled_born_date">Fill in the date you were born</string>
+    <string name="no_valid_born_date">You either too young for this app or you mis-entered your birthday</string>
+    <string name="no_sex_selected">Select your sex</string>
 
-    <!-- Registration Sitter Main Screen -->
-    <string name="additional_sitter_info_prompt">Fill in the following info to be able to get job offers:</string>
-    <string name="street_address_hint">Street address</string>
-    <string name="charging_per_hour_hint">Charging per hour</string>
+    <!-- Working Info Registration -->
+    <string name="working_info_prompt">Fill in the following info to be able to get job offers:</string>
+    <string name="street_address">Street address</string>
+    <string name="charging">Charging per hour</string>
+    <string name="currency">Currency</string>
     <string name="working_hours_prompt">Select your working hours:</string>
     <string name="all_day">All day (6:00 – 24:00)</string>
-    <string name="add_new_timeslot_title">Add New TimeSlot</string>
-    <string name="currency_hint">Currency</string>
+    <string name="not_filled_street">Fill in your street address</string>
+    <string name="not_filled_charges">Fill in your charges</string>
+    <string name="not_filled_currency">Fill in your currency</string>
 
-    <!-- Registration Sitter Main Screen - Java Side -->
-    <string name="currency_picker">CURRENCY_PICKER</string>
-    <string name="select_currency_prompt">Select Currency</string>
-
-    <!-- Intent Extras -->
-    <string name="interest_key">InterestKey</string>
-    <string name="sitter_value">Sitter</string>
+    <!-- Sitter additional info -->
+    <string name="additional_info_prompt">Fill in some additional info</string>
+    <string name="additional_info_privacy">These are only helping us to give you the most accurate and desired offers to you depending on your preferences. It won\'t be visible on your public profile.</string>
+    <string name="max_kids">Max number of kids at the same time</string>
+    <string name="min_age">Min age of kid taking care of</string>
+    <string name="not_filled_max_kids">Set max number of kids</string>
+    <string name="not_filled_min_age">Set min age of kid</string>
 
     <!-- Add new TimeSlot -->
     <string name="day_prompt">Choose a day</string>
@@ -55,12 +66,15 @@
     <string name="select_tine_period_prompt">Select Time Period</string>
     <string name="or">Or</string>
     <string name="select_all_day_prompt">Select All Day (6:00 – 24:00)</string>
+    <string name="cancel">cancel</string>
     <string name="ok">ok</string>
     <string name="day_toast">Please select a day</string>
-    <string name="timeslot_toast">Please select time slot</string>
-    <string name="timeslot_added">Time Slot Added</string>
     <string name="previous">previous</string>
-    <string name="cancel">cancel</string>
+    <string name="not_filled_from">Set from hour</string>
+    <string name="not_filled_to">Set to hour</string>
+
+    <string name="timeslot_added">Time Slot Added</string>
+    <string name="no_time_slot_added">You have to add at least one time slot</string>
 
     <string-array name="days">
         <item>Choose a day</item>
@@ -72,5 +86,50 @@
         <item>Saturday</item>
         <item>Sunday</item>
     </string-array>
+
+    <!-- Add TimeSlot -->
+    <string name="add_time_slot_title">Add New TimeSlot</string>
+
+    <!-- Registration Sitter Main Screen - Java Side -->
+    <string name="currency_picker">CURRENCY_PICKER</string>
+    <string name="select_currency_prompt">Select Currency</string>
+
+    <!-- Intent Extras -->
+    <string name="interest_key">InterestKey</string>
+    <string name="sitter_value">Sitter</string>
+
+    <!-- Additional info Sitter -->
+    <string name="introduction_prompt">Fill in any comment or introduction (Optional)</string>
+    <string name="introduction_privacy">This is going to be displayed on your profile and be visible to all users searching for a sitter</string>
+    <string name="saving">Saving</string>
+    <string name="done">Done</string>
+
+    <string name="orientation_bundle_key">orientation</string>
+
+    <!-- Find Sitter -->
+    <string name="sitter_search">Sitter Search</string>
+    <string name="babysitter_time_needed">Add the time you need babysitter</string>
+    <string name="skip">skip</string>
+    <string name="num_of_kids">Number of kids to be babysitted</string>
+    <string name="sitting_needs_prompt">Add some core info about the sitting you need</string>
+    <string name="preferable_sitter_sex">Preferable sitter\'s sex</string>
+    <string name="female">female</string>
+    <string name="male">male</string>
+    <string name="any">any</string>
+    <string name="total_kids">Set total kids number</string>
+    <string name="youngest_kid">Set the youngest kid\'s age</string>
+    <string name="sitting_address">Set address for the babysitting</string>
+    <string name="not_filled_sitter_sex">Select sister\'s sex</string>
+    <string name="matching_sitters">matching sitters...</string>
+
+    <!-- Available Sitters Result -->
+    <string name="sitters_results">Available Sitters</string>
+    <string name="select_a_sitter">Select a sitter</string>
+    <string name="upload_file">Upload profile photo</string>
+    <string name="take_photo"> Take Photo</string>
+    <string name="gallery"> Choose from Gallery</string>
+    <string name="no_selected_upload">No way of providing photo selected</string>
+
+    <!-- Upload Photo -->
 
 </resources>

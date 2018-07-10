@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/divider_margin">
+
+    <TextView
+        style="@style/PromptTextView"
+        android:text="@string/personal_info_prompt" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/divider_margin"
+        android:paddingStart="@dimen/divider_margin">
+
+        <EditText
+            android:id="@+id/name_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_avatar"
+            android:hint="@string/full_name"
+            android:inputType="textPersonName" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/divider_margin"
+        android:paddingStart="@dimen/divider_margin">
+
+        <EditText
+            android:id="@+id/phone_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_smartphone_1"
+            android:hint="@string/phone"
+            android:inputType="phone" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/divider_margin"
+        android:paddingStart="@dimen/divider_margin">
+
+        <EditText
+            android:id="@+id/year_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/horizontal_margin"
+            android:drawableStart="@drawable/ic_calendar_thin"
+            android:hint="@string/date_born"
+            android:inputType="date" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            style="@style/PromptTextView"
+            android:textSize="@dimen/huge_font"
+            android:text="@string/sex_prompt"
+            android:layout_gravity="center_vertical"/>
+
+        <RadioGroup
+            android:id="@+id/radio_group_sex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/divider_margin"
+            android:paddingStart="@dimen/divider_margin">
+
+            <RadioButton
+                android:id="@+id/radio_female"
+                android:layout_width="@dimen/regular_clickable_size"
+                android:layout_height="@dimen/regular_clickable_size"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:button="@drawable/custom_radio_female"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <RadioButton
+                android:id="@+id/radio_male"
+                android:layout_width="@dimen/regular_clickable_size"
+                android:layout_height="@dimen/regular_clickable_size"
+                android:layout_marginStart="@dimen/horizontal_margin"
+                android:button="@drawable/custom_radio_male"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+        </RadioGroup>
+    </LinearLayout>
+
+</LinearLayout>

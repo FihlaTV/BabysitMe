@@ -20,8 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/horizontal_margin"
-            android:drawableStart="@drawable/ic_mail"
-            android:hint="@string/email_hint"
+            android:drawableStart="@drawable/ic_envelope"
+            android:hint="@string/email"
             android:inputType="textEmailAddress" />
 
     </android.support.design.widget.TextInputLayout>
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/horizontal_margin"
-            android:drawableStart="@drawable/ic_password"
+            android:drawableStart="@drawable/ic_lock"
             android:hint="@string/password_hint"
             android:inputType="textPassword" />
 
@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="@dimen/horizontal_margin"
-            android:drawableStart="@drawable/ic_password"
+            android:drawableStart="@drawable/ic_key"
             android:hint="@string/confirm_password_hint"
             android:inputType="textPassword" />
 

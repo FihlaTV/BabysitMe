@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/bottom_costume_navigation_height">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/divider_margin"
+            android:paddingTop="@dimen/divider_margin">
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/additional_info_prompt" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin"
+                android:text="@string/additional_info_privacy" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/max_kids"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/max_kids"
+                    android:inputType="number" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/min_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/min_age"
+                    android:inputType="numberDecimal" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <include layout="@layout/horizontal_divider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/divider_margin"
+                android:layout_marginStart="@dimen/divider_margin"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/file_uploaded"
+                    android:layout_width="@dimen/zero_margin"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/vertical_margin"
+                    android:layout_weight="1"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/upload_photo_button"
+                    android:layout_width="@dimen/zero_margin"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/vertical_margin"
+                    android:layout_weight="1"
+                    android:background="@drawable/log_in_button_bg"
+                    android:drawableStart="@drawable/ic_upload"
+                    android:paddingBottom="@dimen/vertical_margin"
+                    android:paddingEnd="@dimen/horizontal_margin"
+                    android:paddingStart="@dimen/horizontal_margin"
+                    android:paddingTop="@dimen/vertical_margin"
+                    android:text="@string/upload_file"
+                    android:textColor="@android:color/white" />
+
+
+            </LinearLayout>
+
+
+            <TextView
+                style="@style/PromptTextView"
+                android:text="@string/introduction_prompt" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin"
+                android:text="@string/introduction_privacy" />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/divider_margin"
+                android:paddingStart="@dimen/divider_margin">
+
+                <EditText
+                    android:id="@+id/introduction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:maxLines="10"
+                    android:scrollbars="vertical" />
+
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

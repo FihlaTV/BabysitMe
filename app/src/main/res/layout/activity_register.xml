@@ -19,7 +19,7 @@
         android:elevation="@dimen/bottom_elevation">
 
         <Button
-            android:id="@+id/common_screen_previous"
+            android:id="@+id/previous_button"
             android:layout_width="@dimen/zero_margin"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -27,7 +27,6 @@
             android:clickable="true"
             android:drawableStart="@drawable/ic_chevron_left"
             android:focusable="true"
-            android:focusableInTouchMode="true"
             android:gravity="center"
             android:minWidth="@dimen/min_width_next"
             android:padding="@dimen/horizontal_margin"
@@ -42,7 +41,7 @@
             android:background="@color/divider"/>
 
         <Button
-            android:id="@+id/common_screen_next"
+            android:id="@+id/next_button"
             android:layout_width="@dimen/zero_margin"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -50,7 +49,6 @@
             android:clickable="true"
             android:drawableEnd="@drawable/ic_chevron_right"
             android:focusable="true"
-            android:focusableInTouchMode="true"
             android:gravity="center"
             android:minWidth="@dimen/min_width_next"
             android:padding="@dimen/horizontal_margin"

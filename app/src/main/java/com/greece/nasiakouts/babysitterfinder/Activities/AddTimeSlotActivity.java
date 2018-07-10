@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -54,7 +53,7 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
 
         ButterKnife.bind(this);
 
-        if(getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.add_new_timeslot_title);
+        if(getSupportActionBar() != null) getSupportActionBar().setTitle(R.string.add_time_slot_title);
 
         currentActivity = this;
 
@@ -76,11 +75,17 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
         });
     }
 
+    int fromHour = -1;
+    int fromMin = -1;
+    int toHour = -1;
+    int toMin = -1;
+
     @Override
     public void onFocusChange(final View view, boolean hasFocus) {
         if(hasFocus) {
-            int viewHavingFocusId = view.getId();
+            final int viewHavingFocusId = view.getId();
             final EditText viewHavingFocus;
+
             String prompt;
             if(viewHavingFocusId == R.id.from_hour_input) {
                 viewHavingFocus = fromHourEditText;
@@ -99,12 +104,23 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
                     new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                            String hourString = selectedHour == 0 ? "00" : "" + selectedHour;
+                            String minString = selectedMinute == 0 ? "00" : "" + selectedMinute;
+
                             viewHavingFocus.setText(new StringBuilder()
-                                    .append(selectedHour)
+                                    .append(hourString)
                                     .append(ANOKATOTELEIA)
-                                    .append(selectedMinute)
+                                    .append(minString)
                                     .toString());
 
+                            if(viewHavingFocusId == R.id.from_hour_input) {
+                                fromHour = selectedHour;
+                                fromMin = selectedMinute;
+                            }
+                            else {
+                                toHour = selectedHour;
+                                toMin = selectedMinute;
+                            }
                             allDayCheckBox.setChecked(false);
                             Utils.hideKeyboard(currentActivity);
                             stubEditText.requestFocus();
@@ -123,6 +139,13 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
         }
     }
 
+    @OnClick(R.id.cancel_button)
+    public void cancelPressed(View view) {
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+        finish();
+    }
+
     @OnClick(R.id.ok_button)
     public void okPressed(View view) {
         if (daySpinner.getSelectedItemPosition() == 0) {
@@ -131,12 +154,14 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
         }
 
         String daySelected = daySpinner.getSelectedItem().toString();
-        String fromHour = fromHourEditText.getText().toString();
-        String toHour = toHourEditText.getText().toString();
 
-        if ((TextUtils.isEmpty(fromHour) || TextUtils.isEmpty(toHour))
-                && !allDayCheckBox.isChecked()) {
-            Toast.makeText(this, R.string.timeslot_toast, Toast.LENGTH_LONG).show();
+        if ((fromHour == -1 || fromMin == -1) && !allDayCheckBox.isChecked()) {
+            fromHourEditText.setError(getString(R.string.not_filled_from));
+            return;
+        }
+
+        if((toHour == -1 || toMin == -1) && !allDayCheckBox.isChecked()) {
+            fromHourEditText.setError(getString(R.string.not_filled_to));
             return;
         }
 
@@ -144,9 +169,9 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
 
         TimeSlot timeSlot;
         if (allDayCheckBox.isChecked()) {
-            timeSlot = new TimeSlot(daySelected, fromHour, toHour, true);
+            timeSlot = new TimeSlot(daySelected, fromHour, fromMin, toHour, toMin,true);
         } else {
-            timeSlot = new TimeSlot(daySelected, fromHour, toHour, false);
+            timeSlot = new TimeSlot(daySelected, fromHour, fromMin, toHour, toMin, false);
         }
 
         Intent intent = new Intent();
