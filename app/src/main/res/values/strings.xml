@@ -120,16 +120,15 @@
     <string name="youngest_kid">Set the youngest kid\'s age</string>
     <string name="sitting_address">Set address for the babysitting</string>
     <string name="not_filled_sitter_sex">Select sister\'s sex</string>
-    <string name="matching_sitters">matching sitters...</string>
+    <string name="matching_sitters">matching sitters…</string>
 
     <!-- Available Sitters Result -->
     <string name="sitters_results">Available Sitters</string>
     <string name="select_a_sitter">Select a sitter</string>
+
+    <!-- Upload Photo -->
     <string name="upload_file">Upload profile photo</string>
     <string name="take_photo"> Take Photo</string>
     <string name="gallery"> Choose from Gallery</string>
     <string name="no_selected_upload">No way of providing photo selected</string>
-
-    <!-- Upload Photo -->
-
 </resources>
