@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
@@ -29,9 +30,11 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
 
     @BindViews({R.id.max_kids,
             R.id.min_age,
-            R.id.introduction,
-            R.id.file_uploaded})
+            R.id.introduction})
     List<EditText> mSitterAdditionalInfoList;
+
+    @BindView(R.id.file_uploaded)
+    TextView fileUploadedTv;
 
     @BindView(R.id.upload_photo_button)
     Button upload;
@@ -83,8 +86,7 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
 
     @OnClick(R.id.upload_photo_button)
     public void uploadButonPressed(){
-        uploadPhotoEventCallback.uploadPhoto(mSitterAdditionalInfoList
-                .get(Constants.INDEX_FILE_UPLOADED_INPUT), upload);
+        uploadPhotoEventCallback.uploadPhoto(fileUploadedTv, upload);
     }
 
     // Override onAttach to make sure that the container activity has implemented the callback
