@@ -4,7 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/divider_margin"
+    android:paddingTop="@dimen/divider_margin"
+    android:paddingBottom="@dimen/divider_margin"
+    android:layout_marginStart="@dimen/horizontal_margin"
+    android:layout_marginEnd="@dimen/horizontal_margin"
     tools:context="com.greece.nasiakouts.babysitterfinder.Activities.SittersResultActivity">
 
     <TextView
