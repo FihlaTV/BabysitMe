@@ -11,7 +11,7 @@
         android:layout_height="@dimen/loading_size"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_fileName="loading.json"
+        app:lottie_fileName="stripe_loadingnew.json"
         />
 
     <TextView

@@ -21,7 +21,6 @@ public class Constants {
     public static final int INDEX_MAX_KIDS_INPUT = 0;
     public static final int INDEX_MIN_AGE_INPUT = 1;
     public static final int INDEX_INTRODUCTION_INPUT = 2;
-    public static final int INDEX_FILE_UPLOADED_INPUT = 3;
 
     // Fragments
     public static final int ACCOUNT_INFO_FRAGMENT_SEQ = 0;
@@ -38,6 +37,11 @@ public class Constants {
     public static final int INDEX_RADIO_FEMALE = 0;
     public static final int INDEX_RADIO_MALE = 1;
     public static final int INDEX_RADIO_ANY = 2;
+
+    // RV Available Sitters
+    public static final int INDEX_NAME = 0;
+    public static final int INDEX_PRICE = 1;
+    public static final int INDEX_CURRENCY = 2;
 
     // Intent Codes
     public static final String INT_CODE = "int";

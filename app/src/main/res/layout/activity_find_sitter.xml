@@ -7,7 +7,7 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/divider_margin"
+        android:layout_marginBottom="@dimen/bottom_costume_navigation_height"
         android:paddingTop="@dimen/divider_margin"
         >
 
@@ -82,7 +82,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/divider_margin"
-                    android:layout_marginStart="@dimen/divider_margin" />
+                    android:layout_marginStart="@dimen/divider_margin"
+                    android:minHeight="@dimen/rv_min_height" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/addNeededSlot"
@@ -92,6 +93,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/divider_margin"
                     android:layout_marginStart="@dimen/divider_margin"
+                    android:layout_marginBottom="@dimen/horizontal_margin"
                     android:elevation="@dimen/fab_elavation"
                     android:src="@drawable/ic_add"
                     />

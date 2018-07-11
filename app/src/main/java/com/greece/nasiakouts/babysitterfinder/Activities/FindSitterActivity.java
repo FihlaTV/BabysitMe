@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.greece.nasiakouts.babysitterfinder.Adapters.SittersResultRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Appointment;
@@ -135,7 +136,7 @@ public class FindSitterActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(FindSitterActivity.this, FindSitterActivity.class);
+                Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
                 startActivity(intent);
             }
         }, 2000);

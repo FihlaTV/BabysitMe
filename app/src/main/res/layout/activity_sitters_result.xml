@@ -10,14 +10,14 @@
     <TextView
         style="@style/PromptTextView"
         android:text="@string/select_a_sitter"
-        android:paddingBottom="@dimen/zero_margin"/>
+        android:paddingBottom="@dimen/zero_margin"
+        android:paddingStart="@dimen/zero_margin"
+        android:paddingEnd="@dimen/zero_margin"/>
 
     <include layout="@layout/horizontal_divider"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/working_slots_rv"
+        android:id="@+id/available_sitters_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/divider_margin"
-        android:layout_marginStart="@dimen/divider_margin" />
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -9,15 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/radius_button"
-        app:cardBackgroundColor="@color/icons">
+        app:cardBackgroundColor="@color/icons"
+        android:background="@color/transparent">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="@dimen/horizontal_margin"
-            android:paddingTop="@dimen/horizontal_margin">
+            android:paddingTop="@dimen/horizontal_margin"
+            android:layout_marginEnd="@dimen/horizontal_margin"
+            android:layout_marginStart="@dimen/horizontal_margin">
 
             <ImageView
+
                 android:id="@+id/photo"
                 android:layout_width="100dp"
                 android:layout_height="100dp"

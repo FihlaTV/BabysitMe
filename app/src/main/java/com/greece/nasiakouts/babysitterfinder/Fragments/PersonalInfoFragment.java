@@ -154,6 +154,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                     mFemale_radio_button.requestFocus();
                 }
             });
+            // todo max and min
             dialog.show();
         }
     }
