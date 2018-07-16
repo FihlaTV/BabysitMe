@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/radius_button"
         app:cardBackgroundColor="@color/icons"
-        android:background="@color/transparent">
+        android:background="?selectableItemBackground">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,8 +24,8 @@
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/photo"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/photo_results_dimen"
+                android:layout_height="@dimen/photo_results_dimen"
                 android:layout_margin="@dimen/horizontal_margin"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
@@ -33,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/ic_launcher_background"
                 app:riv_border_width="@dimen/zero_margin"
-                app:riv_corner_radius="40dp"
+                app:riv_corner_radius="@dimen/photo_results_radius"
                 app:riv_border_color="@color/transparent" />
 
             <TextView

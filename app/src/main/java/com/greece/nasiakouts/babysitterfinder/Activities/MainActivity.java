@@ -3,6 +3,7 @@ package com.greece.nasiakouts.babysitterfinder.Activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.greece.nasiakouts.babysitterfinder.Constants.INT_CODE;
+import static com.greece.nasiakouts.babysitterfinder.PermissionUtils.checkAndAskForPermissions;
+import static com.greece.nasiakouts.babysitterfinder.PermissionUtils.onPermissionResult;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +32,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        checkAndAskForPermissions(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull
+            String[] permissions, @NonNull int[] grantResults) {
+        onPermissionResult(this, requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
