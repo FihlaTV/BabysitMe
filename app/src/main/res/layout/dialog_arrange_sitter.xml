@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/sitter_profile_info" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/divider_margin"
+            android:paddingEnd="@dimen/divider_margin"
+            android:paddingStart="@dimen/divider_margin">
+
+            <Button
+                android:id="@+id/cancel_button"
+                android:layout_width="@dimen/zero_margin"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/horizontal_margin"
+                android:layout_weight="1"
+                android:background="@drawable/log_in_button_bg"
+                android:drawableStart="@drawable/ic_close"
+                android:drawableTint="@color/icons"
+                android:text="@string/cancel"
+                android:textColor="@color/icons" />
+
+            <Button
+                android:id="@+id/arrange_button"
+                android:layout_width="@dimen/zero_margin"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/log_in_button_bg"
+                android:drawableEnd="@drawable/ic_check"
+                android:drawableTint="@color/icons"
+                android:text="@string/arrange"
+                android:textColor="@color/icons" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

@@ -1,77 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/divider_margin">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/photo_profile"
-            android:adjustViewBounds="true"
-            app:riv_border_width="@dimen/zero_margin"
-            app:riv_corner_radius="@dimen/round_profile_pic"
-            app:riv_border_color="@color/transparent"
-            android:layout_width="@dimen/zero_margin"
+        <include layout="@layout/sitter_profile_info" />
+
+        <Button
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:layout_weight="1"
-            android:src="@drawable/ic_launcher_background"
-            android:paddingEnd="@dimen/divider_margin"/>
-
-        <RelativeLayout
-            android:layout_width="@dimen/zero_margin"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/full_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="Nasia Kouts"
-                android:textSize="@dimen/h5_size" />
-
-            <TextView
-                android:id="@+id/age_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/age"
-                android:textStyle="bold"
-                android:layout_below="@+id/full_name"
-                android:layout_marginEnd="@dimen/horizontal_margin"/>
-
-            <TextView
-                android:id="@+id/age"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="23"
-                android:layout_toEndOf="@+id/age_label"
-                android:layout_below="@id/full_name"/>
-
-            <TextView
-                android:id="@+id/phone_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/phone_label"
-                android:textStyle="bold"
-                android:layout_below="@+id/age_label"
-                android:layout_marginEnd="@dimen/horizontal_margin"/>
-
-            <TextView
-                android:id="@+id/phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="6983336463"
-                android:layout_toEndOf="@+id/phone_label"
-                android:layout_below="@id/age"/>
-
-        </RelativeLayout>
-
+            android:layout_marginEnd="@dimen/divider_margin"
+            android:layout_marginStart="@dimen/divider_margin"
+            android:background="@drawable/log_in_button_bg"
+            android:drawableEnd="@drawable/ic_register_alternative"
+            android:paddingEnd="@dimen/vertical_margin"
+            android:text="@string/edit"
+            android:textColor="@color/icons" />
     </LinearLayout>
-
-</RelativeLayout>
+</ScrollView>

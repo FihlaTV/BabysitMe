@@ -35,4 +35,6 @@
     <dimen name="round_profile_pic">100dp</dimen>
     <dimen name="photo_results_dimen">80dp</dimen>
     <dimen name="photo_results_radius">40dp</dimen>
+    <dimen name="snackbar_top_margin">100dp</dimen>
+    <dimen name="snackbar_horizontal_margin">20dp</dimen>
 </resources>

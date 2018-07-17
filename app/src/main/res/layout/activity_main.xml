@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:orientation="vertical"
@@ -46,7 +47,9 @@
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@android:color/black">
 
         <EditText
             android:id="@+id/log_password"
@@ -82,5 +85,17 @@
         android:clickable="true"
         android:focusable="true"
         android:text="@string/register_now" />
+
+    <TextView
+        android:id="@+id/reset_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/reset"
+        android:textColor="@android:color/holo_red_light"
+        android:visibility="gone" />
 
 </LinearLayout>

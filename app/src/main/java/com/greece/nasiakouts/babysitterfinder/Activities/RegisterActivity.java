@@ -2,10 +2,12 @@ package com.greece.nasiakouts.babysitterfinder.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +20,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Controls.NoScrollViewPager;
@@ -55,6 +62,9 @@ public class RegisterActivity extends AppCompatActivity
     private RegisterAdapter mAdapter;
     private ArrayList<RegisterComponentFragment> mFragments;
 
+    private AlertDialog mSavingAlertDialog;
+    private FirebaseAuth mFirebaseAuth;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +85,8 @@ public class RegisterActivity extends AppCompatActivity
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(0);
         updateButtonsVisibility(0);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -111,35 +123,48 @@ public class RegisterActivity extends AppCompatActivity
         mUser = temp;
 
         if(fragment.getPosition() == mAdapter.getCount() - 1) {
-            if(selectedMode == R.id.radio_babysitter) {
-                new AlertDialog.Builder(this)
-                        .setView(R.layout.dialog_saving)
-                        .setCancelable(false)
-                        .show();
+            mSavingAlertDialog = new AlertDialog.Builder(this)
+                    .setView(R.layout.dialog_saving)
+                    .setCancelable(false)
+                    .show();
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                        startActivity(intent);
-                    }
-                }, 2000);
-            }
-            else {
-                new AlertDialog.Builder(this)
-                        .setView(R.layout.dialog_saving)
-                        .setCancelable(false)
-                        .show();
+            mFirebaseAuth.createUserWithEmailAndPassword(mUser.getEmailAddress(), mUser.getPassword())
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (mSavingAlertDialog != null) {
+                                mSavingAlertDialog.cancel();
+                            }
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(RegisterActivity.this, FindSitterActivity.class);
-                        intent.putExtra(Intent.EXTRA_TEXT, RegisterActivity.class.getName());
-                        startActivity(intent);
-                    }
-                }, 2000);
-            }
+                            if (task.isSuccessful()) {
+                                Intent intent;
+                                if (selectedMode == R.id.radio_babysitter) {
+                                    intent = new Intent(RegisterActivity.this,
+                                            MainActivity.class);
+                                } else {
+                                    intent = new Intent(RegisterActivity.this,
+                                            FindSitterActivity.class);
+                                    intent.putExtra(Intent.EXTRA_TEXT,
+                                            RegisterActivity.class.getName());
+                                }
+                                startActivity(intent);
+                            } else {
+                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                    Toast.makeText(getApplicationContext(),
+                                            R.string.already_user,
+                                            Toast.LENGTH_SHORT).show();
+
+                                } else {
+                                    if (task.getException() == null) return;
+
+                                    Toast.makeText(getApplicationContext(),
+                                            task.getException().getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        }
+                    });
         }
 
         mViewPager.setCurrentItem(fragment.getPosition() + 1, true);
@@ -181,14 +206,14 @@ public class RegisterActivity extends AppCompatActivity
         switch(requestCode) {
             case 0:
                 if(resultCode == RESULT_OK){
-                   // Uri selectedImage = imageReturnedIntent.getData();
-                    // imageview.setImageURI(selectedImage);
+                    Uri selectedImage = data.getData();
+                    // TODO setImageURI(selectedImage);
                 }
 
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
-               //     Uri selectedImage = imageReturnedIntent.getData();
+                    Uri selectedImage = data.getData();
                     // imageview.setImageURI(selectedImage);
                 }
                 break;
@@ -199,35 +224,40 @@ public class RegisterActivity extends AppCompatActivity
     public void uploadPhoto(TextView textView, Button button) {
         final View dialogView = getLayoutInflater().inflate(R.layout.dialog_upload_photo, null);
 
-        new AlertDialog.Builder(this)
+        final AlertDialog alertDialog =
+                new AlertDialog.Builder(this)
                 .setView(dialogView)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        RadioGroup radioGroupInterest =
-                                dialogView.findViewById(R.id.radio_group_upload);
+                        .create();
 
-                        int selectedRadioInterest =
-                                radioGroupInterest.getCheckedRadioButtonId();
+        final RadioGroup radioGroupInterest =
+                dialogView.findViewById(R.id.radio_group_upload);
 
-                        if(selectedRadioInterest == -1) {
-                            Toast.makeText(RegisterActivity.this,
-                                    R.string.no_selected_upload, Toast.LENGTH_LONG).show();
-                            return;
-                        }
+        radioGroupInterest.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                alertDialog.dismiss();
 
-                        if(selectedRadioInterest == R.id.radio_capture) {
-                            Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(takePicture, 0);
-                        }
-                        else {
-                            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                            startActivityForResult(pickPhoto , 1);
-                        }
-                    }
-                })
-                .show();
+                int selectedRadioInterest =
+                        radioGroupInterest.getCheckedRadioButtonId();
+
+                if (selectedRadioInterest == -1) {
+                    Toast.makeText(RegisterActivity.this,
+                            R.string.no_selected_upload, Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if (selectedRadioInterest == R.id.radio_capture) {
+                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, 0);
+                } else {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto, 1);
+                }
+            }
+        });
+
+        alertDialog.show();
     }
 
     private class RegisterAdapter extends FragmentPagerAdapter{

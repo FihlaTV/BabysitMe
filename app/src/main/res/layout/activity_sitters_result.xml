@@ -4,20 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="@dimen/divider_margin"
     android:paddingBottom="@dimen/divider_margin"
     android:layout_marginStart="@dimen/horizontal_margin"
     android:layout_marginEnd="@dimen/horizontal_margin"
     tools:context="com.greece.nasiakouts.babysitterfinder.Activities.SittersResultActivity">
-
-    <TextView
-        style="@style/PromptTextView"
-        android:text="@string/select_a_sitter"
-        android:paddingBottom="@dimen/zero_margin"
-        android:paddingStart="@dimen/zero_margin"
-        android:paddingEnd="@dimen/zero_margin"/>
-
-    <include layout="@layout/horizontal_divider"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/available_sitters_rv"

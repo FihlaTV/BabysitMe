@@ -58,7 +58,7 @@ public class SittersResultActivity extends AppCompatActivity {
         tempTesting.add(0, sitter1);
         tempTesting.add(1, sitter2);
 
-        mAdapter = new SittersResultRvAdapter(tempTesting);
+        mAdapter = new SittersResultRvAdapter(this, tempTesting);
         mAvailableSittersRv.setAdapter(mAdapter);
         mAvailableSittersRv.setLayoutManager(new LinearLayoutManager(this));
     }

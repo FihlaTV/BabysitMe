@@ -135,4 +135,11 @@
     <string name="profile">Sitter\'s Profile</string>
     <string name="age">age</string>
     <string name="phone_label">phone</string>
+    <string name="already_user">You are already registered</string>
+    <string name="reset">Reset</string>
+    <string name="reset_mail_toast">An email has been sent to reset your password</string>
+    <string name="reset_visibility_key">ResetVisibility</string>
+    <string name="years_old">years old</string>
+    <string name="arrange">arrange</string>
+    <string name="edit">  edit</string>
 </resources>

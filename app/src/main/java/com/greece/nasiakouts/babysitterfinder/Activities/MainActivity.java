@@ -3,15 +3,21 @@ package com.greece.nasiakouts.babysitterfinder.Activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import butterknife.BindView;
@@ -27,13 +33,34 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.register_now_tv)
     TextView mRegister;
 
+    @BindView(R.id.reset_tv)
+    TextView mReset;
+
+    @BindView(R.id.log_email_address)
+    EditText mEmailAddress;
+
+    @BindView(R.id.log_password)
+    EditText mPassword;
+
+    AlertDialog mSavingAlertDialog;
+    FirebaseAuth mFirebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        if (savedInstanceState != null
+                && savedInstanceState
+                .containsKey(getString(R.string.reset_visibility_key))) {
+            mReset.setVisibility(savedInstanceState
+                    .getInt(getString(R.string.reset_visibility_key)));
+        }
+
         checkAndAskForPermissions(this);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -50,9 +77,58 @@ public class MainActivity extends AppCompatActivity {
                 .getColor(MainActivity.this, R.color.secondary_text));
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putInt(getString(R.string.reset_visibility_key), mReset.getVisibility());
+    }
+
     @OnClick(R.id.log_in_button)
     public void logIn(View view) {
-        // TODO ...
+        mSavingAlertDialog = new AlertDialog.Builder(this)
+                .setView(R.layout.dialog_saving)
+                .setCancelable(false)
+                .show();
+
+        mFirebaseAuth.signInWithEmailAndPassword(mEmailAddress.getText().toString(), mPassword.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (mSavingAlertDialog != null) {
+                            mSavingAlertDialog.cancel();
+                        }
+
+                        if (task.isSuccessful()) {
+                            //TODO
+                            if (mFirebaseAuth.getCurrentUser() == null) return;
+                            Toast.makeText(getApplicationContext(),
+                                    mFirebaseAuth.getCurrentUser().getEmail(),
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            if (task.getException() == null) return;
+                            Toast.makeText(getApplicationContext(),
+                                    task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                            mReset.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+    }
+
+    @OnClick(R.id.reset_tv)
+    public void resetPassword() {
+        mFirebaseAuth.sendPasswordResetEmail(mEmailAddress.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(),
+                                    R.string.reset_mail_toast,
+                                    Toast.LENGTH_SHORT).show();
+                            mReset.setVisibility(View.GONE);
+                        }
+                    }
+                });
     }
 
     @OnClick(R.id.register_now_tv)
