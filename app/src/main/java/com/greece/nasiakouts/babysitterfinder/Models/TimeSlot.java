@@ -1,25 +1,29 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import static com.greece.nasiakouts.babysitterfinder.Constants.ANOKATOTELEIA;
 import static com.greece.nasiakouts.babysitterfinder.Constants.DASH;
 
 public class TimeSlot implements Serializable {
     private String day;
+    private Date specificDate;
     private int fromHour;
     private int fromMin;
     private int toHour;
     private int toMin;
-    private boolean allDay;
+    private boolean isAllDay;
+    private boolean isForever;
 
-    public TimeSlot(String day, int fromHour, int fromMin, int toHour, int toMin, boolean allDay) {
+
+    public TimeSlot(String day, int fromHour, int fromMin, int toHour, int toMin, boolean isAllDay) {
         this.day = day;
         this.fromHour = fromHour;
         this.fromMin = fromMin;
         this.toHour = toHour;
         this.toMin = toMin;
-        this.allDay = allDay;
+        this.isAllDay = isAllDay;
     }
 
     public String getDay() {
@@ -38,11 +42,11 @@ public class TimeSlot implements Serializable {
     }
 
     public boolean isAllDay(){
-        return allDay;
+        return isAllDay;
     }
 
     public void setAllDay(boolean allDay){
-        this.allDay = allDay;
+        this.isAllDay = allDay;
     }
 
     public int getFromHour() {

@@ -46,9 +46,17 @@ public class Constants {
     // Intent Codes
     public static final String INT_CODE = "int";
 
+    public static final String FIREBASE_SITTERS = "sitters";
+    public static final String FIREBASE_USERS = "users";
+
+    public static final int USER_FEMALE = 0;
+    public static final int USER_MALE = 1;
+    public static final int USER_ANY = 2;
 
     public static final int ADD_TIMESLOT_REQUEST_CODE = 0;
     public static final String DASH = " - ";
     public static final String SLASH = "/";
     public static final String ANOKATOTELEIA = ":";
+
+
 }

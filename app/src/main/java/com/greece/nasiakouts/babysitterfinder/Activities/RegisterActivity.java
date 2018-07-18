@@ -25,6 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Controls.NoScrollViewPager;
@@ -64,6 +66,9 @@ public class RegisterActivity extends AppCompatActivity
 
     private AlertDialog mSavingAlertDialog;
     private FirebaseAuth mFirebaseAuth;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mSittersDatabaseReference;
+    private DatabaseReference mUsersDatabaseReference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,6 +92,13 @@ public class RegisterActivity extends AppCompatActivity
         updateButtonsVisibility(0);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mSittersDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_SITTERS);
+        mUsersDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_USERS);
     }
 
     @Override
@@ -139,9 +151,11 @@ public class RegisterActivity extends AppCompatActivity
                             if (task.isSuccessful()) {
                                 Intent intent;
                                 if (selectedMode == R.id.radio_babysitter) {
+                                    mSittersDatabaseReference.push().setValue(mUser);
                                     intent = new Intent(RegisterActivity.this,
                                             MainActivity.class);
                                 } else {
+                                    mUsersDatabaseReference.push().setValue(mUser);
                                     intent = new Intent(RegisterActivity.this,
                                             FindSitterActivity.class);
                                     intent.putExtra(Intent.EXTRA_TEXT,

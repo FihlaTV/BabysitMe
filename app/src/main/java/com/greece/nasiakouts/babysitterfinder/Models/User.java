@@ -1,14 +1,17 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class User implements Serializable{
+
     private String emailAddress;
     private String password;
 
     private String fullName;
     private String phoneNumber;
-    private String dateBorn;
+    private Date dateBorn;
+    private int sexCode;
 
     public User(String emailAddress, String password) {
         this.emailAddress = emailAddress;
@@ -55,11 +58,19 @@ public class User implements Serializable{
         this.phoneNumber = phoneNumber;
     }
 
-    public String getDateBorn() {
+    public Date getDateBorn() {
         return dateBorn;
     }
 
-    public void setDateBorn(String dateBorn) {
+    public void setDateBorn(Date dateBorn) {
         this.dateBorn = dateBorn;
+    }
+
+    public int getSex() {
+        return sexCode;
+    }
+
+    public void setSex(int sexCode) {
+        this.sexCode = sexCode;
     }
 }

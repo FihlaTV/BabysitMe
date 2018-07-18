@@ -22,6 +22,8 @@ import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,6 +47,8 @@ public class PersonalInfoFragment extends RegisterComponentFragment
 
     @BindView(R.id.radio_male)
     RadioButton mMale_radio_button;
+
+    private Date mDateRepresentation;
 
     @Nullable
     @Override
@@ -91,14 +95,16 @@ public class PersonalInfoFragment extends RegisterComponentFragment
             return null;
         }
 
-        if(TextUtils.isEmpty(dateBorn)) {
+        if (TextUtils.isEmpty(mDateRepresentation.toString())) {
             mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
                     .setError(getString(R.string.not_filled_born_date));
             return null;
         }
 
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(mDateRepresentation);
         if(Calendar.getInstance().get(Calendar.YEAR)
-                - Integer.parseInt(dateBorn.substring(dateBorn.lastIndexOf("/") + 1)) < 16) {
+                - calendar.get(Calendar.YEAR) < 16) {
             mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
                     .setError(getString(R.string.no_valid_born_date));
             return null;
@@ -116,7 +122,8 @@ public class PersonalInfoFragment extends RegisterComponentFragment
 
         user.setFullName(fullName);
         user.setPhoneNumber(phoneNumber);
-        user.setDateBorn(dateBorn);
+        user.setDateBorn(mDateRepresentation);
+        user.setSex(sex);
 
         return user;
     }
@@ -138,10 +145,15 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear,
                                               int dayOfMonth) {
-                            // "dd/mm/yy";
-                            mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT).setText(
-                                    dayOfMonth + Constants.SLASH +
-                                            monthOfYear + Constants.SLASH + year);
+
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(Calendar.YEAR, year);
+                            cal.set(Calendar.MONTH, monthOfYear);
+                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            mDateRepresentation = cal.getTime();
+
+                            mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
+                                    .setText(mDateRepresentation.toString());
 
                             mFemale_radio_button.requestFocus();
                         }
@@ -154,7 +166,15 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                     mFemale_radio_button.requestFocus();
                 }
             });
-            // todo max and min
+
+            // Any user either a regular one or sitter has to be at least 16 years old
+            // so thus why we are setting the max date limit to the date picker
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, mCurrentDate.get(Calendar.YEAR) - 16);
+            cal.set(Calendar.MONTH, Calendar.JANUARY);
+            cal.set(Calendar.DAY_OF_MONTH, Calendar.SUNDAY);
+            dialog.getDatePicker().setMaxDate(cal.getTime().getTime());
+
             dialog.show();
         }
     }
