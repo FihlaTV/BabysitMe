@@ -49,7 +49,7 @@ public class Constants {
     public static final int SITTER_MODE = 1;
     public static final int USER_MODE = 2;
 
-    public static final String FIREBASE_ALL_USERS = "allUsers";
+    public static final String FIREBASE_USER_TYPE = "type";
     public static final String FIREBASE_SITTERS = "sitters";
     public static final String FIREBASE_USERS = "users";
 

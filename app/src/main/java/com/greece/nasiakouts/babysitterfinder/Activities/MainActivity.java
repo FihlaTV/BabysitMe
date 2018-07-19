@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -86,13 +88,12 @@ public class MainActivity extends AppCompatActivity {
         mChildEventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                Object object = dataSnapshot.getValue(User.class);
-                Toast.makeText(MainActivity.this, "lala", Toast.LENGTH_SHORT).show();
+                // todo
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                // todo
             }
 
             @Override
@@ -163,8 +164,12 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         if (task.isSuccessful()) {
-                            //TODO
-                            if (mFirebaseAuth.getCurrentUser() == null) return;
+                            FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
+                            if (currentUser == null) return;
+
+                            String RegisteredUserID = currentUser.getUid();
+
+                            // DatabaseReference userType = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_USER_TYPE).child(RegisteredUserID);
 
                             Toast.makeText(getApplicationContext(),
                                     mFirebaseAuth.getCurrentUser().getEmail(),

@@ -82,11 +82,11 @@ public class User implements Serializable{
         return sdf.format(new Timestamp(dateBornTimestamp));
     }
 
-    public int getSex() {
+    public int getSexCode() {
         return sexCode;
     }
 
-    public void setSex(int sexCode) {
+    public void setSexCode(int sexCode) {
         this.sexCode = sexCode;
     }
 }

@@ -125,7 +125,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
         user.setFullName(fullName);
         user.setPhoneNumber(phoneNumber);
         user.setDateBornTimestamp(mDateRepresentation.getTime());
-        user.setSex(sex);
+        user.setSexCode(sex);
 
         return user;
     }

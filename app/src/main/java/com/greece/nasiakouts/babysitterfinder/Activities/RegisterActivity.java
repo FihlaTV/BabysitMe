@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
@@ -67,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity
     private AlertDialog mSavingAlertDialog;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mUserTypesDatabaseReference;
     private DatabaseReference mSittersDatabaseReference;
     private DatabaseReference mUsersDatabaseReference;
 
@@ -93,13 +95,14 @@ public class RegisterActivity extends AppCompatActivity
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUserTypesDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_USER_TYPE);
         mSittersDatabaseReference = mFirebaseDatabase
                 .getReference()
-                .child(Constants.FIREBASE_ALL_USERS)
                 .child(Constants.FIREBASE_SITTERS);
         mUsersDatabaseReference = mFirebaseDatabase
                 .getReference()
-                .child(Constants.FIREBASE_ALL_USERS)
                 .child(Constants.FIREBASE_USERS);
     }
 
@@ -151,13 +154,18 @@ public class RegisterActivity extends AppCompatActivity
                             }
 
                             if (task.isSuccessful()) {
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                String userId = user.getUid();
                                 Intent intent;
+
                                 if (selectedMode == R.id.radio_babysitter) {
-                                    mSittersDatabaseReference.push().setValue(mUser);
+                                    mSittersDatabaseReference.child(userId).setValue(mUser);
+                                    mUserTypesDatabaseReference.child(userId).setValue("sitter");
                                     intent = new Intent(RegisterActivity.this,
                                             MainActivity.class);
                                 } else {
-                                    mUsersDatabaseReference.push().setValue(mUser);
+                                    mUsersDatabaseReference.child(userId).setValue(mUser);
+                                    mUserTypesDatabaseReference.child(userId).setValue("user");
                                     intent = new Intent(RegisterActivity.this,
                                             FindSitterActivity.class);
                                     intent.putExtra(Intent.EXTRA_TEXT,
