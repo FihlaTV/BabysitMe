@@ -95,9 +95,11 @@ public class RegisterActivity extends AppCompatActivity
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mSittersDatabaseReference = mFirebaseDatabase
                 .getReference()
+                .child(Constants.FIREBASE_ALL_USERS)
                 .child(Constants.FIREBASE_SITTERS);
         mUsersDatabaseReference = mFirebaseDatabase
                 .getReference()
+                .child(Constants.FIREBASE_ALL_USERS)
                 .child(Constants.FIREBASE_USERS);
     }
 

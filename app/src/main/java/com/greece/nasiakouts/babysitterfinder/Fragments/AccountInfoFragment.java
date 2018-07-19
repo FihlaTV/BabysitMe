@@ -67,7 +67,7 @@ public class AccountInfoFragment extends RegisterComponentFragment {
             return null;
         }
 
-        if(password.length() < 4) {
+        if (password.length() < 6) {
             mAccountInfoList.get(Constants.INDEX_PASSWORD_INPUT)
                     .setError(getString(R.string.no_valid_password));
             return null;

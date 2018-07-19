@@ -10,15 +10,15 @@
 
     <!-- Register Mode Dialog -->
     <string name="mode_prompt">Register as</string>
-    <string name="babysitter_response">I am looking for a job as babysitter</string>
-    <string name="user_response">I am looking for a babysitter</string>
+    <string name="babysitter_response">Babysitter</string>
+    <string name="user_response">Regular User</string>
 
     <string name="registration">Registration</string>
     <string name="next">next</string>
 
     <!-- Account Info Registration -->
     <string name="account_info_prompt">Fill in your account info bellow</string>
-    <string name="password_hint">Password (min 4 chars)</string>
+    <string name="password_hint">Password (min 6 chars)</string>
     <string name="confirm_password_hint">Confirm password</string>
     <string name="not_filled_email_address">Fill in your email address</string>
     <string name="no_valid_email">Enter a valid email address</string>
@@ -46,7 +46,7 @@
     <string name="charging">Charging per hour</string>
     <string name="currency">Currency</string>
     <string name="working_hours_prompt">Select your working hours:</string>
-    <string name="all_day">All day (6:00 – 24:00)</string>
+    <string name="all_day">All day</string>
     <string name="not_filled_street">Fill in your street address</string>
     <string name="not_filled_charges">Fill in your charges</string>
     <string name="not_filled_currency">Fill in your currency</string>
@@ -64,17 +64,18 @@
     <string name="from_hour_hint">From hour</string>
     <string name="to_hour_hint">To Hour</string>
     <string name="select_tine_period_prompt">Select Time Period</string>
-    <string name="or">Or</string>
-    <string name="select_all_day_prompt">Select All Day (6:00 – 24:00)</string>
-    <string name="cancel">cancel</string>
-    <string name="ok">ok</string>
+    <string name="or_all_day">Or Select All Day Sitting</string>
+    <string name="weekly_note">if selected, specific dates above will be ignored, and will be transformed to general weekly info</string>
+    <string name="select_all_day_prompt">All Day (6:00 – 24:00)</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
     <string name="day_toast">Please select a day</string>
     <string name="previous">previous</string>
     <string name="not_filled_from">Set from hour</string>
     <string name="not_filled_to">Set to hour</string>
-
-    <string name="timeslot_added">Time Slot Added</string>
-    <string name="no_time_slot_added">You have to add at least one time slot</string>
+    <string name="weekly">Weekly</string>
+    <string name="sitting_date">Sitting date</string>
+    <string name="finally_select_if_applied">Finally Select if Applied</string>
 
     <string-array name="days">
         <item>Choose a day</item>
@@ -87,6 +88,9 @@
         <item>Sunday</item>
     </string-array>
 
+    <string name="timeslot_added">Time Slot Added</string>
+    <string name="no_time_slot_added">You have to add at least one time slot</string>
+
     <!-- Add TimeSlot -->
     <string name="add_time_slot_title">Add New TimeSlot</string>
 
@@ -97,6 +101,7 @@
     <!-- Intent Extras -->
     <string name="interest_key">InterestKey</string>
     <string name="sitter_value">Sitter</string>
+    <string name="user_value">User</string>
 
     <!-- Additional info Sitter -->
     <string name="introduction_prompt">Fill in any comment or introduction (Optional)</string>
@@ -142,4 +147,5 @@
     <string name="years_old">years old</string>
     <string name="arrange">arrange</string>
     <string name="edit">  edit</string>
+    <string name="to_hour_less_than">You have to select value greater than the from hour value</string>
 </resources>

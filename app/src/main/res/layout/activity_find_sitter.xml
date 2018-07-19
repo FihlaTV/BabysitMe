@@ -83,7 +83,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/divider_margin"
                     android:layout_marginStart="@dimen/divider_margin"
-                    android:minHeight="@dimen/rv_min_height" />
+                    android:minHeight="@dimen/rv_min_height"
+                    android:paddingBottom="@dimen/regular_fab_dimen" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/addNeededSlot"

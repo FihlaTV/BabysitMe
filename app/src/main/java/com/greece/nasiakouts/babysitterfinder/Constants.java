@@ -46,6 +46,10 @@ public class Constants {
     // Intent Codes
     public static final String INT_CODE = "int";
 
+    public static final int SITTER_MODE = 1;
+    public static final int USER_MODE = 2;
+
+    public static final String FIREBASE_ALL_USERS = "allUsers";
     public static final String FIREBASE_SITTERS = "sitters";
     public static final String FIREBASE_USERS = "users";
 

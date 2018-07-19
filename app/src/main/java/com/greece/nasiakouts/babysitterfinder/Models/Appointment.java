@@ -3,16 +3,16 @@ package com.greece.nasiakouts.babysitterfinder.Models;
 import java.util.ArrayList;
 
 public class Appointment {
-    int totalKids;
-    double minAge;
-    String streetAddress;
-    ArrayList<TimeSlot> slots;
-    int sitterSex;
+    private int totalKids;
+    private double minAge;
+    private String streetAddress;
+    private ArrayList<TimeSlot> slots;
+    private int sitterSex;
 
-    boolean acceptedBySitter = false;
-    int sitterId;
+    private boolean acceptedBySitter = false;
+    private int sitterId;
 
-    int customerId;
+    private int customerId;
 
     public Appointment(int totalKids, double minAge, String streetAddress, ArrayList<TimeSlot> slots, int sitterSex) {
         this.totalKids = totalKids;

@@ -21,10 +21,12 @@ import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.BindViews;
@@ -68,7 +70,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
     public User getUser(User user) {
         if(user == null) return null;
 
-        String fullName = mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
+        String fullName = mPersonalInfList.get(Constants.INDEX_NAME_INPUT)
                 .getText().toString();
         String phoneNumber = mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
                 .getText().toString();
@@ -122,7 +124,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
 
         user.setFullName(fullName);
         user.setPhoneNumber(phoneNumber);
-        user.setDateBorn(mDateRepresentation);
+        user.setDateBornTimestamp(mDateRepresentation.getTime());
         user.setSex(sex);
 
         return user;
@@ -152,8 +154,10 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                             mDateRepresentation = cal.getTime();
 
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
+
                             mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
-                                    .setText(mDateRepresentation.toString());
+                                    .setText(sdf.format(mDateRepresentation));
 
                             mFemale_radio_button.requestFocus();
                         }

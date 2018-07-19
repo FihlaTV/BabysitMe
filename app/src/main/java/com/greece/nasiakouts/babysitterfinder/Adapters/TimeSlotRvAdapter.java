@@ -19,21 +19,14 @@ import butterknife.ButterKnife;
 public class TimeSlotRvAdapter extends RecyclerView.Adapter<TimeSlotRvAdapter.WorkingHoursHolder>{
         private ArrayList<TimeSlot> timeSlots;
 
-        public class WorkingHoursHolder extends RecyclerView.ViewHolder{
-
-            @BindView(R.id.working_item_day)
-            TextView day;
-
-            @BindView(R.id.working_item_hours)
-            TextView hours;
-
-            @BindView(R.id.all_day_checkbox)
-            CheckBox allDayCheckBox;
-
-            public WorkingHoursHolder(View view){
-                super(view);
-                ButterKnife.bind(this, view);
-            }
+    @Override
+    public void onBindViewHolder(@NonNull WorkingHoursHolder holder, int position) {
+        TimeSlot timeSlot = timeSlots.get(position);
+        holder.workingPeriod.setText(timeSlot.toString());
+        if (timeSlot.isAllDay()) holder.allDayCheckBox.setVisibility(View.VISIBLE);
+        else holder.allDayCheckBox.setVisibility(View.GONE);
+        if (timeSlot.isForever()) holder.weeklyCheckBox.setVisibility(View.VISIBLE);
+        else holder.weeklyCheckBox.setVisibility(View.GONE);
         }
 
         public TimeSlotRvAdapter(ArrayList<TimeSlot> timeSlots){
@@ -59,18 +52,20 @@ public class TimeSlotRvAdapter extends RecyclerView.Adapter<TimeSlotRvAdapter.Wo
             return new WorkingHoursHolder(itemView);
         }
 
-        @Override
-        public void onBindViewHolder(@NonNull WorkingHoursHolder holder, int position) {
-            TimeSlot timeSlot = timeSlots.get(position);
-            holder.day.setText(timeSlot.getDay());
-            if(timeSlot.isAllDay()) {
-                holder.allDayCheckBox.setVisibility(View.VISIBLE);
-                holder.hours.setVisibility(View.GONE);
-            }
-            else {
-                holder.allDayCheckBox.setVisibility(View.GONE);
-                holder.hours.setVisibility(View.VISIBLE);
-                holder.hours.setText(timeSlot.getHourRange());
+    public class WorkingHoursHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.working_period_tv)
+        TextView workingPeriod;
+
+        @BindView(R.id.all_day_checkbox)
+        CheckBox allDayCheckBox;
+
+        @BindView(R.id.weekly_checkbox)
+        CheckBox weeklyCheckBox;
+
+        public WorkingHoursHolder(View view) {
+            super(view);
+            ButterKnife.bind(this, view);
             }
         }
 

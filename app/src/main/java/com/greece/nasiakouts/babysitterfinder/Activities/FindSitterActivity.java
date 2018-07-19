@@ -145,7 +145,7 @@ public class FindSitterActivity extends AppCompatActivity {
     @OnClick(R.id.addNeededSlot)
     public void addNeededSlot() {
         Intent intent = new Intent(this, AddTimeSlotActivity.class);
-        intent.putExtra(getString(R.string.interest_key), getString(R.string.sitter_value));
+        intent.putExtra(getString(R.string.interest_key), getString(R.string.user_value));
         startActivityForResult(intent, ADD_TIMESLOT_REQUEST_CODE);
     }
 

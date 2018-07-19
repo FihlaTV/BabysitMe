@@ -1,29 +1,72 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.greece.nasiakouts.babysitterfinder.Constants;
 
-import static com.greece.nasiakouts.babysitterfinder.Constants.ANOKATOTELEIA;
-import static com.greece.nasiakouts.babysitterfinder.Constants.DASH;
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class TimeSlot implements Serializable {
     private String day;
-    private Date specificDate;
-    private int fromHour;
-    private int fromMin;
-    private int toHour;
-    private int toMin;
+    private long specificDate;
+    private long timestampFrom;
+    private long timestampTo;
     private boolean isAllDay;
     private boolean isForever;
 
+    private SimpleDateFormat onlyDate = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.US);
+    private SimpleDateFormat onlyTime = new SimpleDateFormat("HH:mm", Locale.US);
+    private SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd/MM/yy HH:mm", Locale.US);
 
-    public TimeSlot(String day, int fromHour, int fromMin, int toHour, int toMin, boolean isAllDay) {
+    public TimeSlot(String day, int daySpecificDate, int monthSpecificDate, int yearSpecificDate,
+                    int dayFrom, int monthFrom, int yearFrom, int minFrom, int secFrom,
+                    int dayTo, int monthTo, int yearTo, int minTo, int secTo,
+                    boolean isAllDay, boolean isForever) {
+
+        Calendar cal = Calendar.getInstance();
+
+        if (isAllDay) {
+            timestampFrom = -1;
+            timestampTo = -1;
+
+            cal.set(Calendar.YEAR, yearSpecificDate);
+            cal.set(Calendar.MONTH, monthSpecificDate);
+            cal.set(Calendar.DAY_OF_MONTH, daySpecificDate);
+            specificDate = cal.getTime().getTime();
+        } else {
+            specificDate = -1;
+
+            cal.set(Calendar.YEAR, yearFrom);
+            cal.set(Calendar.MONTH, monthFrom);
+            cal.set(Calendar.DAY_OF_MONTH, dayFrom);
+            cal.set(Calendar.MINUTE, minFrom);
+            cal.set(Calendar.SECOND, secFrom);
+            timestampFrom = cal.getTime().getTime();
+
+            cal.set(Calendar.YEAR, yearTo);
+            cal.set(Calendar.MONTH, monthTo);
+            cal.set(Calendar.DAY_OF_MONTH, dayTo);
+            cal.set(Calendar.MINUTE, minTo);
+            cal.set(Calendar.SECOND, secTo);
+            timestampTo = cal.getTime().getTime();
+        }
+
         this.day = day;
-        this.fromHour = fromHour;
-        this.fromMin = fromMin;
-        this.toHour = toHour;
-        this.toMin = toMin;
+        this.isForever = isForever;
         this.isAllDay = isAllDay;
+    }
+
+    public TimeSlot(String day, long specificDate,
+                    long timestampFrom, long timestampTo,
+                    boolean isAllDay, boolean isForever) {
+        this.day = day;
+        this.specificDate = specificDate;
+        this.timestampFrom = timestampFrom;
+        this.timestampTo = timestampTo;
+        this.isAllDay = isAllDay;
+        this.isForever = isForever;
     }
 
     public String getDay() {
@@ -34,50 +77,53 @@ public class TimeSlot implements Serializable {
         this.day = day;
     }
 
-    public String getHourRange() {
-        return (fromHour == 0 ? "00" : "" + fromHour)
-                + ANOKATOTELEIA + (fromMin == 0 ? "00" : "" + fromMin)
-                + DASH + (toHour == 0 ? "00" : "" + toHour)
-                + ANOKATOTELEIA + (toMin == 0 ? "00" : "" + toMin);
+    public long getSpecificDate() {
+        return specificDate;
     }
 
-    public boolean isAllDay(){
+    public void setSpecificDate(long specificDate) {
+        this.specificDate = specificDate;
+    }
+
+    public long getTimestampFrom() {
+        return timestampFrom;
+    }
+
+    public void setTimestampFrom(long timestampFrom) {
+        this.timestampFrom = timestampFrom;
+    }
+
+    public long getTimestampTo() {
+        return timestampTo;
+    }
+
+    public void setTimestampTo(long timestampTo) {
+        this.timestampTo = timestampTo;
+    }
+
+    public boolean isAllDay() {
         return isAllDay;
     }
 
-    public void setAllDay(boolean allDay){
-        this.isAllDay = allDay;
+    public void setAllDay(boolean allDay) {
+        isAllDay = allDay;
     }
 
-    public int getFromHour() {
-        return fromHour;
+    public boolean isForever() {
+        return isForever;
     }
 
-    public void setFromHour(int fromHour) {
-        this.fromHour = fromHour;
+    public void setForever(boolean forever) {
+        isForever = forever;
     }
 
-    public int getFromMin() {
-        return fromMin;
-    }
-
-    public void setFromMin(int fromMin) {
-        this.fromMin = fromMin;
-    }
-
-    public int getToHour() {
-        return toHour;
-    }
-
-    public void setToHour(int toHour) {
-        this.toHour = toHour;
-    }
-
-    public int getToMin() {
-        return toMin;
-    }
-
-    public void setToMin(int toMin) {
-        this.toMin = toMin;
+    @Override
+    public String toString() {
+        if (isForever && isAllDay) return day;
+        if (isForever) return day + " " + onlyTime.format(new Timestamp(timestampFrom))
+                + " - " + onlyTime.format(new Timestamp(timestampTo));
+        return isAllDay ? onlyDate.format(new Timestamp(specificDate)) :
+                "From: " + sdf.format(new Timestamp(timestampFrom)) +
+                        "\nTo: " + sdf.format(new Timestamp(timestampTo));
     }
 }

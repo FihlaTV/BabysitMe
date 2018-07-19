@@ -1,7 +1,10 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class User implements Serializable{
 
@@ -10,7 +13,7 @@ public class User implements Serializable{
 
     private String fullName;
     private String phoneNumber;
-    private Date dateBorn;
+    private long dateBornTimestamp;
     private int sexCode;
 
     public User(String emailAddress, String password) {
@@ -23,7 +26,7 @@ public class User implements Serializable{
         this.password = user.password;
         this.fullName = user.fullName;
         this.phoneNumber = user.phoneNumber;
-        this.dateBorn = user.dateBorn;
+        this.dateBornTimestamp = user.dateBornTimestamp;
     }
 
     public String getEmailAddress() {
@@ -58,12 +61,25 @@ public class User implements Serializable{
         this.phoneNumber = phoneNumber;
     }
 
-    public Date getDateBorn() {
-        return dateBorn;
+    public long getDateBornTimestamp() {
+        return dateBornTimestamp;
     }
 
-    public void setDateBorn(Date dateBorn) {
-        this.dateBorn = dateBorn;
+    public void setDateBornTimestamp(long dateBornTimestamp) {
+        this.dateBornTimestamp = dateBornTimestamp;
+    }
+
+    public void setDateBornTimestamp(int day, int month, int year) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, day);
+        dateBornTimestamp = cal.getTime().getTime();
+    }
+
+    public String getFormatedDateBorn() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
+        return sdf.format(new Timestamp(dateBornTimestamp));
     }
 
     public int getSex() {

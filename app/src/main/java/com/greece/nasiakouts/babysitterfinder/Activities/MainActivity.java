@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -18,6 +20,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import butterknife.BindView;
@@ -45,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog mSavingAlertDialog;
     FirebaseAuth mFirebaseAuth;
 
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mSittersDatabaseReference;
+    private DatabaseReference mUsersDatabaseReference;
+    private ChildEventListener mChildEventListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +75,41 @@ public class MainActivity extends AppCompatActivity {
         checkAndAskForPermissions(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mSittersDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_SITTERS);
+        mUsersDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_USERS);
+
+        mChildEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Object object = dataSnapshot.getValue(User.class);
+                Toast.makeText(MainActivity.this, "lala", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        };
+
+        mSittersDatabaseReference.addChildEventListener(mChildEventListener);
+        mUsersDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
     @Override
@@ -85,6 +134,21 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.log_in_button)
     public void logIn(View view) {
+        if (TextUtils.isEmpty(mEmailAddress.getText().toString())) {
+            mEmailAddress.setError(getString(R.string.not_filled_email_address));
+            return;
+        }
+
+        if (!android.util.Patterns.EMAIL_ADDRESS
+                .matcher(mEmailAddress.getText().toString()).matches()) {
+            mEmailAddress.setError(getString(R.string.no_valid_email));
+            return;
+        }
+
+        if (TextUtils.isEmpty(mPassword.getText().toString())) {
+            mPassword.setError(getString(R.string.not_filled_password));
+        }
+
         mSavingAlertDialog = new AlertDialog.Builder(this)
                 .setView(R.layout.dialog_saving)
                 .setCancelable(false)
@@ -101,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //TODO
                             if (mFirebaseAuth.getCurrentUser() == null) return;
+
                             Toast.makeText(getApplicationContext(),
                                     mFirebaseAuth.getCurrentUser().getEmail(),
                                     Toast.LENGTH_LONG).show();
