@@ -155,6 +155,7 @@ public class RegisterActivity extends AppCompatActivity
 
                             if (task.isSuccessful()) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                if (user == null) return;
                                 String userId = user.getUid();
                                 Intent intent;
 

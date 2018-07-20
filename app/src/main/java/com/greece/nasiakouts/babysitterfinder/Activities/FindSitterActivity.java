@@ -14,6 +14,10 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.greece.nasiakouts.babysitterfinder.Adapters.SittersResultRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Constants;
@@ -47,6 +51,8 @@ public class FindSitterActivity extends AppCompatActivity {
 
     private TimeSlotRvAdapter mAdapter;
     private boolean fromRegistration = false;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +74,11 @@ public class FindSitterActivity extends AppCompatActivity {
                 intent.getStringExtra(Intent.EXTRA_TEXT).equals(RegisterActivity.class.getName())) {
             fromRegistration = true;
         }
+
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_SITTERS);
     }
 
     @Override
@@ -132,10 +143,18 @@ public class FindSitterActivity extends AppCompatActivity {
             selectedSex = Constants.INDEX_RADIO_ANY;
         }
 
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            // todo open login
+            return;
+        }
+        String userId = firebaseUser.getUid();
+
         ArrayList<Appointment> temp = new ArrayList<>();
         for (TimeSlot timeSlot : mAdapter.getData()) {
             temp.add(new Appointment(Integer.parseInt(totalKids), Double.parseDouble(youngestKidAge),
-                    streetAddress, timeSlot, selectedSex));
+                    streetAddress, timeSlot, selectedSex, userId));
         }
 
         final ArrayList<Appointment> appointments = temp;
@@ -144,6 +163,7 @@ public class FindSitterActivity extends AppCompatActivity {
                 .setView(R.layout.dialog_searching)
                 .setCancelable(false)
                 .show();
+
 
         new Handler().postDelayed(new Runnable() {
             @Override

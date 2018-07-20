@@ -53,6 +53,7 @@ public class LoggedInActivity extends AppCompatActivity {
         if (firebaseUser == null) {
             Intent intent = new Intent(LoggedInActivity.this, MainActivity.class);
             startActivity(intent);
+            return;
         }
 
         mRegisteredUid = firebaseUser.getUid();
@@ -68,15 +69,22 @@ public class LoggedInActivity extends AppCompatActivity {
                         .child(mRegisteredUid)
                         .getValue(String.class);
 
-                mUser = dataSnapshot
-                        .child(type)
-                        .child(mRegisteredUid)
-                        .getValue(Babysitter.class);
-
                 if (type.equals(Constants.FIREBASE_SITTERS)) {
                     mMode = Constants.SITTER_MODE;
+
+                    Babysitter sitter = dataSnapshot
+                            .child(type)
+                            .child(mRegisteredUid)
+                            .getValue(Babysitter.class);
+
+                    mUser = sitter;
                 } else {
                     mMode = Constants.USER_MODE;
+
+                    mUser = dataSnapshot
+                            .child(type)
+                            .child(mRegisteredUid)
+                            .getValue(User.class);
                 }
 
                 Snackbar.make(findViewById(android.R.id.content),

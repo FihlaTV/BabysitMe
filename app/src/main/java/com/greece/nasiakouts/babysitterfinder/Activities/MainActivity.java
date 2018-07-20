@@ -131,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
 
                             Intent openLoggedInActivityIntent =
                                     new Intent(MainActivity.this, LoggedInActivity.class);
-                            openLoggedInActivityIntent.putExtra(Constants.UID_CODE, registeredUserID);
                             startActivity(openLoggedInActivityIntent);
                         } else {
                             if (task.getException() == null) return;

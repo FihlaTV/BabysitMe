@@ -14,12 +14,14 @@ public class Appointment implements Serializable {
 
     private String customerId;
 
-    public Appointment(int totalKids, double minAge, String streetAddress, TimeSlot slots, int sitterSex) {
+    public Appointment(int totalKids, double minAge, String streetAddress,
+                       TimeSlot slots, int sitterSex, String customerId) {
         this.totalKids = totalKids;
         this.minAge = minAge;
         this.streetAddress = streetAddress;
         this.slot = slots;
         this.sitterSex = sitterSex;
+        this.customerId = customerId;
     }
 
     public int getTotalKids() {
