@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/divider_margin"
+    tools:context="com.greece.nasiakouts.babysitterfinder.Activities.SittersResultActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="@dimen/toolbar_elavation"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:targetApi="lollipop">
+
+        <ImageView
+            android:id="@+id/profile"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="@dimen/horizontal_margin"
+            android:src="@drawable/ic_user_1"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/find_sitter"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="end"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="@dimen/horizontal_margin"
+            android:src="@drawable/ic_search_action"
+            android:visibility="gone" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/no_appointments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_marginStart="@dimen/horizontal_margin"
+        android:text="@string/no_appointments"
+        android:visibility="gone" />
+
+    <LinearLayout
+
+        android:id="@+id/appointments_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zero_margin"
+        android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_marginStart="@dimen/horizontal_margin"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/PromptTextView"
+            android:paddingBottom="@dimen/divider_margin"
+            android:paddingEnd="@dimen/zero_margin"
+            android:paddingStart="@dimen/zero_margin"
+            android:paddingTop="@dimen/divider_margin"
+            android:text="@string/appointments_label" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/appointment_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pending_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zero_margin"
+        android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_marginStart="@dimen/horizontal_margin"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <include layout="@layout/horizontal_divider" />
+
+        <TextView
+            style="@style/PromptTextView"
+            android:paddingBottom="@dimen/divider_margin"
+            android:paddingEnd="@dimen/zero_margin"
+            android:paddingStart="@dimen/zero_margin"
+            android:text="Pending..." />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pending_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>

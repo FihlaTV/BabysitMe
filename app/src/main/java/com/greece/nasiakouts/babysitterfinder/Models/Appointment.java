@@ -1,8 +1,9 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Appointment {
+public class Appointment implements Serializable {
     private int totalKids;
     private double minAge;
     private String streetAddress;
@@ -10,9 +11,9 @@ public class Appointment {
     private int sitterSex;
 
     private boolean acceptedBySitter = false;
-    private int sitterId;
+    private String sitterId;
 
-    private int customerId;
+    private String customerId;
 
     public Appointment(int totalKids, double minAge, String streetAddress, ArrayList<TimeSlot> slots, int sitterSex) {
         this.totalKids = totalKids;
@@ -70,19 +71,20 @@ public class Appointment {
         this.acceptedBySitter = acceptedBySitter;
     }
 
-    public int getSitterId() {
+    public String getSitterId() {
         return sitterId;
     }
 
-    public void setSitterId(int sitterId) {
+    public void setSitterId(String sitterId) {
         this.sitterId = sitterId;
     }
 
-    public int getCustomerId() {
+    public String getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(int customerId) {
+    public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
+
 }

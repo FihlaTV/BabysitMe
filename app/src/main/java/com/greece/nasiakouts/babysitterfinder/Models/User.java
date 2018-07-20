@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class User implements Serializable{
@@ -16,6 +17,9 @@ public class User implements Serializable{
     private long dateBornTimestamp;
     private int sexCode;
 
+    public User() {
+    }
+
     public User(String emailAddress, String password) {
         this.emailAddress = emailAddress;
         this.password = password;
@@ -27,6 +31,13 @@ public class User implements Serializable{
         this.fullName = user.fullName;
         this.phoneNumber = user.phoneNumber;
         this.dateBornTimestamp = user.dateBornTimestamp;
+    }
+
+    public int getAge() {
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        cal.setTime(new Date(dateBornTimestamp));
+        return currentYear - cal.get(Calendar.YEAR);
     }
 
     public String getEmailAddress() {

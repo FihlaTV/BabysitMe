@@ -47,7 +47,7 @@ public class TimeSlotRvAdapter extends RecyclerView.Adapter<TimeSlotRvAdapter.Wo
         @Override
         public WorkingHoursHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.time_slot_item, parent, false);
+                    .inflate(R.layout.item_time_slot, parent, false);
 
             return new WorkingHoursHolder(itemView);
         }

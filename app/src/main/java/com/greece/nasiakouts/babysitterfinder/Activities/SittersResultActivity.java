@@ -65,4 +65,8 @@ public class SittersResultActivity extends AppCompatActivity {
         mAvailableSittersRv.setAdapter(mAdapter);
         mAvailableSittersRv.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    public void insertAppointmentToDb(String userId, String sitterEmail) {
+        // todo
+    }
 }

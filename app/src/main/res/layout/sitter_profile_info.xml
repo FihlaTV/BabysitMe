@@ -61,13 +61,6 @@
                 android:layout_below="@id/age"
                 tools:text="6983336463" />
 
-            <TextView
-                android:id="@+id/email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/phone"
-                tools:text="athkouts@gmail.com" />
-
         </RelativeLayout>
 
     </LinearLayout>

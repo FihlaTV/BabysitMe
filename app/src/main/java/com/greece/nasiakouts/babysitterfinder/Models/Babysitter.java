@@ -12,6 +12,10 @@ public class Babysitter extends User {
     private String introduction;
     private String photoUri;
 
+    public Babysitter() {
+        super();
+    }
+
     public Babysitter(String emailAddress, String password) {
         super(emailAddress, password);
     }

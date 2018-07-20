@@ -39,4 +39,6 @@
     <dimen name="snackbar_horizontal_margin">20dp</dimen>
     <dimen name="small_font">10sp</dimen>
     <dimen name="min_item_height">40dp</dimen>
+    <dimen name="appoitnment_item_min_height">60dp</dimen>
+    <dimen name="toolbar_elavation">4dp</dimen>
 </resources>

@@ -148,4 +148,11 @@
     <string name="arrange">arrange</string>
     <string name="edit">  edit</string>
     <string name="to_hour_less_than">You have to select value greater than the from hour value</string>
+    <string name="logged">logged in!</string>
+    <string name="appointments_label">Here are all your appointments</string>
+    <string name="no_appointments">There are no appointments</string>
+    <string name="profile_icon">Profile</string>
+    <string name="sitter_mng">Sitter Management</string>
+    <string name="user_mng">User Management</string>
+    <string name="disconected">You have been disconected!</string>
 </resources>

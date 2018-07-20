@@ -68,14 +68,19 @@ public class FindSitterActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.cancel_button)
-    public void cancelPressed() {
+    @Override
+    public void onBackPressed() {
         if (fromRegistration) {
-            Intent intent = new Intent(com.greece.nasiakouts.babysitterfinder.Activities.FindSitterActivity.this, MainActivity.class);
+            Intent intent = new Intent(com.greece.nasiakouts.babysitterfinder.Activities.FindSitterActivity.this, LoggedInActivity.class);
             startActivity(intent);
         } else {
-            onBackPressed();
+            super.onBackPressed();
         }
+    }
+
+    @OnClick(R.id.cancel_button)
+    public void cancelPressed() {
+        onBackPressed();
     }
 
     @OnClick(R.id.ok_button)

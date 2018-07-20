@@ -43,15 +43,21 @@ public class Constants {
     public static final int INDEX_PRICE = 1;
     public static final int INDEX_CURRENCY = 2;
 
+    // RV Appointments
+    public static final int INDEX_PERIOD = 0;
+    public static final int INDEX_ADDRESS = 1;
+    public static final int INDEX_INFO = 2;
+
     // Intent Codes
     public static final String INT_CODE = "int";
+    public static final String UID_CODE = "registered_uid";
 
     public static final int SITTER_MODE = 1;
     public static final int USER_MODE = 2;
 
     public static final String FIREBASE_USER_TYPE = "type";
-    public static final String FIREBASE_SITTERS = "sitters";
-    public static final String FIREBASE_USERS = "users";
+    public static final String FIREBASE_SITTERS = "sitter";
+    public static final String FIREBASE_USERS = "user";
 
     public static final int USER_FEMALE = 0;
     public static final int USER_MALE = 1;

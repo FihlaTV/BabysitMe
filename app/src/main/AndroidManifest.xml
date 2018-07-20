@@ -46,7 +46,10 @@
         <activity android:name=".Activities.AddTimeSlotActivity" />
         <activity android:name=".Activities.FindSitterActivity" />
         <activity android:name=".Activities.SittersResultActivity" />
-        <activity android:name=".Activities.SitterProfileActivity"></activity>
+        <activity android:name=".Activities.SitterProfileActivity" />
+        <activity
+            android:name=".Activities.LoggedInActivity"
+            android:theme="@style/LaunchActivityTheme"></activity>
     </application>
 
 </manifest>

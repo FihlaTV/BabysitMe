@@ -56,11 +56,6 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog mSavingAlertDialog;
     FirebaseAuth mFirebaseAuth;
 
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mSittersDatabaseReference;
-    private DatabaseReference mUsersDatabaseReference;
-    private ChildEventListener mChildEventListener;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,40 +72,6 @@ public class MainActivity extends AppCompatActivity {
         checkAndAskForPermissions(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mSittersDatabaseReference = mFirebaseDatabase
-                .getReference()
-                .child(Constants.FIREBASE_SITTERS);
-        mUsersDatabaseReference = mFirebaseDatabase
-                .getReference()
-                .child(Constants.FIREBASE_USERS);
-
-        mChildEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // todo
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                // todo
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        };
-
-        mSittersDatabaseReference.addChildEventListener(mChildEventListener);
-        mUsersDatabaseReference.addChildEventListener(mChildEventListener);
     }
 
     @Override
@@ -166,14 +127,12 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
                             if (currentUser == null) return;
+                            String registeredUserID = currentUser.getUid();
 
-                            String RegisteredUserID = currentUser.getUid();
-
-                            // DatabaseReference userType = FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_USER_TYPE).child(RegisteredUserID);
-
-                            Toast.makeText(getApplicationContext(),
-                                    mFirebaseAuth.getCurrentUser().getEmail(),
-                                    Toast.LENGTH_LONG).show();
+                            Intent openLoggedInActivityIntent =
+                                    new Intent(MainActivity.this, LoggedInActivity.class);
+                            openLoggedInActivityIntent.putExtra(Constants.UID_CODE, registeredUserID);
+                            startActivity(openLoggedInActivityIntent);
                         } else {
                             if (task.getException() == null) return;
                             Toast.makeText(getApplicationContext(),
