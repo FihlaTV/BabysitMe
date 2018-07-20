@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Appointment;
-import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import java.lang.ref.WeakReference;
@@ -31,18 +30,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
 
     public AppointmentListAdapter(Activity activity, ArrayList<Appointment> appointments, int mode) {
         if (appointments == null) this.appointments = new ArrayList<>();
-        else {
-            this.appointments = new ArrayList<>();
-            for (Appointment appointment : appointments) {
-                for (TimeSlot timeSlot : appointment.getSlots()) {
-                    Appointment current = appointment;
-                    ArrayList<TimeSlot> timeSlots = new ArrayList<>();
-                    timeSlots.add(timeSlot);
-                    current.setSlots(timeSlots);
-                    this.appointments.add(current);
-                }
-            }
-        }
+        else this.appointments = appointments;
         this.activityWeakReference = new WeakReference<>(activity);
         this.mode = mode;
     }
@@ -60,7 +48,7 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
     public void onBindViewHolder(@NonNull AppointmentsHolder holder, int position) {
         Appointment appointment = appointments.get(position);
         // todo photo
-        holder.info.get(Constants.INDEX_PERIOD).setText(appointment.getSlots().get(0).toString());
+        holder.info.get(Constants.INDEX_PERIOD).setText(appointment.getSlot().toString());
         holder.info.get(Constants.INDEX_ADDRESS).setText(appointment.getStreetAddress());
         String otherEndInfo = "";
         if (mode == Constants.SITTER_MODE) {

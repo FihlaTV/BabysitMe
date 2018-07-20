@@ -21,6 +21,8 @@ import com.greece.nasiakouts.babysitterfinder.Models.Appointment;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
 
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -130,8 +132,13 @@ public class FindSitterActivity extends AppCompatActivity {
             selectedSex = Constants.INDEX_RADIO_ANY;
         }
 
-        new Appointment(Integer.parseInt(totalKids), Double.parseDouble(youngestKidAge),
-                streetAddress, mAdapter.getData(), selectedSex);
+        ArrayList<Appointment> temp = new ArrayList<>();
+        for (TimeSlot timeSlot : mAdapter.getData()) {
+            temp.add(new Appointment(Integer.parseInt(totalKids), Double.parseDouble(youngestKidAge),
+                    streetAddress, timeSlot, selectedSex));
+        }
+
+        final ArrayList<Appointment> appointments = temp;
 
         new AlertDialog.Builder(this)
                 .setView(R.layout.dialog_searching)
@@ -142,6 +149,7 @@ public class FindSitterActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
+                intent.putExtra(Appointment.class.getName(), appointments);
                 startActivity(intent);
             }
         }, 2000);

@@ -81,7 +81,7 @@ public class LoggedInActivity extends AppCompatActivity {
 
                 Snackbar.make(findViewById(android.R.id.content),
                         "Welcome " + mUser.getFullName() + "!",
-                        Snackbar.LENGTH_LONG);
+                        Snackbar.LENGTH_LONG).show();
 
                 setSupportActionBar(toolbar);
                 if (mMode == Constants.SITTER_MODE) {

@@ -1,13 +1,12 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Appointment implements Serializable {
     private int totalKids;
     private double minAge;
     private String streetAddress;
-    private ArrayList<TimeSlot> slots;
+    private TimeSlot slot;
     private int sitterSex;
 
     private boolean acceptedBySitter = false;
@@ -15,11 +14,11 @@ public class Appointment implements Serializable {
 
     private String customerId;
 
-    public Appointment(int totalKids, double minAge, String streetAddress, ArrayList<TimeSlot> slots, int sitterSex) {
+    public Appointment(int totalKids, double minAge, String streetAddress, TimeSlot slots, int sitterSex) {
         this.totalKids = totalKids;
         this.minAge = minAge;
         this.streetAddress = streetAddress;
-        this.slots = slots;
+        this.slot = slots;
         this.sitterSex = sitterSex;
     }
 
@@ -47,12 +46,12 @@ public class Appointment implements Serializable {
         this.streetAddress = streetAddress;
     }
 
-    public ArrayList<TimeSlot> getSlots() {
-        return slots;
+    public TimeSlot getSlot() {
+        return slot;
     }
 
-    public void setSlots(ArrayList<TimeSlot> slots) {
-        this.slots = slots;
+    public void setSlot(TimeSlot slot) {
+        this.slot = slot;
     }
 
     public int getSitterSex() {

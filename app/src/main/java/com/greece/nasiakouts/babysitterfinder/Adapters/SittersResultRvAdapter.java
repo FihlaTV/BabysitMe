@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,13 +25,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.smartcardio.Card;
-
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
-
-import static javax.swing.UIManager.getString;
 
 public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRvAdapter.SittersResultHolder> {
     private WeakReference<Activity> activityWeakReference;
@@ -107,7 +102,7 @@ public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRv
                         if (firebaseUser == null) {
                             if (activityWeakReference == null) {
                                 Toast.makeText(activityWeakReference.get()
-                                        , getString(R.string.disconected), Toast.LENGTH_LONG).show();
+                                        , activityWeakReference.get().getString(R.string.disconected), Toast.LENGTH_LONG).show();
 
                             }
                             alertDialog.dismiss();

@@ -11,6 +11,7 @@ public class Babysitter extends User {
     private double minAge;
     private String introduction;
     private String photoUri;
+    private ArrayList<TimeSlot> timeSlots;
 
     public Babysitter() {
         super();
@@ -26,6 +27,7 @@ public class Babysitter extends User {
         this.streetAddress = streetAddress;
         this.charges = charges;
         this.currency = currency;
+        this.timeSlots = workingTimeSlots;
     }
 
     public String getStreetAddress() {
@@ -82,5 +84,13 @@ public class Babysitter extends User {
 
     public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
+    }
+
+    public ArrayList<TimeSlot> getTimeSlots() {
+        return timeSlots;
+    }
+
+    public void setTimeSlots(ArrayList<TimeSlot> timeSlots) {
+        this.timeSlots = timeSlots;
     }
 }
