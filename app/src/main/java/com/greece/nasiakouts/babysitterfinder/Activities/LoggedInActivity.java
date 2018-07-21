@@ -35,9 +35,7 @@ public class LoggedInActivity extends AppCompatActivity {
     ImageView sitterAction;
     @BindView(R.id.find_sitter)
     ImageView userAction;
-    private FirebaseAuth mFirebaseAuth;
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
+
     private String mRegisteredUid;
     private User mUser;
     private int mMode = -1;
@@ -48,80 +46,48 @@ public class LoggedInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_logged_in);
 
         ButterKnife.bind(this);
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-        if (firebaseUser == null) {
-            Intent intent = new Intent(LoggedInActivity.this, MainActivity.class);
-            startActivity(intent);
-            return;
+
+        Intent intent = getIntent();
+        if(intent == null) return;
+        mUser = (User)intent.getSerializableExtra(User.class.getName());
+        if(mUser == null) return;
+
+        if(mUser instanceof Babysitter) {
+            mMode = Constants.SITTER_MODE;
+        }
+        else {
+            mMode = Constants.USER_MODE;
         }
 
-        mRegisteredUid = firebaseUser.getUid();
+        Snackbar.make(findViewById(android.R.id.content),
+                "Welcome " + mUser.getFullName() + "!",
+                Snackbar.LENGTH_LONG).show();
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference()
-                .child(Constants.FIREBASE_USER_ALL_INFO);
-
-        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String type = dataSnapshot
-                        .child(Constants.FIREBASE_USER_TYPE)
-                        .child(mRegisteredUid)
-                        .getValue(String.class);
-
-                if (type.equals(Constants.FIREBASE_SITTERS)) {
-                    mMode = Constants.SITTER_MODE;
-
-                    Babysitter sitter = dataSnapshot
-                            .child(type)
-                            .child(mRegisteredUid)
-                            .getValue(Babysitter.class);
-
-                    mUser = sitter;
-                } else {
-                    mMode = Constants.USER_MODE;
-
-                    mUser = dataSnapshot
-                            .child(type)
-                            .child(mRegisteredUid)
-                            .getValue(User.class);
+        setSupportActionBar(toolbar);
+        if (mMode == Constants.SITTER_MODE) {
+            sitterAction.setVisibility(View.VISIBLE);
+            userAction.setVisibility(View.GONE);
+            getSupportActionBar().setTitle(R.string.sitter_mng);
+            userAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    findSitter();
                 }
+            });
 
-                Snackbar.make(findViewById(android.R.id.content),
-                        "Welcome " + mUser.getFullName() + "!",
-                        Snackbar.LENGTH_LONG).show();
-
-                setSupportActionBar(toolbar);
-                if (mMode == Constants.SITTER_MODE) {
-                    sitterAction.setVisibility(View.VISIBLE);
-                    userAction.setVisibility(View.GONE);
-                    getSupportActionBar().setTitle(R.string.sitter_mng);
-                    userAction.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            findSitter();
-                        }
-                    });
-
-                } else if (mMode == Constants.USER_MODE) {
-                    sitterAction.setVisibility(View.GONE);
-                    userAction.setVisibility(View.VISIBLE);
-                    getSupportActionBar().setTitle(R.string.user_mng);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        } else if (mMode == Constants.USER_MODE) {
+            sitterAction.setVisibility(View.GONE);
+            userAction.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle(R.string.user_mng);
+        }
     }
 
+    @OnClick(R.id.find_sitter)
     public void findSitter() {
         Intent intent = new Intent(LoggedInActivity.this,
                 FindSitterActivity.class);
         intent.putExtra(Intent.EXTRA_TEXT,
                 LoggedInActivity.class.getName());
+        startActivity(intent);
     }
 }

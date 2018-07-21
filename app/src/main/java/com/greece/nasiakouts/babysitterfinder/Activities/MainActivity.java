@@ -27,7 +27,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.R;
 
@@ -120,19 +122,69 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (mSavingAlertDialog != null) {
-                            mSavingAlertDialog.cancel();
-                        }
-
                         if (task.isSuccessful()) {
                             FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
                             if (currentUser == null) return;
-                            String registeredUserID = currentUser.getUid();
+                            final String userID = currentUser.getUid();
 
-                            Intent openLoggedInActivityIntent =
-                                    new Intent(MainActivity.this, LoggedInActivity.class);
-                            startActivity(openLoggedInActivityIntent);
+                            final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                            DatabaseReference typeDatabaseReference = firebaseDatabase.getReference()
+                                    .child(Constants.FIREBASE_USER_ALL_INFO)
+                                    .child(Constants.FIREBASE_USER_TYPE)
+                                    .child(userID);
+
+                            typeDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        final String userType = dataSnapshot.getValue(String.class);
+                                        if(userType == null) return;
+
+                                        DatabaseReference specificUserTypeDReference =
+                                                firebaseDatabase.getReference()
+                                                .child(Constants.FIREBASE_USER_ALL_INFO)
+                                                .child(userType)
+                                                .child(userID);
+
+                                        specificUserTypeDReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                User user;
+                                                if(userType.equals(Constants.FIREBASE_SITTERS)) {
+                                                    Babysitter sitter = dataSnapshot.getValue(Babysitter.class);
+                                                    user = sitter;
+                                                }
+                                                else {
+                                                    user = dataSnapshot.getValue(User.class);
+                                                }
+
+                                                if (mSavingAlertDialog != null) {
+                                                    mSavingAlertDialog.dismiss();
+                                                }
+                                                Intent openLoggedInActivityIntent =
+                                                        new Intent(MainActivity.this, LoggedInActivity.class);
+                                                openLoggedInActivityIntent
+                                                        .putExtra(User.class.getName(), user);
+                                                startActivity(openLoggedInActivityIntent);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
+                            if (mSavingAlertDialog != null) {
+                                mSavingAlertDialog.dismiss();
+                            }
                             if (task.getException() == null) return;
                             Toast.makeText(getApplicationContext(),
                                     task.getException().getMessage(),

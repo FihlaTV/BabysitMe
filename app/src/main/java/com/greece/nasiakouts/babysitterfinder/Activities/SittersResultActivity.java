@@ -100,8 +100,7 @@ public class SittersResultActivity extends AppCompatActivity {
         FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mMapDatabaseReference = mFirebaseDatabase.getReference()
                 .child(Constants.FIREBASE_USER_ALL_INFO)
-                .child(Constants.FIREBASE_SITTER_ADDRESS_ID_MAP)
-                .child(sitterEmail);
+                .child(Constants.FIREBASE_SITTER_ADDRESS_ID_MAP);
 
         final DatabaseReference mAppointmentDatabaseReference = mFirebaseDatabase.getReference()
                 .child(Constants.FIREBASE_APPOINTMENTS);
@@ -110,10 +109,12 @@ public class SittersResultActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String sitterId = dataSnapshot.getChildren().iterator()
-                            .next().getValue(String.class);
+                    String sitterId = dataSnapshot.getValue(String.class);
 
-                    if (sitterId == null) return;
+                    if (sitterId == null) {
+                        alertDialog.dismiss();
+                        return;
+                    }
 
                     mAppointment.setCustomerId(userId);
                     mAppointment.setSitterId(sitterId);

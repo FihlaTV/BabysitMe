@@ -2,9 +2,10 @@ package com.greece.nasiakouts.babysitterfinder.Models;
 
 import com.google.firebase.database.Exclude;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Babysitter extends User {
+public class Babysitter extends User implements Serializable {
     private String streetAddress;
     private double charges;
     private String currency;
