@@ -16,8 +16,12 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.greece.nasiakouts.babysitterfinder.Adapters.SittersResultRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Constants;
@@ -52,7 +56,11 @@ public class FindSitterActivity extends AppCompatActivity {
     private TimeSlotRvAdapter mAdapter;
     private boolean fromRegistration = false;
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
+    boolean workingQueryFinished = false;
+    boolean appointmentQueryFinished = false;
+    ArrayList<String> availableSitters = new ArrayList<>();
+    private DatabaseReference mWorkingInfoDatabaseReference;
+    private DatabaseReference mAppointmentsDatabaseReference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,9 +84,12 @@ public class FindSitterActivity extends AppCompatActivity {
         }
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase
+        mWorkingInfoDatabaseReference = mFirebaseDatabase
                 .getReference()
-                .child(Constants.FIREBASE_SITTERS);
+                .child(Constants.FIREBASE_WORKING_DAYS);
+        mAppointmentsDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_APPOINTMENTS);
     }
 
     @Override
@@ -151,7 +162,7 @@ public class FindSitterActivity extends AppCompatActivity {
         }
         String userId = firebaseUser.getUid();
 
-        ArrayList<Appointment> temp = new ArrayList<>();
+        final ArrayList<Appointment> temp = new ArrayList<>();
         for (TimeSlot timeSlot : mAdapter.getData()) {
             temp.add(new Appointment(Integer.parseInt(totalKids), Double.parseDouble(youngestKidAge),
                     streetAddress, timeSlot, selectedSex, userId));
@@ -159,20 +170,99 @@ public class FindSitterActivity extends AppCompatActivity {
 
         final ArrayList<Appointment> appointments = temp;
 
-        new AlertDialog.Builder(this)
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
                 .setView(R.layout.dialog_searching)
                 .setCancelable(false)
                 .show();
 
 
-        new Handler().postDelayed(new Runnable() {
+        final Appointment appointment = appointments.get(0);
+
+        DatabaseReference dayReference = mWorkingInfoDatabaseReference.child(appointment.getSlot().getDay());
+        Query query;
+        if (appointment.getSlot().isAllDay()) {
+            query = dayReference.orderByChild(Constants.FIREBASE_ALL_DAY).equalTo(true);
+        } else {
+            query = dayReference.orderByChild(Constants.FIREBASE_TIME_FROM).endAt(appointment.getSlot().getTimeFrom());
+        }
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
-                Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
-                intent.putExtra(Appointment.class.getName(), appointments);
-                startActivity(intent);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    for (DataSnapshot day : dataSnapshot.getChildren()) {
+                        TimeSlot timeSlot = day.getValue(TimeSlot.class);
+
+                        TimeSlot timeslotToSearchForAvailability = appointment.getSlot();
+                        if (timeslotToSearchForAvailability.isAllDay()) {
+                            if (availableSitters.contains(day.getKey())) return;
+                            availableSitters.add(day.getKey());
+                            continue;
+                        }
+                        if (timeSlot.getTimeTo() >= timeslotToSearchForAvailability.getTimeTo()) {
+                            availableSitters.add(day.getKey());
+                        }
+                    }
+                }
+
+                if (appointmentQueryFinished == true) {
+                    alertDialog.dismiss();
+                    Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
+                    intent.putExtra(Appointment.class.getName(), appointment);
+                    intent.putExtra(FindSitterActivity.class.getName(), availableSitters);
+                    startActivity(intent);
+                }
+
+                workingQueryFinished = true;
             }
-        }, 2000);
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
+
+        DatabaseReference dayAppointmentReference = mAppointmentsDatabaseReference.child(appointment.getSlot().getDay());
+        Query query2 = dayReference.orderByKey();
+        query2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot day : dataSnapshot.getChildren()) {
+                        Appointment appointment1 = day.getValue(Appointment.class);
+                        TimeSlot timeSlot = appointment.getSlot();
+
+                        TimeSlot timeslotToSearchForAvailability = appointment.getSlot();
+                        if (timeslotToSearchForAvailability.isAllDay()) {
+                            availableSitters.remove(day.getKey());
+                            continue;
+                        }
+                        if ((timeslotToSearchForAvailability.getTimeFrom() <= timeSlot.getTimeFrom()
+                                && timeslotToSearchForAvailability.getTimeTo() > timeSlot.getTimeFrom())
+                                || (timeslotToSearchForAvailability.getTimeTo() >= timeSlot.getTimeTo()
+                                && timeslotToSearchForAvailability.getTimeFrom() < timeSlot.getTimeTo())) {
+                            availableSitters.remove(day.getKey());
+                        }
+                    }
+                }
+
+                if (workingQueryFinished == true) {
+                    alertDialog.dismiss();
+                    Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
+                    intent.putExtra(Appointment.class.getName(), appointments);
+                    intent.putExtra(FindSitterActivity.class.getName(), availableSitters);
+                    startActivity(intent);
+                }
+
+                appointmentQueryFinished = true;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // ...
+            }
+        });
     }
 
     @OnClick(R.id.addNeededSlot)

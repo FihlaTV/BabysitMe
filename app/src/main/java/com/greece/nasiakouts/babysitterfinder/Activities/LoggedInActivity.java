@@ -59,9 +59,10 @@ public class LoggedInActivity extends AppCompatActivity {
         mRegisteredUid = firebaseUser.getUid();
 
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
+        mDatabaseReference = mFirebaseDatabase.getReference()
+                .child(Constants.FIREBASE_USER_ALL_INFO);
 
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String type = dataSnapshot

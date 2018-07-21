@@ -36,6 +36,7 @@ import com.greece.nasiakouts.babysitterfinder.Fragments.PersonalInfoFragment;
 import com.greece.nasiakouts.babysitterfinder.Fragments.RegisterComponentFragment;
 import com.greece.nasiakouts.babysitterfinder.Fragments.SitterAdditionalInfoFragment;
 import com.greece.nasiakouts.babysitterfinder.Fragments.WorkingInfoFragment;
+import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.OnAddTimeSlotListener;
@@ -71,6 +72,7 @@ public class RegisterActivity extends AppCompatActivity
     private DatabaseReference mUserTypesDatabaseReference;
     private DatabaseReference mSittersDatabaseReference;
     private DatabaseReference mUsersDatabaseReference;
+    private DatabaseReference mWorkingDaysReference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,13 +99,19 @@ public class RegisterActivity extends AppCompatActivity
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUserTypesDatabaseReference = mFirebaseDatabase
                 .getReference()
+                .child(Constants.FIREBASE_USER_ALL_INFO)
                 .child(Constants.FIREBASE_USER_TYPE);
         mSittersDatabaseReference = mFirebaseDatabase
                 .getReference()
+                .child(Constants.FIREBASE_USER_ALL_INFO)
                 .child(Constants.FIREBASE_SITTERS);
         mUsersDatabaseReference = mFirebaseDatabase
                 .getReference()
+                .child(Constants.FIREBASE_USER_ALL_INFO)
                 .child(Constants.FIREBASE_USERS);
+        mWorkingDaysReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_WORKING_DAYS);
     }
 
     @Override
@@ -160,13 +168,24 @@ public class RegisterActivity extends AppCompatActivity
                                 Intent intent;
 
                                 if (selectedMode == R.id.radio_babysitter) {
-                                    mSittersDatabaseReference.child(userId).setValue(mUser);
                                     mUserTypesDatabaseReference.child(userId).setValue("sitter");
+                                    for (TimeSlot timeSlot : ((Babysitter) mUser).getTimeSlots()) {
+                                        String day = timeSlot.getDay();
+                                        timeSlot.setDay(null);
+                                        mWorkingDaysReference
+                                                .child(day)
+                                                .child(userId).setValue(timeSlot);
+                                    }
+                                    ((Babysitter) mUser).setTimeSlots(null);
+                                    mSittersDatabaseReference.child(userId).setValue(mUser);
+
                                     intent = new Intent(RegisterActivity.this,
                                             MainActivity.class);
+
                                 } else {
                                     mUsersDatabaseReference.child(userId).setValue(mUser);
                                     mUserTypesDatabaseReference.child(userId).setValue("user");
+
                                     intent = new Intent(RegisterActivity.this,
                                             FindSitterActivity.class);
                                     intent.putExtra(Intent.EXTRA_TEXT,

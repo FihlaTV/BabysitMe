@@ -88,4 +88,6 @@ public class AppointmentListAdapter extends RecyclerView.Adapter<AppointmentList
             });
         }
     }
+
+
 }

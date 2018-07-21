@@ -142,4 +142,10 @@ public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRv
     public int getItemCount() {
         return availableSitters == null ? 0 : availableSitters.size();
     }
+
+    public void swapData(ArrayList<Babysitter> babysitters) {
+        if (babysitters == null) return;
+        availableSitters = babysitters;
+        notifyDataSetChanged();
+    }
 }

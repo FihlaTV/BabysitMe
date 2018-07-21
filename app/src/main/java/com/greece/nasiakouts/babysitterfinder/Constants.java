@@ -55,9 +55,14 @@ public class Constants {
     public static final int SITTER_MODE = 1;
     public static final int USER_MODE = 2;
 
+    public static final String FIREBASE_USER_ALL_INFO = "all_info";
     public static final String FIREBASE_USER_TYPE = "type";
     public static final String FIREBASE_SITTERS = "sitter";
     public static final String FIREBASE_USERS = "user";
+    public static final String FIREBASE_WORKING_DAYS = "working_day";
+    public static final String FIREBASE_APPOINTMENTS = "appointment";
+    public static final String FIREBASE_ALL_DAY = "allDay";
+    public static final String FIREBASE_TIME_FROM = "timeFrom";
 
     public static final int USER_FEMALE = 0;
     public static final int USER_MALE = 1;

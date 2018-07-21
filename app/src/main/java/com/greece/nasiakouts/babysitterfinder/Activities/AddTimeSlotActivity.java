@@ -60,8 +60,10 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
     @BindView(R.id.weekly_section)
     LinearLayout weeklySection;
 
-    private Date mFromHour = null;
-    private Date mToHour = null;
+    private int fromHour;
+    private int fromMin;
+    private int toHour;
+    private int toMin;
     private Date mDateSelected = null;
     private int mMode = -1;
 
@@ -198,9 +200,11 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
 
 
                                 if (viewHavingFocusId == R.id.from_hour_input) {
-                                    mFromHour = time.getTime();
+                                    fromHour = selectedHour;
+                                    fromMin = selectedMinute;
                                 } else {
-                                    mToHour = time.getTime();
+                                    toHour = selectedHour;
+                                    toMin = selectedMinute;
                                 }
 
                                 SimpleDateFormat onlyTime = new SimpleDateFormat("HH:mm", Locale.US);
@@ -249,17 +253,20 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
                 break;
         }
 
-        if ((mFromHour == null) && !allDayCheckBox.isChecked()) {
+        if (TextUtils.isEmpty(fromHourEditText.getText().toString())
+                && !allDayCheckBox.isChecked()) {
             fromHourEditText.setError(getString(R.string.not_filled_from));
             return;
         }
 
-        if (mToHour == null && !allDayCheckBox.isChecked()) {
+        if (TextUtils.isEmpty(toHourEditText.getText().toString())
+                && !allDayCheckBox.isChecked()) {
             toHourEditText.setError(getString(R.string.not_filled_to));
             return;
         }
 
-        if (mFromHour != null && mToHour.compareTo(mFromHour) < 0) {
+        if (fromHour > toHour ||
+                (fromHour < toHour && fromMin > toMin)) {
             Toast.makeText(AddTimeSlotActivity.this,
                     getString(R.string.to_hour_less_than),
                     Toast.LENGTH_LONG).show();
@@ -271,9 +278,9 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
         SimpleDateFormat onlyDay = new SimpleDateFormat("EEEE", Locale.US);
         TimeSlot timeSlot = new TimeSlot(
                 mMode == Constants.USER_MODE ? onlyDay.format(mDateSelected) : daySpinner.getSelectedItem().toString(),
-                mMode == Constants.USER_MODE ? mDateSelected.getTime() : -1,
-                mFromHour == null ? -1 : mFromHour.getTime(),
-                mToHour == null ? -1 : mToHour.getTime(),
+                mMode == Constants.USER_MODE ? specificDateEditText.getText().toString() : null,
+                allDayCheckBox.isChecked() ? -1 : Double.parseDouble(fromHourEditText.getText().toString().replace(":", ".")),
+                allDayCheckBox.isChecked() ? -1 : Double.parseDouble(toHourEditText.getText().toString().replace(":", ".")),
                 allDayCheckBox.isChecked(),
                 mMode != Constants.USER_MODE || weeklyCheckbox.isChecked());
 

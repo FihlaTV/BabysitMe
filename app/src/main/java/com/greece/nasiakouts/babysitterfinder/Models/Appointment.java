@@ -14,6 +14,9 @@ public class Appointment implements Serializable {
 
     private String customerId;
 
+    public Appointment() {
+    }
+
     public Appointment(int totalKids, double minAge, String streetAddress,
                        TimeSlot slots, int sitterSex, String customerId) {
         this.totalKids = totalKids;
