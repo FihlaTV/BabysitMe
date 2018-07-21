@@ -155,4 +155,5 @@
     <string name="sitter_mng">Sitter Management</string>
     <string name="user_mng">User Management</string>
     <string name="disconected">You have been disconected!</string>
+    <string name="please_wait">Please wait...</string>
 </resources>

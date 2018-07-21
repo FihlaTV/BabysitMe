@@ -73,6 +73,7 @@ public class RegisterActivity extends AppCompatActivity
     private DatabaseReference mSittersDatabaseReference;
     private DatabaseReference mUsersDatabaseReference;
     private DatabaseReference mWorkingDaysReference;
+    private DatabaseReference mSitterMailIdReference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +113,10 @@ public class RegisterActivity extends AppCompatActivity
         mWorkingDaysReference = mFirebaseDatabase
                 .getReference()
                 .child(Constants.FIREBASE_WORKING_DAYS);
+        mSitterMailIdReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_USER_ALL_INFO)
+                .child(Constants.FIREBASE_SITTER_ADDRESS_ID_MAP);
     }
 
     @Override
@@ -169,6 +174,7 @@ public class RegisterActivity extends AppCompatActivity
 
                                 if (selectedMode == R.id.radio_babysitter) {
                                     mUserTypesDatabaseReference.child(userId).setValue("sitter");
+                                    mSitterMailIdReference.child(mUser.getEmailAddress()).setValue(userId);
                                     for (TimeSlot timeSlot : ((Babysitter) mUser).getTimeSlots()) {
                                         String day = timeSlot.getDay();
                                         timeSlot.setDay(null);

@@ -57,6 +57,7 @@ public class Constants {
 
     public static final String FIREBASE_USER_ALL_INFO = "all_info";
     public static final String FIREBASE_USER_TYPE = "type";
+    public static final String FIREBASE_SITTER_ADDRESS_ID_MAP = "sitter_address_id_map";
     public static final String FIREBASE_SITTERS = "sitter";
     public static final String FIREBASE_USERS = "user";
     public static final String FIREBASE_WORKING_DAYS = "working_day";
