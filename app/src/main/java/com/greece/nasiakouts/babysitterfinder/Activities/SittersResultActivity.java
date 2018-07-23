@@ -2,11 +2,13 @@ package com.greece.nasiakouts.babysitterfinder.Activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +48,7 @@ public class SittersResultActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        if(getSupportActionBar() != null) getSupportActionBar()
+        if (getSupportActionBar() != null) getSupportActionBar()
                 .setTitle(R.string.sitters_results);
 
         mAdapter = new SittersResultRvAdapter(this, null);
@@ -89,7 +91,55 @@ public class SittersResultActivity extends AppCompatActivity {
 
     }
 
-    public void insertAppointmentToDb(String userId, String sitterEmail) {
-        // todo
+    public void insertAppointmentToDb(final String userId, String sitterEmail) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setView(R.layout.dialog_please_wait)
+                .setCancelable(false)
+                .show();
+
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mMapDatabaseReference = mFirebaseDatabase.getReference()
+                .child(Constants.FIREBASE_USER_ALL_INFO)
+                .child(Constants.FIREBASE_SITTER_ADDRESS_ID_MAP);
+
+        final DatabaseReference mAppointmentDatabaseReference = mFirebaseDatabase.getReference()
+                .child(Constants.FIREBASE_APPOINTMENTS);
+
+        mMapDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String sitterId = dataSnapshot.getValue(String.class);
+
+                    if (sitterId == null) {
+                        alertDialog.dismiss();
+                        return;
+                    }
+
+                    mAppointment.setCustomerId(userId);
+                    mAppointment.setSitterId(sitterId);
+
+                    mAppointmentDatabaseReference.child(mAppointment.getSlot().getDay()).child(sitterId);
+                    mAppointment.getSlot().setDay(null);
+                    mAppointment.setSitterId(null);
+                    mAppointmentDatabaseReference.setValue(mAppointment);
+                    alertDialog.dismiss();
+
+                    Toast.makeText(getApplicationContext(),
+                            "Appointment Arranged! Please wait for sitters confirmation",
+                            Toast.LENGTH_LONG).show();
+
+                    Intent goBackToLoggedInActivity =
+                            new Intent(SittersResultActivity.this, LoggedInActivity.class);
+                    goBackToLoggedInActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(goBackToLoggedInActivity);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
