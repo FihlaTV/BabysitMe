@@ -77,7 +77,6 @@ public class RegisterActivity extends AppCompatActivity
     @BindView(R.id.next_button)
     public Button mNextButton;
 
-    private String imagePath;
     private Uri imageUri;
 
     private User mUser;
@@ -192,6 +191,8 @@ public class RegisterActivity extends AppCompatActivity
                             }
 
                             if (task.isSuccessful()) {
+                                uploadPhotoToCloudStorage(imageUri);
+
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user == null) return;
                                 String userId = user.getUid();
@@ -282,7 +283,9 @@ public class RegisterActivity extends AppCompatActivity
             case 0:
             case 1:
                 if(resultCode == RESULT_OK){
-                    uploadPhotoToCloudStorage(data.getData() == null ? imageUri : data.getData());
+                    //TODO Add Toast
+                    if (data.getData() != null)
+                        imageUri = data.getData();
                 }
 
                 break;
@@ -349,9 +352,6 @@ public class RegisterActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        if (image == null) return null;
-
-        imagePath = image.getAbsolutePath();
         return image;
     }
 
