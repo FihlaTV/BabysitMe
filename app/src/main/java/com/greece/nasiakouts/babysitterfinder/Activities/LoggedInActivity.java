@@ -118,6 +118,7 @@ public class LoggedInActivity extends AppCompatActivity {
         });
     }
 
+    @OnClick(R.id.find_sitter)
     public void findSitter() {
         Intent intent = new Intent(LoggedInActivity.this,
                 FindSitterActivity.class);

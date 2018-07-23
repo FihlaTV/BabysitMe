@@ -77,7 +77,7 @@ public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRv
                 // todo foto
 
                 name.setText(sitter.getFullName());
-                age.setText(sitter.getAge());
+                age.setText(String.valueOf(sitter.getAge()));
                 phone.setText(sitter.getPhoneNumber());
                 introduction.setText(sitter.getIntroduction());
 

@@ -1,9 +1,12 @@
 package com.greece.nasiakouts.babysitterfinder.Activities;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
@@ -12,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,6 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +34,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Controls.NoScrollViewPager;
@@ -43,7 +53,13 @@ import com.greece.nasiakouts.babysitterfinder.OnAddTimeSlotListener;
 import com.greece.nasiakouts.babysitterfinder.OnUploadPhotoEvent;
 import com.greece.nasiakouts.babysitterfinder.R;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +77,9 @@ public class RegisterActivity extends AppCompatActivity
     @BindView(R.id.next_button)
     public Button mNextButton;
 
+    private String imagePath;
+    private Uri imageUri;
+
     private User mUser;
     private int selectedMode;
     private RegisterAdapter mAdapter;
@@ -73,6 +92,9 @@ public class RegisterActivity extends AppCompatActivity
     private DatabaseReference mSittersDatabaseReference;
     private DatabaseReference mUsersDatabaseReference;
     private DatabaseReference mWorkingDaysReference;
+
+    private FirebaseStorage mStorage;
+    private StorageReference mStorageReference;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +134,9 @@ public class RegisterActivity extends AppCompatActivity
         mWorkingDaysReference = mFirebaseDatabase
                 .getReference()
                 .child(Constants.FIREBASE_WORKING_DAYS);
+
+        mStorage = FirebaseStorage.getInstance();
+        mStorageReference = mStorage.getReference();
     }
 
     @Override
@@ -249,17 +274,11 @@ public class RegisterActivity extends AppCompatActivity
 
         switch(requestCode) {
             case 0:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    // TODO setImageURI(selectedImage);
-                }
-
-                break;
             case 1:
                 if(resultCode == RESULT_OK){
-                    Uri selectedImage = data.getData();
-                    // imageview.setImageURI(selectedImage);
+                    uploadPhotoToCloudStorage(data.getData() == null ? imageUri : data.getData());
                 }
+
                 break;
         }
     }
@@ -291,8 +310,15 @@ public class RegisterActivity extends AppCompatActivity
                 }
 
                 if (selectedRadioInterest == R.id.radio_capture) {
-                    Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
+                    File photoFile = createImageFile();
+                    if (photoFile != null) {
+                        imageUri = FileProvider.getUriForFile(RegisterActivity.this,
+                                "com.greece.nasiakouts.babysitterfinder.provider", photoFile);
+
+                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                        startActivityForResult(takePicture, 0);
+                    }
                 } else {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                             android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -302,6 +328,58 @@ public class RegisterActivity extends AppCompatActivity
         });
 
         alertDialog.show();
+    }
+
+    private File createImageFile() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+                Locale.getDefault()).format(new Date());
+        File image = null;
+        try {
+            image = File.createTempFile(
+                    "image_" + timeStamp,
+                    ".jpg",
+                    getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (image == null) return null;
+
+        imagePath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void uploadPhotoToCloudStorage(Uri imagePath) {
+        if (imagePath == null) return;
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading Image...");
+        progressDialog.show();
+
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        if (user == null) return;
+
+        StorageReference ref = mStorageReference.child("images/" + user.getUid());
+        ref.putFile(imagePath)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        progressDialog.dismiss();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        int progress = (int) (100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                        progressDialog.setMessage("Uploaded " + progress + "%");
+                    }
+                });
     }
 
     private class RegisterAdapter extends FragmentPagerAdapter{

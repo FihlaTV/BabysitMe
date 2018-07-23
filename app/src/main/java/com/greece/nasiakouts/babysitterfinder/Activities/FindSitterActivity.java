@@ -56,8 +56,6 @@ public class FindSitterActivity extends AppCompatActivity {
     private TimeSlotRvAdapter mAdapter;
     private boolean fromRegistration = false;
     private FirebaseDatabase mFirebaseDatabase;
-    boolean workingQueryFinished = false;
-    boolean appointmentQueryFinished = false;
     ArrayList<String> availableSitters = new ArrayList<>();
     private DatabaseReference mWorkingInfoDatabaseReference;
     private DatabaseReference mAppointmentsDatabaseReference;
@@ -191,71 +189,58 @@ public class FindSitterActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
-                    for (DataSnapshot day : dataSnapshot.getChildren()) {
-                        TimeSlot timeSlot = day.getValue(TimeSlot.class);
+                    for (DataSnapshot sitter : dataSnapshot.getChildren()) {
+                        TimeSlot timeSlot = sitter.getValue(TimeSlot.class);
+                        if (timeSlot == null) continue;
 
-                        TimeSlot timeslotToSearchForAvailability = appointment.getSlot();
-                        if (timeslotToSearchForAvailability.isAllDay()) {
-                            if (availableSitters.contains(day.getKey())) return;
-                            availableSitters.add(day.getKey());
+                        TimeSlot timeSlotToSearchForAvailability = appointment.getSlot();
+                        if (timeSlotToSearchForAvailability.isAllDay()) {
+                            if (availableSitters.contains(sitter.getKey())) return;
+                            availableSitters.add(sitter.getKey());
                             continue;
                         }
-                        if (timeSlot.getTimeTo() >= timeslotToSearchForAvailability.getTimeTo()) {
-                            availableSitters.add(day.getKey());
+                        if (timeSlot.getTimeTo() >= timeSlotToSearchForAvailability.getTimeTo()) {
+                            availableSitters.add(sitter.getKey());
                         }
                     }
                 }
 
-                if (appointmentQueryFinished == true) {
-                    alertDialog.dismiss();
-                    Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
-                    intent.putExtra(Appointment.class.getName(), appointment);
-                    intent.putExtra(FindSitterActivity.class.getName(), availableSitters);
-                    startActivity(intent);
-                }
+                DatabaseReference dayAppointmentReference = mAppointmentsDatabaseReference.child(appointment.getSlot().getDay());
+                Query query2 = dayAppointmentReference.orderByKey();
+                query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot day : dataSnapshot.getChildren()) {
+                                Appointment appointmentAlreadyInDb = day.getValue(Appointment.class);
+                                TimeSlot timeSlotOld = appointmentAlreadyInDb.getSlot();
 
-                workingQueryFinished = true;
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // ...
-            }
-        });
-
-        DatabaseReference dayAppointmentReference = mAppointmentsDatabaseReference.child(appointment.getSlot().getDay());
-        Query query2 = dayReference.orderByKey();
-        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot day : dataSnapshot.getChildren()) {
-                        Appointment appointment1 = day.getValue(Appointment.class);
-                        TimeSlot timeSlot = appointment.getSlot();
-
-                        TimeSlot timeslotToSearchForAvailability = appointment.getSlot();
-                        if (timeslotToSearchForAvailability.isAllDay()) {
-                            availableSitters.remove(day.getKey());
-                            continue;
+                                TimeSlot timeslotToSearchForAvailability = appointment.getSlot();
+                                if (timeslotToSearchForAvailability.isAllDay()) {
+                                    availableSitters.remove(day.getKey());
+                                    continue;
+                                }
+                                if ((timeslotToSearchForAvailability.getTimeFrom() <= timeSlotOld.getTimeFrom()
+                                        && timeslotToSearchForAvailability.getTimeTo() > timeSlotOld.getTimeFrom())
+                                        || (timeslotToSearchForAvailability.getTimeTo() >= timeSlotOld.getTimeTo()
+                                        && timeslotToSearchForAvailability.getTimeFrom() < timeSlotOld.getTimeTo())) {
+                                    availableSitters.remove(day.getKey());
+                                }
+                            }
                         }
-                        if ((timeslotToSearchForAvailability.getTimeFrom() <= timeSlot.getTimeFrom()
-                                && timeslotToSearchForAvailability.getTimeTo() > timeSlot.getTimeFrom())
-                                || (timeslotToSearchForAvailability.getTimeTo() >= timeSlot.getTimeTo()
-                                && timeslotToSearchForAvailability.getTimeFrom() < timeSlot.getTimeTo())) {
-                            availableSitters.remove(day.getKey());
-                        }
+
+                        alertDialog.dismiss();
+                        Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
+                        intent.putExtra(Appointment.class.getName(), appointments);
+                        intent.putExtra(FindSitterActivity.class.getName(), availableSitters);
+                        startActivity(intent);
                     }
-                }
 
-                if (workingQueryFinished == true) {
-                    alertDialog.dismiss();
-                    Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
-                    intent.putExtra(Appointment.class.getName(), appointments);
-                    intent.putExtra(FindSitterActivity.class.getName(), availableSitters);
-                    startActivity(intent);
-                }
-
-                appointmentQueryFinished = true;
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // ...
+                    }
+                });
             }
 
             @Override
