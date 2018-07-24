@@ -36,7 +36,6 @@ import butterknife.ButterKnife;
 public class PersonalInfoFragment extends RegisterComponentFragment
         implements View.OnFocusChangeListener, View.OnTouchListener{
 
-
     @BindViews({R.id.name_input,
                 R.id.phone_input,
                 R.id.year_input})
@@ -51,13 +50,16 @@ public class PersonalInfoFragment extends RegisterComponentFragment
     @BindView(R.id.radio_male)
     RadioButton mMale_radio_button;
 
-    private Date mDateRepresentation;
+    private long mDateRepresentation = -1;
+    private DatePickerDialog mDateDialog = null;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_personal_info, container, false);
-
         ButterKnife.bind(this, root);
 
         mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT).setOnFocusChangeListener(this);
@@ -68,26 +70,70 @@ public class PersonalInfoFragment extends RegisterComponentFragment
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(Date.class.getName(), mDateRepresentation);
+        if (mDateDialog != null && mDateDialog.isShowing()) {
+            outState.putBoolean(DatePickerDialog.class.getName(), false);
+        } else {
+            outState.putBoolean(DatePickerDialog.class.getName(), true);
+        }
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState == null) return;
+        if (savedInstanceState.containsKey(Date.class.getName())) {
+            mDateRepresentation = savedInstanceState.getLong(Date.class.getName());
+        }
+        if (savedInstanceState.containsKey(DatePickerDialog.class.getName())) {
+            if (savedInstanceState.getBoolean(DatePickerDialog.class.getName())) {
+                openDatePicker();
+            }
+        }
+    }
+
+    @Override
     public User getUser(User user) {
         if(user == null) return null;
 
+        // region Get User Inputs
         String fullName = mPersonalInfList.get(Constants.INDEX_NAME_INPUT)
                 .getText().toString();
         String phoneNumber = mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
                 .getText().toString();
         String dateBorn = mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
                 .getText().toString();
+        int sex = mRadioGroupSex.getCheckedRadioButtonId();
+        // endregion
 
+        if (areValidAndFilled(fullName, phoneNumber, dateBorn, mDateRepresentation, sex)) {
+            user.setFullName(fullName);
+            user.setPhoneNumber(phoneNumber);
+            user.setDateBornTimestamp(mDateRepresentation);
+            user.setSexCode(sex);
+            return user;
+        }
+
+        return null;
+    }
+
+    private boolean areValidAndFilled(String fullName,
+                                      String phoneNumber,
+                                      String dateBorn,
+                                      long dateBornLongRepresentation,
+                                      int sex) {
         if(TextUtils.isEmpty(fullName)) {
             mPersonalInfList.get(Constants.INDEX_NAME_INPUT)
                     .setError(getString(R.string.not_filled_name));
-            return null;
+            return false;
         }
 
         if(TextUtils.isEmpty(phoneNumber)) {
             mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
                     .setError(getString(R.string.not_filled_phone));
-            return null;
+            return false;
         }
 
         if(phoneNumber.length() < 4
@@ -95,40 +141,31 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                 || !android.util.Patterns.PHONE.matcher(phoneNumber).matches()) {
             mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
                     .setError(getString(R.string.no_valid_phone));
-            return null;
+            return false;
         }
 
-        if (TextUtils.isEmpty(mDateRepresentation.toString())) {
+        if (TextUtils.isEmpty(dateBorn)) {
             mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
                     .setError(getString(R.string.not_filled_born_date));
-            return null;
+            return false;
         }
 
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(mDateRepresentation);
-        if(Calendar.getInstance().get(Calendar.YEAR)
-                - calendar.get(Calendar.YEAR) < 16) {
+        if (dateBornLongRepresentation == -1) {
             mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
-                    .setError(getString(R.string.no_valid_born_date));
-            return null;
+                    .setError(getString(R.string.not_filled_born_date));
+            return false;
         }
 
-        int sex = mRadioGroupSex.getCheckedRadioButtonId();
         if(sex == -1) {
             if(getContext() != null)
                 Toast.makeText(getContext(),
                         R.string.no_sex_selected, Toast.LENGTH_LONG).show();
 
             mFemale_radio_button.requestFocus();
-            return null;
+            return false;
         }
 
-        user.setFullName(fullName);
-        user.setPhoneNumber(phoneNumber);
-        user.setDateBornTimestamp(mDateRepresentation.getTime());
-        user.setSexCode(sex);
-
-        return user;
+        return true;
     }
 
     @Override
@@ -139,10 +176,16 @@ public class PersonalInfoFragment extends RegisterComponentFragment
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
         if(hasFocus) {
-            Calendar mCurrentDate = Calendar.getInstance();
+            openDatePicker();
+        }
+    }
 
-            if(getContext() == null) return;
-            DatePickerDialog dialog = new DatePickerDialog(getContext(),
+    private void openDatePicker() {
+        Calendar mCurrentDate = Calendar.getInstance();
+
+        if (getContext() == null) return;
+        if (mDateDialog == null) {
+            mDateDialog = new DatePickerDialog(getContext(),
                     new DatePickerDialog.OnDateSetListener() {
                         @SuppressLint("SetTextI18n")
                         @Override
@@ -153,19 +196,19 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                             cal.set(Calendar.YEAR, year);
                             cal.set(Calendar.MONTH, monthOfYear);
                             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                            mDateRepresentation = cal.getTime();
+                            mDateRepresentation = cal.getTime().getTime();
 
                             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
 
                             mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
-                                    .setText(sdf.format(mDateRepresentation));
+                                    .setText(sdf.format(cal.getTime()));
 
                             mFemale_radio_button.requestFocus();
                         }
                     }, mCurrentDate.get(Calendar.YEAR), mCurrentDate.get(Calendar.MONTH),
                     mCurrentDate.get(Calendar.DAY_OF_MONTH));
-            dialog.setCancelable(false);
-            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            mDateDialog.setCancelable(false);
+            mDateDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialogInterface) {
                     mFemale_radio_button.requestFocus();
@@ -179,10 +222,9 @@ public class PersonalInfoFragment extends RegisterComponentFragment
             cal.set(Calendar.MONTH, Calendar.DECEMBER);
             cal.set(Calendar.DAY_OF_MONTH, Calendar.SUNDAY);
             cal.set(Calendar.DAY_OF_MONTH, Constants.DAYS_IN_DECEMBER);
-            dialog.getDatePicker().setMaxDate(cal.getTime().getTime());
-
-            dialog.show();
+            mDateDialog.getDatePicker().setMaxDate(cal.getTime().getTime());
         }
+        mDateDialog.show();
     }
 
     @Override
