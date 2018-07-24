@@ -36,7 +36,6 @@ public class LoggedInActivity extends AppCompatActivity {
     @BindView(R.id.find_sitter)
     ImageView userAction;
 
-    private String mRegisteredUid;
     private User mUser;
     private int mMode = -1;
 
@@ -59,11 +58,27 @@ public class LoggedInActivity extends AppCompatActivity {
             mMode = Constants.USER_MODE;
         }
 
-        Snackbar.make(findViewById(android.R.id.content),
-                "Welcome " + mUser.getFullName() + "!",
-                Snackbar.LENGTH_LONG).show();
+        if (savedInstanceState == null) {
+            Snackbar.make(findViewById(android.R.id.content),
+                    "Welcome " + mUser.getFullName() + "!",
+                    Snackbar.LENGTH_LONG).show();
 
-        setSupportActionBar(toolbar);
+            setSupportActionBar(toolbar);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState == null) return;
+        else if (savedInstanceState.containsKey(getString(R.string.mode_save_inst_key))) {
+            mMode = savedInstanceState.getInt(getString(R.string.mode_save_inst_key));
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (mMode == Constants.SITTER_MODE) {
             sitterAction.setVisibility(View.VISIBLE);
             userAction.setVisibility(View.GONE);
@@ -80,6 +95,12 @@ public class LoggedInActivity extends AppCompatActivity {
             userAction.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle(R.string.user_mng);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(getString(R.string.mode_save_inst_key), mMode);
     }
 
     @OnClick(R.id.find_sitter)

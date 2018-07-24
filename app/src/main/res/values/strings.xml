@@ -156,4 +156,6 @@
     <string name="user_mng">User Management</string>
     <string name="disconected">You have been disconected!</string>
     <string name="please_wait">Please wait...</string>
+    <string name="diconect">You have been disconnected!</string>
+    <string name="mode_save_inst_key">mode_save_instance_key</string>
 </resources>

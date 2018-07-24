@@ -1,13 +1,10 @@
 package com.greece.nasiakouts.babysitterfinder.Activities;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -16,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.FileProvider;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -59,7 +57,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -115,6 +112,7 @@ public class RegisterActivity extends AppCompatActivity
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(0);
+        mViewPager.setOffscreenPageLimit(mAdapter.getCount());
         updateButtonsVisibility(0);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -148,6 +146,17 @@ public class RegisterActivity extends AppCompatActivity
         super.onSaveInstanceState(outState, outPersistentState);
         outState.putInt(getString(R.string.orientation_bundle_key),
                 getResources().getConfiguration().orientation);
+        outState.putInt(ViewPager.class.getName(), mViewPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState == null) return;
+
+        int currentItem = savedInstanceState.getInt(ViewPager.class.getName(), 0);
+        mViewPager.setCurrentItem(currentItem);
+        updateButtonsVisibility(currentItem);
     }
 
     private void updateButtonsVisibility(int position) {

@@ -32,10 +32,17 @@ import butterknife.ButterKnife;
 public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRvAdapter.SittersResultHolder> {
     private WeakReference<Activity> activityWeakReference;
     private ArrayList<Babysitter> availableSitters;
+    private ArrayList<String> availableSittersUidParallel;
 
-    public SittersResultRvAdapter(Activity activity, ArrayList<Babysitter> availableSitters) {
+    public SittersResultRvAdapter(Activity activity,
+                                  ArrayList<Babysitter> availableSitters,
+                                  ArrayList<String> availableSittersUidParallel) {
         if (availableSitters == null) this.availableSitters = new ArrayList<>();
         else this.availableSitters = availableSitters;
+
+        if (availableSittersUidParallel == null)
+            this.availableSittersUidParallel = new ArrayList<>();
+        else this.availableSittersUidParallel = availableSittersUidParallel;
 
         this.activityWeakReference = new WeakReference<>(activity);
     }
@@ -52,6 +59,7 @@ public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRv
     @Override
     public void onBindViewHolder(@NonNull SittersResultHolder holder, int position) {
         final Babysitter sitter = availableSitters.get(position);
+        final String sitterUid = availableSittersUidParallel.get(position);
         // todo photo
         holder.info.get(Constants.INDEX_NAME).setText(sitter.getFullName());
         holder.info.get(Constants.INDEX_PRICE).setText(String.valueOf(sitter.getCharges()));
@@ -111,7 +119,7 @@ public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRv
 
                         if (activityWeakReference == null) return;
                         ((SittersResultActivity) activityWeakReference
-                                .get()).insertAppointmentToDb(firebaseUser.getUid(), sitter.getEmailAddress());
+                                .get()).insertAppointmentsToDb(firebaseUser.getUid(), sitterUid);
                     }
                 });
 
@@ -141,9 +149,10 @@ public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRv
         return availableSitters == null ? 0 : availableSitters.size();
     }
 
-    public void swapData(ArrayList<Babysitter> babysitters) {
+    public void swapData(ArrayList<Babysitter> babysitters, ArrayList<String> uids) {
         if (babysitters == null) return;
         availableSitters = babysitters;
+        availableSittersUidParallel = uids;
         notifyDataSetChanged();
     }
 }
