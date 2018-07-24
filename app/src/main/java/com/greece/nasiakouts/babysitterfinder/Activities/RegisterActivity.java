@@ -75,12 +75,11 @@ public class RegisterActivity extends AppCompatActivity
     public Button mNextButton;
 
     private Uri imageUri;
-    private TextView mPhotoTextView;
 
     private User mUser;
     private int selectedMode;
     private RegisterAdapter mAdapter;
-    private ArrayList<RegisterComponentFragment> mFragments;
+    private RegisterComponentFragment[] mFragments;
 
     private AlertDialog mSavingAlertDialog;
     private FirebaseAuth mFirebaseAuth;
@@ -137,7 +136,7 @@ public class RegisterActivity extends AppCompatActivity
 
 
         mAdapter = new RegisterAdapter(getSupportFragmentManager());
-        mFragments = new ArrayList<>();
+        mFragments = new RegisterComponentFragment[mAdapter.getCount()];
 
         mViewPager.setAdapter(mAdapter);
         mViewPager.setOffscreenPageLimit(mAdapter.getCount());
@@ -177,13 +176,6 @@ public class RegisterActivity extends AppCompatActivity
         else {
             outState.putBoolean(getString(R.string.upload_photo_si_key), false);
         }
-
-        if(mPhotoTextView != null && mPhotoTextView.getVisibility() == View.VISIBLE){
-            outState.putBoolean(TextView.class.getName(), true);
-        }
-        else {
-            outState.putBoolean(TextView.class.getName(), false);
-        }
     }
 
     @Override
@@ -193,16 +185,7 @@ public class RegisterActivity extends AppCompatActivity
 
         if(savedInstanceState.getBoolean(getString(R.string.upload_photo_si_key),
                 false)){
-            showUploadPhotoDialog(null);
-        }
-
-        if(savedInstanceState.containsKey(TextView.class.getName())){
-            boolean isVisible = savedInstanceState.getBoolean(TextView.class.getName());
-            if(isVisible){
-                View layout = getLayoutInflater()
-                        .inflate(R.layout.fragment_sitter_additonal_info, null);
-                mPhotoTextView = layout.findViewById(R.id.file_uploaded);
-            }
+            showUploadPhotoDialog();
         }
     }
 
@@ -226,9 +209,10 @@ public class RegisterActivity extends AppCompatActivity
 
     @OnClick(R.id.next_button)
     public void buttonNextPressed(View view){
-        if(mFragments.size() < mViewPager.getCurrentItem()) return;
+        if (mFragments.length < mViewPager.getCurrentItem()) return;
 
-        RegisterComponentFragment fragment = mFragments.get(mViewPager.getCurrentItem());
+        RegisterComponentFragment fragment = mFragments[mViewPager.getCurrentItem()];
+        if (fragment == null) return;
 
         User temp = fragment.getUser(mUser);
         if(temp == null) return;
@@ -309,9 +293,10 @@ public class RegisterActivity extends AppCompatActivity
 
     @OnClick(R.id.previous_button)
     public void buttonPreviousPressed(View view){
-        if(mFragments.size() < mViewPager.getCurrentItem()) return;
+        if (mFragments.length < mViewPager.getCurrentItem()) return;
 
-        RegisterComponentFragment fragment = mFragments.get(mViewPager.getCurrentItem());
+        RegisterComponentFragment fragment = mFragments[mViewPager.getCurrentItem()];
+        if (fragment == null) return;
 
         // if we are in the first fragment and user press the invisible previous button, ignore it
         if(fragment.getPosition() == 0) {
@@ -344,19 +329,21 @@ public class RegisterActivity extends AppCompatActivity
             case Constants.TAKE_PHOTO_REQUEST_CODE:
             case Constants.FROM_GALLERY_REQUEST_CODE:
                 if(resultCode == RESULT_OK){
-                    mPhotoTextView.setVisibility(View.VISIBLE);
-                    if (data.getData() != null)
+                    if (data.getData() != null) {
                         imageUri = data.getData();
+                        if (mFragments[mViewPager.getCurrentItem()]
+                                instanceof SitterAdditionalInfoFragment) {
+                            ((SitterAdditionalInfoFragment) mFragments[mViewPager.getCurrentItem()])
+                                    .setHasSelectedPhoto(true);
+                        }
+                    }
                 }
-
                 break;
         }
     }
 
     @Override
-    public void showUploadPhotoDialog(TextView textView) {
-        if(textView != null) mPhotoTextView = textView;
-
+    public void showUploadPhotoDialog() {
         if(photoUploadAlertDialog == null){
             final View dialogView = getLayoutInflater().inflate(R.layout.dialog_upload_photo, null);
 
@@ -453,48 +440,7 @@ public class RegisterActivity extends AppCompatActivity
                 });
     }
 
-    private class RegisterAdapter extends FragmentPagerAdapter{
-        RegisterAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if(position < mFragments.size()) return mFragments.get(position);
-
-            RegisterComponentFragment fragment = addNewFragment(position, false);
-
-            return fragment;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            RegisterComponentFragment fragment =
-                    (RegisterComponentFragment)super.instantiateItem(container, position);
-
-            if(position < mFragments.size()){
-                return super.instantiateItem(container, position);
-            }
-
-            for(int i = mFragments.size(); i < position; i++){
-                mFragments.add(i, (RegisterComponentFragment)super.instantiateItem(container, i));
-            }
-            mFragments.add(position, fragment);
-            return fragment;
-        }
-
-        @Override
-        public int getCount(){
-            switch (selectedMode){
-                case R.id.radio_babysitter:
-                    return 4;
-                default:
-                    return 2;
-            }
-        }
-    }
-
-    private RegisterComponentFragment addNewFragment(int position, boolean hasArgs){
+    private RegisterComponentFragment getNewFragment(int position) {
         RegisterComponentFragment fragment = null;
         switch (selectedMode){
             case R.id.radio_babysitter:
@@ -527,6 +473,42 @@ public class RegisterActivity extends AppCompatActivity
                         break;
                 }
         }
-        return  fragment;
+        return fragment;
+    }
+
+    private class RegisterAdapter extends FragmentPagerAdapter {
+        RegisterAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            RegisterComponentFragment fragment = mFragments[position];
+            if (fragment != null) return fragment;
+
+            mFragments[position] = getNewFragment(position);
+            return mFragments[position];
+        }
+
+        @NonNull
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            RegisterComponentFragment fragment =
+                    (RegisterComponentFragment) super.instantiateItem(container, position);
+
+            mFragments[position] = fragment;
+
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            switch (selectedMode) {
+                case R.id.radio_babysitter:
+                    return 4;
+                default:
+                    return 2;
+            }
+        }
     }
 }

@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">BabysitterFinder</string>
 
+    <!-- Firebase Messaging -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="default_notification_channel_name">BabySitterFinder Channel</string>
+
     <!-- Main Activity -->
     <string name="email">Email Address</string>
     <string name="password">Password</string>

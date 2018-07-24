@@ -64,6 +64,7 @@ public class Constants {
     public static final String FIREBASE_APPOINTMENTS = "appointment";
     public static final String FIREBASE_ALL_DAY = "allDay";
     public static final String FIREBASE_TIME_FROM = "timeFrom";
+    public static final String FIREBASE_REGISTRATION_TOKEN = "registrationToken";
 
     public static final int USER_FEMALE = 0;
     public static final int USER_MALE = 1;

@@ -7,13 +7,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -25,7 +25,6 @@ import com.greece.nasiakouts.babysitterfinder.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,7 +38,12 @@ public class PersonalInfoFragment extends RegisterComponentFragment
     @BindViews({R.id.name_input,
                 R.id.phone_input,
             R.id.date_born_input})
-    List<TextInputEditText> mPersonalInfList;
+    List<TextInputEditText> mPersonalInfoList;
+
+    @BindViews({R.id.name_input_wrapper,
+            R.id.phone_input_wrapper,
+            R.id.date_born_input_wrapper})
+    List<TextInputLayout> mPersonalInfoWrapperList;
 
     @BindView(R.id.radio_group_sex)
     RadioGroup mRadioGroupSex;
@@ -62,7 +66,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
         View root = inflater.inflate(R.layout.fragment_personal_info, container, false);
         ButterKnife.bind(this, root);
 
-        mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT).setOnFocusChangeListener(this);
+        mPersonalInfoList.get(Constants.INDEX_DATE_BORN_INPUT).setOnFocusChangeListener(this);
         mFemale_radio_button.setOnTouchListener(this);
         mMale_radio_button.setOnTouchListener(this);
 
@@ -72,11 +76,13 @@ public class PersonalInfoFragment extends RegisterComponentFragment
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(Date.class.getName(), mDateRepresentation);
+        if (mDateRepresentation != -1) {
+            outState.putLong(Date.class.getName(), mDateRepresentation);
+        }
         if (mDateDialog != null && mDateDialog.isShowing()) {
-            outState.putBoolean(DatePickerDialog.class.getName(), false);
-        } else {
             outState.putBoolean(DatePickerDialog.class.getName(), true);
+        } else {
+            outState.putBoolean(DatePickerDialog.class.getName(), false);
         }
     }
 
@@ -99,11 +105,11 @@ public class PersonalInfoFragment extends RegisterComponentFragment
         if(user == null) return null;
 
         // region Get User Inputs
-        String fullName = mPersonalInfList.get(Constants.INDEX_NAME_INPUT)
+        String fullName = mPersonalInfoList.get(Constants.INDEX_NAME_INPUT)
                 .getText().toString();
-        String phoneNumber = mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
+        String phoneNumber = mPersonalInfoList.get(Constants.INDEX_PHONE_INPUT)
                 .getText().toString();
-        String dateBorn = mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
+        String dateBorn = mPersonalInfoList.get(Constants.INDEX_DATE_BORN_INPUT)
                 .getText().toString();
         int sex = mRadioGroupSex.getCheckedRadioButtonId();
         // endregion
@@ -125,13 +131,13 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                                       long dateBornLongRepresentation,
                                       int sex) {
         if(TextUtils.isEmpty(fullName)) {
-            mPersonalInfList.get(Constants.INDEX_NAME_INPUT)
+            mPersonalInfoWrapperList.get(Constants.INDEX_NAME_INPUT)
                     .setError(getString(R.string.not_filled_name));
             return false;
         }
 
         if(TextUtils.isEmpty(phoneNumber)) {
-            mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
+            mPersonalInfoWrapperList.get(Constants.INDEX_PHONE_INPUT)
                     .setError(getString(R.string.not_filled_phone));
             return false;
         }
@@ -139,19 +145,19 @@ public class PersonalInfoFragment extends RegisterComponentFragment
         if(phoneNumber.length() < 4
                 || phoneNumber.length() > 13
                 || !android.util.Patterns.PHONE.matcher(phoneNumber).matches()) {
-            mPersonalInfList.get(Constants.INDEX_PHONE_INPUT)
+            mPersonalInfoWrapperList.get(Constants.INDEX_PHONE_INPUT)
                     .setError(getString(R.string.no_valid_phone));
             return false;
         }
 
         if (TextUtils.isEmpty(dateBorn)) {
-            mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
+            mPersonalInfoWrapperList.get(Constants.INDEX_DATE_BORN_INPUT)
                     .setError(getString(R.string.not_filled_born_date));
             return false;
         }
 
         if (dateBornLongRepresentation == -1) {
-            mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
+            mPersonalInfoWrapperList.get(Constants.INDEX_DATE_BORN_INPUT)
                     .setError(getString(R.string.not_filled_born_date));
             return false;
         }
@@ -200,7 +206,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
 
                             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
 
-                            mPersonalInfList.get(Constants.INDEX_DATE_BORN_INPUT)
+                            mPersonalInfoList.get(Constants.INDEX_DATE_BORN_INPUT)
                                     .setText(sdf.format(cal.getTime()));
 
                             mFemale_radio_button.requestFocus();

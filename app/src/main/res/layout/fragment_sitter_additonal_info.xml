@@ -26,6 +26,7 @@
                 android:text="@string/additional_info_privacy" />
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/max_kids_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/divider_margin"
@@ -41,6 +42,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/min_age_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/divider_margin"
@@ -70,8 +72,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="@dimen/vertical_margin"
-                    android:text="@string/photo_uploaded"
                     android:layout_weight="1"
+                    android:text="@string/photo_uploaded"
                     android:visibility="gone" />
 
                 <Button
@@ -90,7 +92,6 @@
                     android:textColor="@android:color/white" />
             </LinearLayout>
 
-
             <TextView
                 style="@style/PromptTextView"
                 android:text="@string/introduction_prompt" />
@@ -103,6 +104,7 @@
                 android:text="@string/introduction_privacy" />
 
             <android.support.design.widget.TextInputLayout
+                android:id="@+id/introduction_wrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingEnd="@dimen/divider_margin"

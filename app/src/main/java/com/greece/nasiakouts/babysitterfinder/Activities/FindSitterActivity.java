@@ -52,7 +52,6 @@ public class FindSitterActivity extends AppCompatActivity
     @BindView(R.id.needed_timeslots_rv)
     RecyclerView mNeededSitterSlotsRv;
 
-    private int countQueries = 0;
     private TimeSlotRvAdapter mAdapter;
     private boolean fromRegistration = false;
     private FirebaseDatabase mFirebaseDatabase;
@@ -259,7 +258,6 @@ public class FindSitterActivity extends AppCompatActivity
                         }
                     }
                 }
-                countQueries++;
                 availabilityQueryExecuted();
             }
 

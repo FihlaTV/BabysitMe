@@ -69,12 +69,14 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
     public User getUser(User user) {
         if(user == null) return null;
 
+        // region Get User Input
         String streetAddress = mWorkingInfoList.get(Constants.INDEX_STREET_ADDRESS_INPUT)
                 .getText().toString();
         String charges = mWorkingInfoList.get(Constants.INDEX_CHARGES_INPUT)
                 .getText().toString();
         String currency = mWorkingInfoList.get(Constants.INDEX_CURRENCY_INPUT)
                 .getText().toString();
+        // endregion
 
         if(TextUtils.isEmpty(streetAddress)) {
             mWorkingInfoList.get(Constants.INDEX_STREET_ADDRESS_INPUT)
