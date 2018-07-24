@@ -8,6 +8,7 @@ public class Appointment implements Serializable {
     private String streetAddress;
     private TimeSlot slot;
     private int sitterSex;
+    private double totalCost;
 
     private boolean acceptedBySitter = false;
     private String sitterId;

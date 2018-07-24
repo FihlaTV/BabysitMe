@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
-import com.greece.nasiakouts.babysitterfinder.OnAddTimeSlotListener;
 import com.greece.nasiakouts.babysitterfinder.OnUploadPhotoEvent;
 import com.greece.nasiakouts.babysitterfinder.R;
 
@@ -31,7 +31,7 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
     @BindViews({R.id.max_kids,
             R.id.min_age,
             R.id.introduction})
-    List<EditText> mSitterAdditionalInfoList;
+    List<TextInputEditText> mSitterAdditionalInfoList;
 
     @BindView(R.id.file_uploaded)
     TextView fileUploadedTv;
@@ -86,7 +86,7 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
 
     @OnClick(R.id.upload_photo_button)
     public void uploadButonPressed(){
-        uploadPhotoEventCallback.uploadPhoto(fileUploadedTv, upload);
+        uploadPhotoEventCallback.showUploadPhotoDialog(fileUploadedTv);
     }
 
     // Override onAttach to make sure that the container activity has implemented the callback

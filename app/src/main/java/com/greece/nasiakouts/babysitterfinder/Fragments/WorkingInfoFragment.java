@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,7 +37,7 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
     @BindViews({R.id.street_address,
                 R.id.charges,
                 R.id.currency})
-    List<EditText> mWorkingInfoList;
+    List<TextInputEditText> mWorkingInfoList;
 
     @BindView(R.id.working_slots_rv)
     RecyclerView mWorkingSlotsRv;

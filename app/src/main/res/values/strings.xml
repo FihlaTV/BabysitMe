@@ -158,4 +158,9 @@
     <string name="please_wait">Please wait...</string>
     <string name="diconect">You have been disconnected!</string>
     <string name="mode_save_inst_key">mode_save_instance_key</string>
+    <string name="registerDialog">RegisterDialog</string>
+    <string name="no_user">There is no user record corresponding</string>
+    <string name="upload_photo_si_key">upload_photo_dialog_key</string>
+    <string name="photo_uploaded">Photo Uploaded</string>
+    <string name="error_occurred">An error have occurred!</string>
 </resources>

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -75,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity
     public Button mNextButton;
 
     private Uri imageUri;
+    private TextView mPhotoTextView;
 
     private User mUser;
     private int selectedMode;
@@ -88,10 +89,11 @@ public class RegisterActivity extends AppCompatActivity
     private DatabaseReference mSittersDatabaseReference;
     private DatabaseReference mUsersDatabaseReference;
     private DatabaseReference mWorkingDaysReference;
-    private DatabaseReference mSitterMailIdReference;
 
     private FirebaseStorage mStorage;
     private StorageReference mStorageReference;
+
+    private AlertDialog photoUploadAlertDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,17 +105,14 @@ public class RegisterActivity extends AppCompatActivity
                 .setTitle(R.string.registration);
 
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null && bundle.containsKey(Constants.INT_CODE)){
+        if(bundle != null
+                && bundle.containsKey(Constants.INT_CODE)){
             selectedMode = bundle.getInt(Constants.INT_CODE);
         }
-
-        mAdapter = new RegisterAdapter(getSupportFragmentManager());
-        mFragments = new ArrayList<>();
-
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.setCurrentItem(0);
-        mViewPager.setOffscreenPageLimit(mAdapter.getCount());
-        updateButtonsVisibility(0);
+        else if(savedInstanceState != null
+                && savedInstanceState.containsKey(Constants.INT_CODE)) {
+            selectedMode = savedInstanceState.getInt(Constants.INT_CODE);
+        }
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
@@ -132,21 +131,59 @@ public class RegisterActivity extends AppCompatActivity
         mWorkingDaysReference = mFirebaseDatabase
                 .getReference()
                 .child(Constants.FIREBASE_WORKING_DAYS);
-        mSitterMailIdReference = mFirebaseDatabase
-                .getReference()
-                .child(Constants.FIREBASE_USER_ALL_INFO)
-                .child(Constants.FIREBASE_SITTER_ADDRESS_ID_MAP);
 
         mStorage = FirebaseStorage.getInstance();
         mStorageReference = mStorage.getReference();
+
+
+        mAdapter = new RegisterAdapter(getSupportFragmentManager());
+        mFragments = new ArrayList<>();
+
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(mAdapter.getCount());
+
+        if(savedInstanceState == null){
+            mViewPager.setCurrentItem(0);
+            updateButtonsVisibility(0);
+        }
+        else {
+            if(savedInstanceState.containsKey(User.class.getName())
+                    && savedInstanceState.containsKey(ViewPager.class.getName())){
+                mUser = (User) savedInstanceState.getSerializable(User.class.getName());
+                int posRestored = savedInstanceState.getInt(ViewPager.class.getName());
+                mViewPager.setCurrentItem(posRestored);
+                updateButtonsVisibility(posRestored);
+            }
+            else {
+                Toast.makeText(getApplicationContext(),
+                        R.string.error_occurred,
+                        Toast.LENGTH_LONG).show();
+                onBackPressed();
+            }
+        }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        outState.putInt(getString(R.string.orientation_bundle_key),
-                getResources().getConfiguration().orientation);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(Constants.INT_CODE, selectedMode);
+        outState.putSerializable(User.class.getName(), mUser);
         outState.putInt(ViewPager.class.getName(), mViewPager.getCurrentItem());
+
+        if(photoUploadAlertDialog != null
+                && photoUploadAlertDialog.isShowing()) {
+            outState.putBoolean(getString(R.string.upload_photo_si_key), true);
+        }
+        else {
+            outState.putBoolean(getString(R.string.upload_photo_si_key), false);
+        }
+
+        if(mPhotoTextView != null && mPhotoTextView.getVisibility() == View.VISIBLE){
+            outState.putBoolean(TextView.class.getName(), true);
+        }
+        else {
+            outState.putBoolean(TextView.class.getName(), false);
+        }
     }
 
     @Override
@@ -154,9 +191,19 @@ public class RegisterActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState == null) return;
 
-        int currentItem = savedInstanceState.getInt(ViewPager.class.getName(), 0);
-        mViewPager.setCurrentItem(currentItem);
-        updateButtonsVisibility(currentItem);
+        if(savedInstanceState.getBoolean(getString(R.string.upload_photo_si_key),
+                false)){
+            showUploadPhotoDialog(null);
+        }
+
+        if(savedInstanceState.containsKey(TextView.class.getName())){
+            boolean isVisible = savedInstanceState.getBoolean(TextView.class.getName());
+            if(isVisible){
+                View layout = getLayoutInflater()
+                        .inflate(R.layout.fragment_sitter_additonal_info, null);
+                mPhotoTextView = layout.findViewById(R.id.file_uploaded);
+            }
+        }
     }
 
     private void updateButtonsVisibility(int position) {
@@ -179,6 +226,8 @@ public class RegisterActivity extends AppCompatActivity
 
     @OnClick(R.id.next_button)
     public void buttonNextPressed(View view){
+        if(mFragments.size() < mViewPager.getCurrentItem()) return;
+
         RegisterComponentFragment fragment = mFragments.get(mViewPager.getCurrentItem());
 
         User temp = fragment.getUser(mUser);
@@ -190,6 +239,7 @@ public class RegisterActivity extends AppCompatActivity
                     .setView(R.layout.dialog_saving)
                     .setCancelable(false)
                     .show();
+
 
             mFirebaseAuth.createUserWithEmailAndPassword(mUser.getEmailAddress(), mUser.getPassword())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -209,13 +259,14 @@ public class RegisterActivity extends AppCompatActivity
 
                                 if (selectedMode == R.id.radio_babysitter) {
                                     mUserTypesDatabaseReference.child(userId).setValue("sitter");
-                                    mSitterMailIdReference.child(mUser.getEmailAddress()).setValue(userId);
                                     for (TimeSlot timeSlot : ((Babysitter) mUser).getTimeSlots()) {
                                         String day = timeSlot.getDay();
                                         timeSlot.setDay(null);
                                         mWorkingDaysReference
                                                 .child(day)
-                                                .child(userId).setValue(timeSlot);
+                                                .child(userId)
+                                                .push()
+                                                .setValue(timeSlot);
                                     }
                                     ((Babysitter) mUser).setTimeSlots(null);
                                     mSittersDatabaseReference.child(userId).setValue(mUser);
@@ -258,6 +309,7 @@ public class RegisterActivity extends AppCompatActivity
 
     @OnClick(R.id.previous_button)
     public void buttonPreviousPressed(View view){
+        if(mFragments.size() < mViewPager.getCurrentItem()) return;
 
         RegisterComponentFragment fragment = mFragments.get(mViewPager.getCurrentItem());
 
@@ -289,10 +341,10 @@ public class RegisterActivity extends AppCompatActivity
         }
 
         switch(requestCode) {
-            case 0:
-            case 1:
+            case Constants.TAKE_PHOTO_REQUEST_CODE:
+            case Constants.FROM_GALLERY_REQUEST_CODE:
                 if(resultCode == RESULT_OK){
-                    //TODO Add Toast
+                    mPhotoTextView.setVisibility(View.VISIBLE);
                     if (data.getData() != null)
                         imageUri = data.getData();
                 }
@@ -302,50 +354,54 @@ public class RegisterActivity extends AppCompatActivity
     }
 
     @Override
-    public void uploadPhoto(TextView textView, Button button) {
-        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_upload_photo, null);
+    public void showUploadPhotoDialog(TextView textView) {
+        if(textView != null) mPhotoTextView = textView;
 
-        final AlertDialog alertDialog =
-                new AlertDialog.Builder(this)
-                .setView(dialogView)
-                        .create();
+        if(photoUploadAlertDialog == null){
+            final View dialogView = getLayoutInflater().inflate(R.layout.dialog_upload_photo, null);
 
-        final RadioGroup radioGroupInterest =
-                dialogView.findViewById(R.id.radio_group_upload);
+            photoUploadAlertDialog =
+                    new AlertDialog.Builder(this)
+                            .setView(dialogView)
+                            .create();
 
-        radioGroupInterest.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                alertDialog.dismiss();
+            final RadioGroup radioGroupInterest =
+                    dialogView.findViewById(R.id.radio_group_upload);
 
-                int selectedRadioInterest =
-                        radioGroupInterest.getCheckedRadioButtonId();
+            radioGroupInterest.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                    photoUploadAlertDialog.dismiss();
 
-                if (selectedRadioInterest == -1) {
-                    Toast.makeText(RegisterActivity.this,
-                            R.string.no_selected_upload, Toast.LENGTH_LONG).show();
-                    return;
-                }
+                    int selectedRadioInterest =
+                            radioGroupInterest.getCheckedRadioButtonId();
 
-                if (selectedRadioInterest == R.id.radio_capture) {
-                    File photoFile = createImageFile();
-                    if (photoFile != null) {
-                        imageUri = FileProvider.getUriForFile(RegisterActivity.this,
-                                "com.greece.nasiakouts.babysitterfinder.provider", photoFile);
-
-                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                        startActivityForResult(takePicture, 0);
+                    if (selectedRadioInterest == -1) {
+                        Toast.makeText(RegisterActivity.this,
+                                R.string.no_selected_upload, Toast.LENGTH_LONG).show();
+                        return;
                     }
-                } else {
-                    Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto, 1);
-                }
-            }
-        });
 
-        alertDialog.show();
+                    if (selectedRadioInterest == R.id.radio_capture) {
+                        File photoFile = createImageFile();
+                        if (photoFile != null) {
+                            imageUri = FileProvider.getUriForFile(RegisterActivity.this,
+                                    "com.greece.nasiakouts.babysitterfinder.provider", photoFile);
+
+                            Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            takePicture.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                            startActivityForResult(takePicture, Constants.TAKE_PHOTO_REQUEST_CODE);
+                        }
+                    } else {
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, Constants.FROM_GALLERY_REQUEST_CODE);
+                    }
+                }
+            });
+
+        }
+        photoUploadAlertDialog.show();
     }
 
     private File createImageFile() {
@@ -404,44 +460,26 @@ public class RegisterActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-
-            RegisterComponentFragment fragment = null;
             if(position < mFragments.size()) return mFragments.get(position);
 
-            switch (selectedMode){
-                case R.id.radio_babysitter:
-                    switch (position){
-                        case 0:
-                            fragment = new AccountInfoFragment();
-                            break;
-                        case 1:
-                            fragment = new PersonalInfoFragment();
-                            break;
-                        case 2:
-                            fragment = new WorkingInfoFragment();
-                            break;
-                        case 3:
-                            fragment = new SitterAdditionalInfoFragment();
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    switch (position) {
-                        case 0:
-                            fragment = new AccountInfoFragment();
-                            break;
-                        case 1:
-                            fragment = new PersonalInfoFragment();
-                            break;
-                        default:
-                            break;
-                    }
+            RegisterComponentFragment fragment = addNewFragment(position, false);
+
+            return fragment;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            RegisterComponentFragment fragment =
+                    (RegisterComponentFragment)super.instantiateItem(container, position);
+
+            if(position < mFragments.size()){
+                return super.instantiateItem(container, position);
             }
 
+            for(int i = mFragments.size(); i < position; i++){
+                mFragments.add(i, (RegisterComponentFragment)super.instantiateItem(container, i));
+            }
             mFragments.add(position, fragment);
-
             return fragment;
         }
 
@@ -454,5 +492,41 @@ public class RegisterActivity extends AppCompatActivity
                     return 2;
             }
         }
+    }
+
+    private RegisterComponentFragment addNewFragment(int position, boolean hasArgs){
+        RegisterComponentFragment fragment = null;
+        switch (selectedMode){
+            case R.id.radio_babysitter:
+                switch (position){
+                    case 0:
+                        fragment = new AccountInfoFragment();
+                        break;
+                    case 1:
+                        fragment = new PersonalInfoFragment();
+                        break;
+                    case 2:
+                        fragment = new WorkingInfoFragment();
+                        break;
+                    case 3:
+                        fragment = new SitterAdditionalInfoFragment();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                switch (position) {
+                    case 0:
+                        fragment = new AccountInfoFragment();
+                        break;
+                    case 1:
+                        fragment = new PersonalInfoFragment();
+                        break;
+                    default:
+                        break;
+                }
+        }
+        return  fragment;
     }
 }

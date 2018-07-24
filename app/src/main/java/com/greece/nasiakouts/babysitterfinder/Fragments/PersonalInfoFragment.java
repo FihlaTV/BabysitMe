@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,7 +40,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
     @BindViews({R.id.name_input,
                 R.id.phone_input,
                 R.id.year_input})
-    List<EditText> mPersonalInfList;
+    List<TextInputEditText> mPersonalInfList;
 
     @BindView(R.id.radio_group_sex)
     RadioGroup mRadioGroupSex;
@@ -174,9 +175,10 @@ public class PersonalInfoFragment extends RegisterComponentFragment
             // Any user either a regular one or sitter has to be at least 16 years old
             // so thus why we are setting the max date limit to the date picker
             Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, mCurrentDate.get(Calendar.YEAR) - 16);
-            cal.set(Calendar.MONTH, Calendar.JANUARY);
+            cal.set(Calendar.YEAR, mCurrentDate.get(Calendar.YEAR) - Constants.MIN_AGE_OF_USER);
+            cal.set(Calendar.MONTH, Calendar.DECEMBER);
             cal.set(Calendar.DAY_OF_MONTH, Calendar.SUNDAY);
+            cal.set(Calendar.DAY_OF_MONTH, Constants.DAYS_IN_DECEMBER);
             dialog.getDatePicker().setMaxDate(cal.getTime().getTime());
 
             dialog.show();

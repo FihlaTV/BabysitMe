@@ -10,14 +10,13 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class TimeSlot implements Serializable {
-    private String day;
+    @Exclude
+    String day;
     private String specificDate;
     private double timeFrom;
     private double timeTo;
     private boolean isAllDay;
     private boolean isForever;
-
-    private SimpleDateFormat onlySimpleDate = new SimpleDateFormat("dd/MM/yy", Locale.US);
 
     public TimeSlot() {
     }
@@ -25,8 +24,6 @@ public class TimeSlot implements Serializable {
     public TimeSlot(String day, String specificDate,
                     double timeFrom, double timeTo,
                     boolean isAllDay, boolean isForever) {
-
-        Calendar cal = Calendar.getInstance();
         this.specificDate = specificDate;
         this.timeFrom = timeFrom;
         this.timeTo = timeTo;
@@ -35,10 +32,12 @@ public class TimeSlot implements Serializable {
         this.isAllDay = isAllDay;
     }
 
+    @Exclude
     public String getDay() {
         return day;
     }
 
+    @Exclude
     public void setDay(String day) {
         this.day = day;
     }

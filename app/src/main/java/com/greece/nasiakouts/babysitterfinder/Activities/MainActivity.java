@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +21,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,8 +53,13 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.log_password)
     EditText mPassword;
 
+    @BindView(R.id.password_wrapper)
+    TextInputLayout mPasswordWrapper;
+
     AlertDialog mSavingAlertDialog;
     FirebaseAuth mFirebaseAuth;
+
+    AlertDialog mSelectRegisterModeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(mPassword.getText().toString())) {
-            mPassword.setError(getString(R.string.not_filled_password));
+            mPasswordWrapper.setError(getString(R.string.not_filled_password));
+            return;
         }
 
         mSavingAlertDialog = new AlertDialog.Builder(this)
@@ -189,6 +193,10 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(),
                                     task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
+                            if(task.getException().getMessage()
+                                    .startsWith(getString(R.string.no_user))){
+                                return;
+                            }
                             mReset.setVisibility(View.VISIBLE);
                         }
                     }
@@ -214,49 +222,85 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.register_now_tv)
     public void register(View view) {
         mRegister.setTextColor(ContextCompat.getColor(this, R.color.hyperlink_color));
+        showSelectRegisterModeDialog();
+    }
 
-        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_register_selection, null);
+    private void showSelectRegisterModeDialog(){
+        if(mSelectRegisterModeDialog == null) {
+            final View dialogView = getLayoutInflater().inflate(R.layout.dialog_register_selection, null);
 
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.mode_prompt)
-                .setView(dialogView)
-                .setCancelable(false)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        RadioGroup radioGroupInterest =
-                                dialogView.findViewById(R.id.radio_group_interest);
+            mSelectRegisterModeDialog = new AlertDialog.Builder(this)
+                    .setTitle(R.string.mode_prompt)
+                    .setView(dialogView)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            RadioGroup radioGroupInterest =
+                                    dialogView.findViewById(R.id.radio_group_interest);
 
-                        int selectedRadioInterest =
-                                radioGroupInterest.getCheckedRadioButtonId();
+                            int selectedRadioInterest =
+                                    radioGroupInterest.getCheckedRadioButtonId();
 
-                        if(selectedRadioInterest == -1) {
-                            Toast.makeText(MainActivity.this,
-                                    R.string.no_register_mode_selected, Toast.LENGTH_LONG).show();
+                            if(selectedRadioInterest == -1) {
+                                Toast.makeText(MainActivity.this,
+                                        R.string.no_register_mode_selected, Toast.LENGTH_LONG).show();
+                                mRegister.setTextColor(ContextCompat
+                                        .getColor(MainActivity.this, R.color.secondary_text));
+                                return;
+                            }
+
+                            Intent intent =
+                                    new Intent(MainActivity.this, RegisterActivity.class);
+                            intent.putExtra(INT_CODE, selectedRadioInterest);
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    })
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
                             mRegister.setTextColor(ContextCompat
                                     .getColor(MainActivity.this, R.color.secondary_text));
-                            return;
                         }
+                    })
+                    .show();
+        }
+        else {
+            mSelectRegisterModeDialog.show();
+        }
+    }
 
-                        Intent intent =
-                                new Intent(MainActivity.this, RegisterActivity.class);
-                        intent.putExtra(INT_CODE, selectedRadioInterest);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        mRegister.setTextColor(ContextCompat
-                                .getColor(MainActivity.this, R.color.secondary_text));
-                    }
-                })
-                .show();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mSelectRegisterModeDialog == null) return;
+        mSelectRegisterModeDialog.dismiss();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(mSelectRegisterModeDialog != null && mSelectRegisterModeDialog.isShowing()){
+            outState.putBoolean(getString(R.string.registerDialog), true);
+        }
+        else {
+            outState.putBoolean(getString(R.string.registerDialog), false);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState
+                .getBoolean(getString(R.string.registerDialog),
+                        false)){
+            showSelectRegisterModeDialog();
+        }
     }
 }

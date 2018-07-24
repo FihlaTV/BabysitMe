@@ -69,10 +69,14 @@ public class Constants {
     public static final int USER_MALE = 1;
     public static final int USER_ANY = 2;
 
-    public static final int ADD_TIMESLOT_REQUEST_CODE = 0;
+    public static final int ADD_TIMESLOT_REQUEST_CODE = 100;
+    public static final int TAKE_PHOTO_REQUEST_CODE = 200;
+    public static final int FROM_GALLERY_REQUEST_CODE = 201;
     public static final String DASH = " - ";
     public static final String SLASH = "/";
     public static final String ANOKATOTELEIA = ":";
 
+    public static final int MIN_AGE_OF_USER = 17;
+    public static final int DAYS_IN_DECEMBER = 31;
 
 }

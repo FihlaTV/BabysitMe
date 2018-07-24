@@ -3,6 +3,7 @@ package com.greece.nasiakouts.babysitterfinder.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,16 +24,23 @@ public class AccountInfoFragment extends RegisterComponentFragment {
     @BindViews({R.id.mail_input,
                 R.id.password_input,
                 R.id.confirm_password_input})
-    List<EditText> mAccountInfoList;
+    List<TextInputEditText> mAccountInfoList;
+
+    private View root;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_account_info, container, false);
-
-        ButterKnife.bind(this, root);
+        root = inflater.inflate(R.layout.fragment_account_info, container, false);
 
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ButterKnife.bind(this, root);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -10,7 +12,9 @@ import java.util.Locale;
 public class User implements Serializable{
 
     private String emailAddress;
-    private String password;
+
+    @Exclude
+    String password;
 
     private String fullName;
     private String phoneNumber;
@@ -48,10 +52,12 @@ public class User implements Serializable{
         this.emailAddress = emailAddress;
     }
 
+    @Exclude
     public String getPassword() {
         return password;
     }
 
+    @Exclude
     public void setPassword(String password) {
         this.password = password;
     }
