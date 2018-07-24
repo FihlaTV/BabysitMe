@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,11 @@ public class AccountInfoFragment extends RegisterComponentFragment {
             R.id.password_input,
             R.id.confirm_password_input})
     List<TextInputEditText> mAccountInfoList;
+
+    @BindViews({R.id.main_input_wrapper,
+            R.id.password_input_wrapper,
+            R.id.confirm_password_input_wrapper})
+    List<TextInputLayout> mAccountInfoWrapperList;
 
     @Nullable
     @Override
@@ -62,37 +68,37 @@ public class AccountInfoFragment extends RegisterComponentFragment {
                                       String password,
                                       String confirmedPassword) {
         if (TextUtils.isEmpty(emailAddress)) {
-            mAccountInfoList.get(Constants.INDEX_MAIL_INPUT)
+            mAccountInfoWrapperList.get(Constants.INDEX_MAIL_INPUT)
                     .setError(getString(R.string.not_filled_email_address));
             return false;
         }
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddress).matches()) {
-            mAccountInfoList.get(Constants.INDEX_MAIL_INPUT)
+            mAccountInfoWrapperList.get(Constants.INDEX_MAIL_INPUT)
                     .setError(getString(R.string.no_valid_email));
             return false;
         }
 
         if (TextUtils.isEmpty(password)) {
-            mAccountInfoList.get(Constants.INDEX_PASSWORD_INPUT)
+            mAccountInfoWrapperList.get(Constants.INDEX_PASSWORD_INPUT)
                     .setError(getString(R.string.not_filled_password));
             return false;
         }
 
         if (password.length() < 6) {
-            mAccountInfoList.get(Constants.INDEX_PASSWORD_INPUT)
+            mAccountInfoWrapperList.get(Constants.INDEX_PASSWORD_INPUT)
                     .setError(getString(R.string.no_valid_password));
             return false;
         }
 
         if (TextUtils.isEmpty(confirmedPassword)) {
-            mAccountInfoList.get(Constants.INDEX_CONFIRM_PASSWORD_INPUT)
+            mAccountInfoWrapperList.get(Constants.INDEX_CONFIRM_PASSWORD_INPUT)
                     .setError(getString(R.string.not_filled_confirmation));
             return false;
         }
 
         if (!password.equals(confirmedPassword)) {
-            mAccountInfoList.get(Constants.INDEX_CONFIRM_PASSWORD_INPUT)
+            mAccountInfoWrapperList.get(Constants.INDEX_CONFIRM_PASSWORD_INPUT)
                     .setError(getString(R.string.no_valid_confirmation));
             return false;
         }

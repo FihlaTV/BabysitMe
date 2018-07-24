@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.log_password)
     EditText mPassword;
 
-    @BindView(R.id.password_wrapper)
+    @BindView(R.id.log_email_address_wrapper)
+    TextInputLayout mEmailAddressWrapper;
+
+    @BindView(R.id.log_password_wrapper)
     TextInputLayout mPasswordWrapper;
 
     AlertDialog mSavingAlertDialog;

@@ -38,7 +38,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
 
     @BindViews({R.id.name_input,
                 R.id.phone_input,
-                R.id.year_input})
+            R.id.date_born_input})
     List<TextInputEditText> mPersonalInfList;
 
     @BindView(R.id.radio_group_sex)
