@@ -2,6 +2,7 @@ package com.greece.nasiakouts.babysitterfinder.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -18,12 +19,14 @@ import android.widget.Toast;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
+import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.OnAddTimeSlotListener;
 import com.greece.nasiakouts.babysitterfinder.R;
 import com.mynameismidori.currencypicker.CurrencyPicker;
 import com.mynameismidori.currencypicker.CurrencyPickerListener;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,6 +69,17 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Parcelable listState = mWorkingSlotsRv.getLayoutManager().onSaveInstanceState();
+        // putting RV position
+        outState.putParcelable(RecyclerView.class.getName(), listState);
+        // putting RV items
+        outState.putParcelableArrayList(TimeSlot.class.getName(), mAdapter.getData());
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public User getUser(User user) {
         if(user == null) return null;
 
@@ -78,37 +92,42 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
                 .getText().toString();
         // endregion
 
-        if(TextUtils.isEmpty(streetAddress)) {
+        if (areValidAndFilled(streetAddress, charges, currency)) {
+            return new Babysitter(user, streetAddress,
+                    Double.parseDouble(charges), currency, mAdapter.getData());
+        }
+
+        return null;
+    }
+
+    private boolean areValidAndFilled(String streetAddress,
+                                      String charges,
+                                      String currency) {
+        if (TextUtils.isEmpty(streetAddress)) {
             mWorkingInfoList.get(Constants.INDEX_STREET_ADDRESS_INPUT)
                     .setError(getString(R.string.not_filled_street));
-            return null;
+            return false;
         }
 
-        if(TextUtils.isEmpty(charges)) {
+        if (TextUtils.isEmpty(charges)) {
             mWorkingInfoList.get(Constants.INDEX_CHARGES_INPUT)
                     .setError(getString(R.string.not_filled_charges));
-            return null;
+            return false;
         }
 
-        if(TextUtils.isEmpty(currency)) {
+        if (TextUtils.isEmpty(currency)) {
             mWorkingInfoList.get(Constants.INDEX_CURRENCY_INPUT)
                     .setError(getString(R.string.not_filled_currency));
-            return null;
+            return false;
         }
 
-        if(mAdapter.getItemCount() == 0) {
-            if(getContext() == null) return null;
+        if (mAdapter.getItemCount() == 0) {
+            if (getContext() == null) return false;
             Toast.makeText(getContext(), R.string.no_time_slot_added, Toast.LENGTH_LONG).show();
-            return null;
+            return false;
         }
 
-        // Make double be at least with 2 digits after the "."
-        if(charges.length() == 3) {
-            charges = charges + "0";
-        }
-
-        return new Babysitter(user, streetAddress,
-                Double.parseDouble(charges), currency, mAdapter.getData());
+        return true;
     }
 
     @Override
@@ -134,8 +153,9 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
         }
     }
 
+    // region Add Time Slot
     /* Establish communication between this fragment and the wrapper activity
-     * Handle click on fab add new timeslot
+     * Handle click on fab add new time slot
      */
 
     // Define a new interface OnAddWorkingSlotListener that triggers
@@ -143,7 +163,7 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
     OnAddTimeSlotListener addTimeSlotCallback;
 
     @OnClick(R.id.addWorkingSlot)
-    public void addWorkingSlot(View view){
+    public void addWorkingSlot() {
         addTimeSlotCallback.addTimeSlot(mAdapter);
     }
 
@@ -161,4 +181,5 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
                     + " must implement OnAddTimeSlotListener");
         }
     }
+    // endregion
 }

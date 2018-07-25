@@ -98,11 +98,6 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
         return null;
     }
 
-
-    /* Establish communication between this fragment and the wrapper activity
-     * Handle click on upload photo button
-     */
-
     private boolean areValidAndFilled(String maxKids, String minAge) {
         if (TextUtils.isEmpty(maxKids)) {
             mSitterAdditionalInfoWrapperList.get(Constants.INDEX_MAX_KIDS_INPUT)
@@ -118,6 +113,22 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
 
         return true;
     }
+
+    public void setHasSelectedPhoto(boolean hasSelectedPhoto) {
+        this.hasSelectedPhoto = hasSelectedPhoto;
+        fileUploadedTv.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public int getPosition() {
+        return Constants.SITTER_ADDITIONAL_INFO_FRAGMENT_SEQ;
+    }
+
+
+    // region Upload Photo
+    /* Establish communication between this fragment and the wrapper activity
+     * Handle click on upload photo button
+     */
 
     @OnClick(R.id.upload_photo_button)
     public void uploadButtonPressed() {
@@ -138,14 +149,6 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
                     + " must implement OnUploadPhotoEvent");
         }
     }
+    // endregion
 
-    public void setHasSelectedPhoto(boolean hasSelectedPhoto) {
-        this.hasSelectedPhoto = hasSelectedPhoto;
-        fileUploadedTv.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public int getPosition() {
-        return Constants.SITTER_ADDITIONAL_INFO_FRAGMENT_SEQ;
-    }
 }

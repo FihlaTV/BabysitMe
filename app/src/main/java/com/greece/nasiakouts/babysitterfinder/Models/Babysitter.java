@@ -3,6 +3,7 @@ package com.greece.nasiakouts.babysitterfinder.Models;
 import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Babysitter extends User implements Serializable {
@@ -45,6 +46,12 @@ public class Babysitter extends User implements Serializable {
 
     public double getCharges() {
         return charges;
+    }
+
+    public String getChargesFormated() {
+        // Make double be with 2 digits after the "."
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(charges);
     }
 
     public void setCharges(double charges) {
