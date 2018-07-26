@@ -118,6 +118,7 @@ public class SittersResultRvAdapter extends RecyclerView.Adapter<SittersResultRv
                         }
 
                         if (activityWeakReference == null) return;
+                        alertDialog.dismiss();
                         ((SittersResultActivity) activityWeakReference
                                 .get()).insertAppointmentsToDb(firebaseUser.getUid(), sitterUid);
                     }

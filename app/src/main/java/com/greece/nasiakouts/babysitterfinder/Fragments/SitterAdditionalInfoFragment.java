@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
@@ -39,23 +40,25 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
     List<TextInputLayout> mSitterAdditionalInfoWrapperList;
 
     @BindView(R.id.file_uploaded)
-    TextView fileUploadedTv;
+    TextView mFileUploadedTv;
 
     @BindView(R.id.upload_photo_button)
-    Button upload;
+    Button mUpload;
+
     // Define a new interface OnUploadPhotoEvent that triggers
     // a callback in the host activity
     OnUploadPhotoEvent uploadPhotoEventCallback;
+    private boolean hasSelectedPhoto = false;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_sitter_additonal_info, container, false);
         ButterKnife.bind(this, root);
         return root;
     }
-
-    private boolean hasSelectedPhoto = false;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
@@ -70,9 +73,9 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
                 && savedInstanceState.containsKey(TextView.class.getName())) {
             hasSelectedPhoto = savedInstanceState.getBoolean(TextView.class.getName());
             if (hasSelectedPhoto) {
-                fileUploadedTv.setVisibility(View.VISIBLE);
+                mFileUploadedTv.setVisibility(View.VISIBLE);
             } else {
-                fileUploadedTv.setVisibility(View.GONE);
+                mFileUploadedTv.setVisibility(View.GONE);
             }
         }
     }
@@ -111,12 +114,19 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
             return false;
         }
 
+        if (!hasSelectedPhoto) {
+            Toast.makeText(getContext(),
+                    R.string.phot_not_selected,
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
         return true;
     }
 
     public void setHasSelectedPhoto(boolean hasSelectedPhoto) {
         this.hasSelectedPhoto = hasSelectedPhoto;
-        fileUploadedTv.setVisibility(View.VISIBLE);
+        mFileUploadedTv.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -124,10 +134,9 @@ public class SitterAdditionalInfoFragment  extends RegisterComponentFragment{
         return Constants.SITTER_ADDITIONAL_INFO_FRAGMENT_SEQ;
     }
 
-
     // region Upload Photo
     /* Establish communication between this fragment and the wrapper activity
-     * Handle click on upload photo button
+     * Handle click on mUpload photo button
      */
 
     @OnClick(R.id.upload_photo_button)

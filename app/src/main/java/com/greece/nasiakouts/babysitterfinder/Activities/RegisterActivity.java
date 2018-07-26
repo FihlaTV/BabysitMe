@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -54,7 +53,6 @@ import com.greece.nasiakouts.babysitterfinder.R;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -77,11 +75,10 @@ public class RegisterActivity extends AppCompatActivity
     private Uri imageUri;
 
     private User mUser;
-    private int selectedMode;
+    private int mSelectedMode;
     private RegisterAdapter mAdapter;
     private RegisterComponentFragment[] mFragments;
 
-    private AlertDialog mSavingAlertDialog;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUserTypesDatabaseReference;
@@ -92,7 +89,8 @@ public class RegisterActivity extends AppCompatActivity
     private FirebaseStorage mStorage;
     private StorageReference mStorageReference;
 
-    private AlertDialog photoUploadAlertDialog;
+    private AlertDialog mSavingAlertDialog;
+    private AlertDialog mPhotoUploadAlertDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,16 +101,19 @@ public class RegisterActivity extends AppCompatActivity
         if(getSupportActionBar() != null) getSupportActionBar()
                 .setTitle(R.string.registration);
 
+        // region Detect mode running
         Bundle bundle = getIntent().getExtras();
         if(bundle != null
                 && bundle.containsKey(Constants.INT_CODE)){
-            selectedMode = bundle.getInt(Constants.INT_CODE);
+            mSelectedMode = bundle.getInt(Constants.INT_CODE);
         }
         else if(savedInstanceState != null
                 && savedInstanceState.containsKey(Constants.INT_CODE)) {
-            selectedMode = savedInstanceState.getInt(Constants.INT_CODE);
+            mSelectedMode = savedInstanceState.getInt(Constants.INT_CODE);
         }
+        // endregion
 
+        // region Firebase References
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUserTypesDatabaseReference = mFirebaseDatabase
@@ -133,8 +134,9 @@ public class RegisterActivity extends AppCompatActivity
 
         mStorage = FirebaseStorage.getInstance();
         mStorageReference = mStorage.getReference();
+        // endregion
 
-
+        // region ViewPager things
         mAdapter = new RegisterAdapter(getSupportFragmentManager());
         mFragments = new RegisterComponentFragment[mAdapter.getCount()];
 
@@ -160,21 +162,32 @@ public class RegisterActivity extends AppCompatActivity
                 onBackPressed();
             }
         }
+        // endregion
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(Constants.INT_CODE, selectedMode);
+        outState.putInt(Constants.INT_CODE, mSelectedMode);
         outState.putSerializable(User.class.getName(), mUser);
         outState.putInt(ViewPager.class.getName(), mViewPager.getCurrentItem());
 
-        if(photoUploadAlertDialog != null
-                && photoUploadAlertDialog.isShowing()) {
-            outState.putBoolean(getString(R.string.upload_photo_si_key), true);
+        if (mPhotoUploadAlertDialog != null
+                && mPhotoUploadAlertDialog.isShowing()) {
+            mPhotoUploadAlertDialog.dismiss();
+            outState.putBoolean(AlertDialog.class.getName(), true);
+        } else {
+            outState.putBoolean(AlertDialog.class.getName(), false);
+        }
+
+        // todo handle rotation on saving ?
+        if (mSavingAlertDialog != null
+                && mSavingAlertDialog.isShowing()) {
+            mSavingAlertDialog.dismiss();
+            outState.putBoolean(FirebaseDatabase.class.getName(), true);
         }
         else {
-            outState.putBoolean(getString(R.string.upload_photo_si_key), false);
+            outState.putBoolean(FirebaseDatabase.class.getName(), false);
         }
     }
 
@@ -183,22 +196,26 @@ public class RegisterActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState == null) return;
 
-        if(savedInstanceState.getBoolean(getString(R.string.upload_photo_si_key),
+        if (savedInstanceState.getBoolean(AlertDialog.class.getName(),
+                false)) {
+            showUploadPhotoDialog();
+        }
+
+        if (savedInstanceState.getBoolean(FirebaseDatabase.class.getName(),
                 false)){
             showUploadPhotoDialog();
         }
     }
 
+    // region ViewPager Navigation Stuff
     private void updateButtonsVisibility(int position) {
         if(position == 0) {
             mNextButton.setVisibility(View.VISIBLE);
             mPreviousButton.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             if(position ==  mAdapter.getCount() - 1) {
                 mNextButton.setText(R.string.done);
-            }
-            else {
+            } else {
                 mNextButton.setText(R.string.next);
             }
 
@@ -215,61 +232,79 @@ public class RegisterActivity extends AppCompatActivity
         if (fragment == null) return;
 
         User temp = fragment.getUser(mUser);
+        // No all fields filled and valid, so do not go to next fragment
         if(temp == null) return;
         mUser = temp;
 
+        // region Registration Completed
         if(fragment.getPosition() == mAdapter.getCount() - 1) {
-            mSavingAlertDialog = new AlertDialog.Builder(this)
-                    .setView(R.layout.dialog_saving)
-                    .setCancelable(false)
-                    .show();
-
+            showSavingAlertDialog();
 
             mFirebaseAuth.createUserWithEmailAndPassword(mUser.getEmailAddress(), mUser.getPassword())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            // todo giati cancel??
                             if (mSavingAlertDialog != null) {
                                 mSavingAlertDialog.cancel();
                             }
 
                             if (task.isSuccessful()) {
-                                uploadPhotoToCloudStorage(imageUri);
 
+                                // region Store to Firebase RealTime Database
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                 if (user == null) return;
                                 String userId = user.getUid();
                                 Intent intent;
 
-                                if (selectedMode == R.id.radio_babysitter) {
-                                    mUserTypesDatabaseReference.child(userId).setValue("sitter");
+                                if (mSelectedMode == R.id.radio_babysitter) {
+
+                                    uploadPhotoToCloudStorage(imageUri);
+
+                                    mUserTypesDatabaseReference
+                                            .child(userId)
+                                            .setValue(Constants.FIREBASE_SITTERS);
+
+                                    int count = 0;
                                     for (TimeSlot timeSlot : ((Babysitter) mUser).getTimeSlots()) {
                                         String day = timeSlot.getDay();
-                                        timeSlot.setDay(null);
+
+                                        String timeSlotUid = userId +
+                                                Constants.UNDERSCORE + (++count);
+
                                         mWorkingDaysReference
                                                 .child(day)
-                                                .child(userId)
-                                                .push()
+                                                .child(timeSlotUid)
                                                 .setValue(timeSlot);
                                     }
                                     ((Babysitter) mUser).setTimeSlots(null);
                                     mSittersDatabaseReference.child(userId).setValue(mUser);
 
+                                    // todo open profile loggin?
                                     intent = new Intent(RegisterActivity.this,
                                             MainActivity.class);
 
                                 } else {
-                                    mUsersDatabaseReference.child(userId).setValue(mUser);
-                                    mUserTypesDatabaseReference.child(userId).setValue("user");
+                                    mUserTypesDatabaseReference
+                                            .child(userId)
+                                            .setValue(Constants.FIREBASE_USERS);
+
+                                    mUsersDatabaseReference
+                                            .child(userId)
+                                            .setValue(mUser);
 
                                     intent = new Intent(RegisterActivity.this,
                                             FindSitterActivity.class);
                                     intent.putExtra(Intent.EXTRA_TEXT,
                                             RegisterActivity.class.getName());
                                 }
+                                // endregion
+
                                 startActivity(intent);
+
                             } else {
-                                if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                                if (task.getException()
+                                        instanceof FirebaseAuthUserCollisionException) {
                                     Toast.makeText(getApplicationContext(),
                                             R.string.already_user,
                                             Toast.LENGTH_SHORT).show();
@@ -281,11 +316,11 @@ public class RegisterActivity extends AppCompatActivity
                                             task.getException().getMessage(),
                                             Toast.LENGTH_SHORT).show();
                                 }
-
                             }
                         }
                     });
         }
+        // endregion
 
         mViewPager.setCurrentItem(fragment.getPosition() + 1, true);
         updateButtonsVisibility(fragment.getPosition() + 1);
@@ -306,6 +341,18 @@ public class RegisterActivity extends AppCompatActivity
         mViewPager.setCurrentItem(fragment.getPosition() - 1, true);
         updateButtonsVisibility(fragment.getPosition() - 1);
     }
+    // endregion
+
+    private void showSavingAlertDialog() {
+        if (mSavingAlertDialog == null) {
+            mSavingAlertDialog = new AlertDialog.Builder(this)
+                    .setView(R.layout.dialog_saving)
+                    .setCancelable(false)
+                    .show();
+        } else {
+            mSavingAlertDialog.show();
+        }
+    }
 
     TimeSlotRvAdapter mWorkingHoursAdapter;
     @Override
@@ -320,8 +367,8 @@ public class RegisterActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.ADD_TIMESLOT_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                mWorkingHoursAdapter.insertTimeSlot((TimeSlot)data
-                        .getSerializableExtra(TimeSlot.class.getName()));
+                TimeSlot timeSlot = data.getParcelableExtra(TimeSlot.class.getName());
+                mWorkingHoursAdapter.insertTimeSlot(timeSlot);
             }
         }
 
@@ -342,12 +389,13 @@ public class RegisterActivity extends AppCompatActivity
         }
     }
 
+    // region Photo Selection and Upload Stuff
     @Override
     public void showUploadPhotoDialog() {
-        if(photoUploadAlertDialog == null){
+        if (mPhotoUploadAlertDialog == null) {
             final View dialogView = getLayoutInflater().inflate(R.layout.dialog_upload_photo, null);
 
-            photoUploadAlertDialog =
+            mPhotoUploadAlertDialog =
                     new AlertDialog.Builder(this)
                             .setView(dialogView)
                             .create();
@@ -358,7 +406,7 @@ public class RegisterActivity extends AppCompatActivity
             radioGroupInterest.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                    photoUploadAlertDialog.dismiss();
+                    mPhotoUploadAlertDialog.dismiss();
 
                     int selectedRadioInterest =
                             radioGroupInterest.getCheckedRadioButtonId();
@@ -369,11 +417,12 @@ public class RegisterActivity extends AppCompatActivity
                         return;
                     }
 
+                    // region Create Intent for Photo
                     if (selectedRadioInterest == R.id.radio_capture) {
                         File photoFile = createImageFile();
                         if (photoFile != null) {
                             imageUri = FileProvider.getUriForFile(RegisterActivity.this,
-                                    "com.greece.nasiakouts.babysitterfinder.provider", photoFile);
+                                    Constants.AUTHORITY, photoFile);
 
                             Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             takePicture.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
@@ -384,11 +433,12 @@ public class RegisterActivity extends AppCompatActivity
                                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         startActivityForResult(pickPhoto, Constants.FROM_GALLERY_REQUEST_CODE);
                     }
+                    // endregion
                 }
             });
 
         }
-        photoUploadAlertDialog.show();
+        mPhotoUploadAlertDialog.show();
     }
 
     private File createImageFile() {
@@ -397,8 +447,8 @@ public class RegisterActivity extends AppCompatActivity
         File image = null;
         try {
             image = File.createTempFile(
-                    "image_" + timeStamp,
-                    ".jpg",
+                    Constants.IMAGE_FILE_PREFIX + timeStamp,
+                    Constants.IMAGE_FILE_SUFFIX,
                     getExternalFilesDir(Environment.DIRECTORY_PICTURES));
         } catch (IOException e) {
             e.printStackTrace();
@@ -410,14 +460,16 @@ public class RegisterActivity extends AppCompatActivity
     private void uploadPhotoToCloudStorage(Uri imagePath) {
         if (imagePath == null) return;
 
+        // todo handle rotation on this ??
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Uploading Image...");
+        progressDialog.setTitle(getString(R.string.uploading_title));
         progressDialog.show();
 
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user == null) return;
 
-        StorageReference ref = mStorageReference.child("images/" + user.getUid());
+        StorageReference ref = mStorageReference
+                .child(Constants.STORAGE_IMAGES_PATH + user.getUid());
         ref.putFile(imagePath)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -435,26 +487,28 @@ public class RegisterActivity extends AppCompatActivity
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                         int progress = (int) (100 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                        progressDialog.setMessage("Uploaded " + progress + "%");
+                        progressDialog.setMessage(getString(R.string.uploaded) +
+                                progress + Constants.PERCENTAGE);
                     }
                 });
     }
+    // endregion
 
     private RegisterComponentFragment getNewFragment(int position) {
         RegisterComponentFragment fragment = null;
-        switch (selectedMode){
+        switch (mSelectedMode) {
             case R.id.radio_babysitter:
                 switch (position){
-                    case 0:
+                    case Constants.ACCOUNT_INFO_FRAGMENT_SEQ:
                         fragment = new AccountInfoFragment();
                         break;
-                    case 1:
+                    case Constants.PERSONAL_INFO_FRAGMENT_SEQ:
                         fragment = new PersonalInfoFragment();
                         break;
-                    case 2:
+                    case Constants.WORKING_INFO_FRAGMENT_SEQ:
                         fragment = new WorkingInfoFragment();
                         break;
-                    case 3:
+                    case Constants.SITTER_ADDITIONAL_INFO_FRAGMENT_SEQ:
                         fragment = new SitterAdditionalInfoFragment();
                         break;
                     default:
@@ -463,10 +517,10 @@ public class RegisterActivity extends AppCompatActivity
                 break;
             default:
                 switch (position) {
-                    case 0:
+                    case Constants.ACCOUNT_INFO_FRAGMENT_SEQ:
                         fragment = new AccountInfoFragment();
                         break;
-                    case 1:
+                    case Constants.PERSONAL_INFO_FRAGMENT_SEQ:
                         fragment = new PersonalInfoFragment();
                         break;
                     default:
@@ -476,6 +530,7 @@ public class RegisterActivity extends AppCompatActivity
         return fragment;
     }
 
+    // region PagerAdapter Stuff
     private class RegisterAdapter extends FragmentPagerAdapter {
         RegisterAdapter(FragmentManager fm) {
             super(fm);
@@ -503,12 +558,13 @@ public class RegisterActivity extends AppCompatActivity
 
         @Override
         public int getCount() {
-            switch (selectedMode) {
+            switch (mSelectedMode) {
                 case R.id.radio_babysitter:
-                    return 4;
+                    return Constants.VIEW_PAGER_FRAGMENTS_FOR_SITTER;
                 default:
-                    return 2;
+                    return Constants.VIEW_PAGER_FRAGMENTS_FOR_USER;
             }
         }
     }
+    // endregion
 }

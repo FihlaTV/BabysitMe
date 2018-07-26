@@ -80,6 +80,7 @@ public class PersonalInfoFragment extends RegisterComponentFragment
             outState.putLong(Date.class.getName(), mDateRepresentation);
         }
         if (mDateDialog != null && mDateDialog.isShowing()) {
+            mDateDialog.dismiss();
             outState.putBoolean(DatePickerDialog.class.getName(), true);
         } else {
             outState.putBoolean(DatePickerDialog.class.getName(), false);
@@ -204,7 +205,9 @@ public class PersonalInfoFragment extends RegisterComponentFragment
                             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                             mDateRepresentation = cal.getTime().getTime();
 
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy", Locale.US);
+                            SimpleDateFormat sdf =
+                                    new SimpleDateFormat(Constants.PATTERN_SHORT_FULL_DATE_FORMAT,
+                                            Locale.US);
 
                             mPersonalInfoList.get(Constants.INDEX_DATE_BORN_INPUT)
                                     .setText(sdf.format(cal.getTime()));

@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
@@ -276,19 +278,28 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
         Toast.makeText(this, R.string.timeslot_added, Toast.LENGTH_LONG).show();
 
         SimpleDateFormat onlyDay = new SimpleDateFormat("EEEE", Locale.US);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Intent intent = new Intent(AddTimeSlotActivity.this, MainActivity.class);
+            Toast.makeText(getApplicationContext(),
+                    R.string.disconected, Toast.LENGTH_LONG).show();
+            startActivity(intent);
+        }
+        String userId = user.getUid();
         TimeSlot timeSlot = new TimeSlot(
                 mMode == Constants.USER_MODE ? onlyDay.format(mDateSelected) : daySpinner.getSelectedItem().toString(),
-                mMode == Constants.USER_MODE ? specificDateEditText.getText().toString() : null,
+                allDayCheckBox.isChecked(),
+                mMode != Constants.USER_MODE || weeklyCheckbox.isChecked(),
                 allDayCheckBox.isChecked() ? -1 : Double.parseDouble(fromHourEditText.getText().toString().replace(":", ".")),
                 allDayCheckBox.isChecked() ? -1 : Double.parseDouble(toHourEditText.getText().toString().replace(":", ".")),
-                allDayCheckBox.isChecked(),
-                mMode != Constants.USER_MODE || weeklyCheckbox.isChecked());
+                mMode == Constants.USER_MODE ? specificDateEditText.getText().toString() : "-"
+        );
 
-        // isForever parameter exmplained
+        // getIsForever parameter exmplained
         // if we are user mode thus the new timeslot is being added while searching
         // for babysitter we give the value the user provided. if we are on sitter mode,
         // thus the new timeslot is being added while setting the sitter's working hours,
-        // the isForever checkbox is invisible and we have the isforeever true by default
+        // the getIsForever checkbox is invisible and we have the isforeever true by default
         // because it is ok to assume that a babysitter will provide their working hours in general
         // and not exceptions. In any case that's how the app works. if the user for some reason,
         // can't babysit one monday for example even though she or he states it as her or his working

@@ -1,7 +1,9 @@
 package com.greece.nasiakouts.babysitterfinder.Activities;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,6 +55,9 @@ public class FindSitterActivity extends AppCompatActivity
 
     @BindView(R.id.needed_timeslots_rv)
     RecyclerView mNeededSitterSlotsRv;
+
+    @BindView(R.id.addNeededSlot)
+    FloatingActionButton addSlotFab;
 
     private TimeSlotRvAdapter mAdapter;
     private boolean fromRegistration = false;
@@ -164,16 +171,20 @@ public class FindSitterActivity extends AppCompatActivity
         }
         String userId = firebaseUser.getUid();
 
-        appointments = new ArrayList<>();
-        for (TimeSlot timeSlot : mAdapter.getData()) {
-            appointments.add(new Appointment(Integer.parseInt(totalKids), Double.parseDouble(youngestKidAge),
-                    streetAddress, timeSlot, selectedSex, userId));
-        }
-
         alertDialog = new AlertDialog.Builder(this)
                 .setView(R.layout.dialog_searching)
                 .setCancelable(false)
                 .show();
+
+        appointments = new ArrayList<>();
+        // using adapter and rv for time slots for future user and scalability.
+        // for now each find sitter search is using only one time slot
+        // planning to upgrate to more than one
+        for (TimeSlot timeSlot : mAdapter.getData()) {
+            Appointment appointment = new Appointment(Integer.parseInt(totalKids), Double.parseDouble(youngestKidAge),
+                    streetAddress, timeSlot, selectedSex, userId);
+            appointments.add(appointment);
+        }
 
         getSittersWithMatchingWorkingSlots(appointments.get(0));
     }
@@ -192,23 +203,32 @@ public class FindSitterActivity extends AppCompatActivity
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
-                    for (DataSnapshot sitter : dataSnapshot.getChildren()) {
-                        TimeSlot timeSlot = sitter.getValue(TimeSlot.class);
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        TimeSlot timeSlot = snapshot.getValue(TimeSlot.class);
                         if (timeSlot == null) continue;
 
                         TimeSlot timeSlotToSearchForAvailability = appointment.getSlot();
                         if (timeSlotToSearchForAvailability.isAllDay()) {
-                            if (availableSitters.contains(sitter.getKey())) return;
-                            availableSitters.add(sitter.getKey());
+                            if (availableSitters.contains(snapshot.getKey())) continue;
+                            String key = snapshot.getKey();
+                            if (key == null) return;
+                            int index = key.indexOf("_");
+                            if (index == -1) index = key.length();
+                            availableSitters.add(key.substring(0, index));
+                            continue;
+                        }
+                        if (timeSlot.isAllDay()) {
+                            if (availableSitters.contains(snapshot.getKey())) continue;
+                            availableSitters.add(snapshot.getKey());
                             continue;
                         }
                         if (timeSlot.getTimeTo() >= timeSlotToSearchForAvailability.getTimeTo()) {
-                            if (availableSitters.contains(sitter.getKey())) return;
-                            availableSitters.add(sitter.getKey());
+                            if (availableSitters.contains(snapshot.getKey())) continue;
+                            availableSitters.add(snapshot.getKey());
                         }
                     }
                 }
-                checkAvailabilityOfSitters(appointments.get(0));
+                checkAvailabilityOfSitters(appointment);
             }
 
             @Override
@@ -228,8 +248,9 @@ public class FindSitterActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == ADD_TIMESLOT_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                mAdapter.insertTimeSlot((TimeSlot) data
-                        .getSerializableExtra(TimeSlot.class.getName()));
+                addSlotFab.setVisibility(View.GONE);
+                TimeSlot timeSlot = data.getParcelableExtra(TimeSlot.class.getName());
+                mAdapter.insertTimeSlot(timeSlot);
             }
         }
     }
@@ -239,14 +260,20 @@ public class FindSitterActivity extends AppCompatActivity
         Query query2 = dayAppointmentReference.orderByKey();
         query2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot day : dataSnapshot.getChildren()) {
                         Appointment appointmentAlreadyInDb = day.getValue(Appointment.class);
+                        if (appointmentAlreadyInDb == null) continue;
+
                         TimeSlot timeSlotOld = appointmentAlreadyInDb.getSlot();
 
                         TimeSlot timeslotToSearchForAvailability = appointment.getSlot();
                         if (timeslotToSearchForAvailability.isAllDay()) {
+                            availableSitters.remove(day.getKey());
+                            continue;
+                        }
+                        if (timeSlotOld.isAllDay()) {
                             availableSitters.remove(day.getKey());
                             continue;
                         }
@@ -272,8 +299,8 @@ public class FindSitterActivity extends AppCompatActivity
     public void availabilityQueryExecuted() {
         alertDialog.dismiss();
         Intent intent = new Intent(FindSitterActivity.this, SittersResultActivity.class);
-        intent.putExtra(Appointment.class.getName(), appointments);
-        intent.putExtra(FindSitterActivity.class.getName(), availableSitters);
+        intent.putExtra(Appointment.class.getName(), appointments.get(0));
+        intent.putStringArrayListExtra(FindSitterActivity.class.getName(), availableSitters);
         startActivity(intent);
     }
 }

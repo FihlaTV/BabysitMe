@@ -1,8 +1,13 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.greece.nasiakouts.babysitterfinder.Constants;
+
 import java.io.Serializable;
 
-public class Appointment implements Serializable {
+public class Appointment implements Parcelable {
     private int totalKids;
     private double minAge;
     private String streetAddress;
@@ -27,6 +32,18 @@ public class Appointment implements Serializable {
         this.sitterSex = sitterSex;
         this.customerId = customerId;
     }
+
+    public static final Creator<Appointment> CREATOR = new Creator<Appointment>() {
+        @Override
+        public Appointment createFromParcel(Parcel in) {
+            return new Appointment(in);
+        }
+
+        @Override
+        public Appointment[] newArray(int size) {
+            return new Appointment[size];
+        }
+    };
 
     public int getTotalKids() {
         return totalKids;
@@ -68,6 +85,22 @@ public class Appointment implements Serializable {
         this.sitterSex = sitterSex;
     }
 
+    protected Appointment(Parcel in) {
+        this.totalKids = in.readInt();
+        this.minAge = in.readDouble();
+        this.streetAddress = in.readString();
+        this.slot = in.readParcelable(TimeSlot.class.getClassLoader());
+        this.sitterSex = in.readInt();
+        this.totalCost = in.readDouble();
+        this.acceptedBySitter = in.readInt() == 1;
+        this.sitterId = in.readString();
+        this.customerId = in.readString();
+    }
+
+    public double getTotalCost() {
+        return totalCost;
+    }
+
     public boolean isAcceptedBySitter() {
         return acceptedBySitter;
     }
@@ -92,4 +125,33 @@ public class Appointment implements Serializable {
         this.customerId = customerId;
     }
 
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public void setTotalCostUsingPerHour(double perHourCost) {
+        if (slot.isAllDay()) {
+            totalCost = Constants.MULTIPLIER_WHEN_ALL_DAY * perHourCost;
+        } else {
+            totalCost = Math.ceil(slot.getTimeTo() - slot.getTimeTo()) * perHourCost;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int i) {
+        dest.writeInt(totalKids);
+        dest.writeDouble(minAge);
+        dest.writeString(streetAddress);
+        dest.writeParcelable(slot, i);
+        dest.writeInt(sitterSex);
+        dest.writeDouble(totalCost);
+        dest.writeInt(acceptedBySitter ? 1 : 0);
+        dest.writeString(sitterId);
+        dest.writeString(customerId);
+    }
 }

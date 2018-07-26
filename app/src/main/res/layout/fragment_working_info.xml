@@ -116,6 +116,8 @@
         android:layout_marginBottom="@dimen/divider_margin"
         android:layout_marginEnd="@dimen/divider_margin"
         android:layout_marginStart="@dimen/divider_margin"
+        android:clickable="true"
         android:elevation="@dimen/fab_elavation"
+        android:focusable="true"
         android:src="@drawable/ic_add" />
 </RelativeLayout>

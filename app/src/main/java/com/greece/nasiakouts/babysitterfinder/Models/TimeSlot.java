@@ -1,35 +1,46 @@
 package com.greece.nasiakouts.babysitterfinder.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
-import com.greece.nasiakouts.babysitterfinder.Constants;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-public class TimeSlot implements Serializable {
+public class TimeSlot implements Parcelable {
     @Exclude
     String day;
-    private String specificDate;
+
+    public static final Creator<TimeSlot> CREATOR = new Creator<TimeSlot>() {
+        @Override
+        public TimeSlot createFromParcel(Parcel in) {
+            return new TimeSlot(in);
+        }
+
+        @Override
+        public TimeSlot[] newArray(int size) {
+            return new TimeSlot[size];
+        }
+    };
+    private boolean allDay;
     private double timeFrom;
     private double timeTo;
-    private boolean isAllDay;
-    private boolean isForever;
+    private boolean forever;
+    private String specificDay;
 
     public TimeSlot() {
     }
 
-    public TimeSlot(String day, String specificDate,
-                    double timeFrom, double timeTo,
-                    boolean isAllDay, boolean isForever) {
-        this.specificDate = specificDate;
+    public TimeSlot(String day,
+                    boolean allDay,
+                    boolean forever,
+                    double timeFrom,
+                    double timeTo,
+                    String specificDay) {
+        this.day = day;
+        this.allDay = allDay;
+        this.forever = forever;
         this.timeFrom = timeFrom;
         this.timeTo = timeTo;
-        this.day = day;
-        this.isForever = isForever;
-        this.isAllDay = isAllDay;
+        this.specificDay = specificDay;
     }
 
     @Exclude
@@ -42,12 +53,25 @@ public class TimeSlot implements Serializable {
         this.day = day;
     }
 
-    public String getSpecificDate() {
-        return specificDate;
+    protected TimeSlot(Parcel in) {
+        this.day = in.readString();
+        this.allDay = in.readInt() == 1;
+        this.forever = in.readInt() == 1;
+        this.timeFrom = in.readDouble();
+        this.timeTo = in.readDouble();
+        this.specificDay = in.readString();
     }
 
-    public void setSpecificDate(String specificDate) {
-        this.specificDate = specificDate;
+    public boolean isAllDay() {
+        return allDay;
+    }
+
+    public void setAllDay(boolean allDay) {
+        this.allDay = allDay;
+    }
+
+    public boolean isForever() {
+        return forever;
     }
 
     public double getTimeFrom() {
@@ -66,28 +90,30 @@ public class TimeSlot implements Serializable {
         this.timeTo = timeTo;
     }
 
-    public boolean isAllDay() {
-        return isAllDay;
-    }
-
-    public void setAllDay(boolean allDay) {
-        isAllDay = allDay;
-    }
-
-    public boolean isForever() {
-        return isForever;
-    }
-
     public void setForever(boolean forever) {
-        isForever = forever;
+        this.forever = forever;
+    }
+
+    public String getSpecificDay() {
+        return specificDay;
+    }
+
+    public void setSpecificDay(String specificDay) {
+        this.specificDay = specificDay;
     }
 
     @Override
-    public String toString() {
-        if (isForever && isAllDay) return day;
-        if (isForever) return day + " " + timeFrom + " - " + timeTo;
-        return isAllDay ? day.substring(0, 3) + ", " + specificDate :
-                day.substring(0, 3) + ", " +
-                        specificDate + " " + timeFrom + " - " + timeTo;
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int i) {
+        dest.writeString(day);
+        dest.writeInt(allDay ? 1 : 0);
+        dest.writeInt(forever ? 1 : 0);
+        dest.writeDouble(timeFrom);
+        dest.writeDouble(timeTo);
+        dest.writeString(specificDay);
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +14,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
@@ -26,7 +26,6 @@ import com.greece.nasiakouts.babysitterfinder.R;
 import com.mynameismidori.currencypicker.CurrencyPicker;
 import com.mynameismidori.currencypicker.CurrencyPickerListener;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,14 +44,17 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
     @BindView(R.id.working_slots_rv)
     RecyclerView mWorkingSlotsRv;
 
-    @BindView(R.id.stub)
-    EditText stubEditText;
+    @BindView(R.id.addWorkingSlot)
+    FloatingActionButton mAddWorkingSlotFab;
 
     private TimeSlotRvAdapter mAdapter;
+    private CurrencyPicker mCurrencyPicker;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_working_info, container, false);
 
         ButterKnife.bind(this, root);
@@ -72,11 +74,33 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         Parcelable listState = mWorkingSlotsRv.getLayoutManager().onSaveInstanceState();
-        // putting RV position
         outState.putParcelable(RecyclerView.class.getName(), listState);
-        // putting RV items
         outState.putParcelableArrayList(TimeSlot.class.getName(), mAdapter.getData());
-        super.onSaveInstanceState(outState);
+        if (mCurrencyPicker != null && mCurrencyPicker.isVisible()) {
+            mCurrencyPicker.dismiss();
+            outState.putBoolean(CurrencyPicker.class.getName(), true);
+        } else {
+            outState.putBoolean(CurrencyPicker.class.getName(), false);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState == null) return;
+        if (savedInstanceState.containsKey(RecyclerView.class.getName())
+                && savedInstanceState.containsKey(TimeSlot.class.getName())) {
+            mAdapter.swapData(savedInstanceState
+                    .<TimeSlot>getParcelableArrayList(TimeSlot.class.getName()));
+
+            mWorkingSlotsRv.getLayoutManager().onRestoreInstanceState(
+                    savedInstanceState.getParcelable(RecyclerView.class.getName()));
+        }
+        if (savedInstanceState.containsKey(CurrencyPicker.class.getName())) {
+            if (savedInstanceState.getBoolean(CurrencyPicker.class.getName())) {
+                openCurrencyPicker();
+            }
+        }
     }
 
     @Override
@@ -123,7 +147,9 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
 
         if (mAdapter.getItemCount() == 0) {
             if (getContext() == null) return false;
-            Toast.makeText(getContext(), R.string.no_time_slot_added, Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(),
+                    R.string.no_time_slot_added,
+                    Toast.LENGTH_LONG).show();
             return false;
         }
 
@@ -138,19 +164,31 @@ public class WorkingInfoFragment  extends RegisterComponentFragment
     @Override
     public void onFocusChange(View view, boolean hasFocus) {
         if (hasFocus) {
-            if(getActivity() == null) return;
-            final CurrencyPicker picker = CurrencyPicker.newInstance(getString(R.string.select_currency_prompt));
-            picker.show(getActivity().getSupportFragmentManager(), getString(R.string.currency_picker));
-            picker.setListener(new CurrencyPickerListener() {
+            openCurrencyPicker();
+        }
+    }
+
+    private void openCurrencyPicker() {
+        if (getActivity() == null) return;
+        if (mCurrencyPicker == null) {
+            mCurrencyPicker = CurrencyPicker.
+                    newInstance(getString(R.string.select_currency_prompt));
+            mCurrencyPicker.setListener(new CurrencyPickerListener() {
                 @Override
-                public void onSelectCurrency(String name, String code, String dialCode, int flagDrawableResID) {
+                public void onSelectCurrency(String name,
+                                             String code,
+                                             String dialCode,
+
+                                             int flagDrawableResID) {
                     mWorkingInfoList.get(Constants.INDEX_CURRENCY_INPUT).setText(code);
-                    picker.dismiss();
-                    stubEditText.requestFocus();
+                    mCurrencyPicker.dismiss();
+                    mAddWorkingSlotFab.requestFocus();
                 }
             });
-
         }
+
+        mCurrencyPicker.show(getActivity().getSupportFragmentManager(),
+                getString(R.string.currency_picker));
     }
 
     // region Add Time Slot

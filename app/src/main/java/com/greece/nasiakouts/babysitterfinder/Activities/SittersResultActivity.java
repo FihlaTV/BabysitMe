@@ -31,7 +31,7 @@ public class SittersResultActivity extends AppCompatActivity {
     RecyclerView mAvailableSittersRv;
 
     private SittersResultRvAdapter mAdapter;
-    private ArrayList<Appointment> mAppointments;
+    private Appointment appointment;
     private ArrayList<String> mAvailableSittersIds;
     private ArrayList<Babysitter> mAvailableSitters;
     private ArrayList<String> mAvailableSittersUidsParallel;
@@ -60,6 +60,8 @@ public class SittersResultActivity extends AppCompatActivity {
         if (!intent.getExtras().containsKey(FindSitterActivity.class.getName())) return;
         if (!intent.getExtras().containsKey(Appointment.class.getName())) return;
 
+        appointment = intent.getParcelableExtra(Appointment.class.getName());
+
         mAvailableSittersIds = intent
                 .getExtras().getStringArrayList(FindSitterActivity.class.getName());
 
@@ -68,20 +70,46 @@ public class SittersResultActivity extends AppCompatActivity {
                 .child(Constants.FIREBASE_USER_ALL_INFO)
                 .child(Constants.FIREBASE_SITTERS);
 
-
         mAvailableSitters = new ArrayList<>();
         mAvailableSittersUidsParallel = new ArrayList<>();
         mDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    final AlertDialog alertDialog = new AlertDialog.Builder(SittersResultActivity.this)
+                            .setView(R.layout.dialog_please_wait)
+                            .setCancelable(false)
+                            .show();
+
                     for (DataSnapshot sitter : snapshot.getChildren()) {
                         if (mAvailableSittersIds.contains(sitter.getKey())) {
-                            mAvailableSitters.add(sitter.getValue(Babysitter.class));
-                            mAvailableSittersUidsParallel.add(sitter.getKey());
+
+                            Babysitter babysitter = sitter.getValue(Babysitter.class);
+                            String key = sitter.getKey();
+                            if (babysitter == null || key == null) {
+                                continue;
+                            }
+
+                            if (appointment.getTotalKids() > babysitter.getMaxKids()) {
+                                continue;
+                            }
+                            if (appointment.getMinAge() < babysitter.getMinAge()) {
+                                continue;
+                            }
+                            if (appointment.getSitterSex() != Constants.USER_ANY
+                                    && appointment.getSitterSex() != babysitter.getSexCode()) {
+                                continue;
+                            }
+
+                            appointment.setTotalCostUsingPerHour(babysitter.getCharges());
+
+                            mAvailableSitters.add(babysitter);
+                            mAvailableSittersUidsParallel.add(key);
                         }
                     }
                     mAdapter.swapData(mAvailableSitters, mAvailableSittersUidsParallel);
+
+                    alertDialog.dismiss();
                 }
             }
 
@@ -91,7 +119,7 @@ public class SittersResultActivity extends AppCompatActivity {
             }
         });
 
-        mAppointments = (ArrayList<Appointment>) intent.getSerializableExtra(Appointment.class.getName());
+
     }
 
     public void insertAppointmentsToDb(final String userId, String sitterId) {
@@ -100,16 +128,14 @@ public class SittersResultActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .show();
 
-        for (Appointment appointment : mAppointments) {
-            appointment.setCustomerId(userId);
-            appointment.setSitterId(sitterId);
-            storeAppointment(appointment);
-        }
+        appointment.setCustomerId(userId);
+        appointment.setSitterId(sitterId);
+        storeAppointment(appointment);
 
         alertDialog.dismiss();
 
         Toast.makeText(getApplicationContext(),
-                "Appointment Arranged! Please wait for sitters confirmation",
+                R.string.pending_toast,
                 Toast.LENGTH_LONG).show();
 
         Intent goBackToLoggedInActivity =
@@ -121,12 +147,8 @@ public class SittersResultActivity extends AppCompatActivity {
     private void storeAppointment(Appointment appointment) {
         final DatabaseReference mAppointmentDatabaseReference = mFirebaseDatabase.getReference()
                 .child(Constants.FIREBASE_APPOINTMENTS)
-                .child(appointment.getSlot().getDay())
-                .child(appointment.getSitterId());
+                .child(appointment.getSlot().getDay());
 
-        appointment.getSlot().setDay(null);
-        appointment.setSitterId(null);
-
-        mAppointmentDatabaseReference.setValue(mAppointments);
+        mAppointmentDatabaseReference.push().setValue(this.appointment);
     }
 }

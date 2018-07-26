@@ -167,4 +167,8 @@
     <string name="upload_photo_si_key">upload_photo_dialog_key</string>
     <string name="photo_uploaded">Photo Uploaded</string>
     <string name="error_occurred">An error have occurred!</string>
+    <string name="pending_toast">Appointment Arranged! Please wait for sitters confirmation</string>
+    <string name="phot_not_selected">Please select a photo profile first!</string>
+    <string name="uploading_title">Uploading Image...</string>
+    <string name="uploaded">Uploaded</string>
 </resources>

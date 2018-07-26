@@ -29,28 +29,36 @@ public class TimeSlotRvAdapter extends RecyclerView.Adapter<TimeSlotRvAdapter.Wo
         else holder.weeklyCheckBox.setVisibility(View.GONE);
         }
 
-        public TimeSlotRvAdapter(ArrayList<TimeSlot> timeSlots){
-            if(timeSlots == null) this.timeSlots = new ArrayList<>();
-            else this.timeSlots = timeSlots;
-        }
+    public TimeSlotRvAdapter(ArrayList<TimeSlot> timeSlots) {
+        if (timeSlots == null) this.timeSlots = new ArrayList<>();
+        else this.timeSlots = timeSlots;
+    }
 
-        public void insertTimeSlot(TimeSlot timeSlot){
-            if(timeSlot == null) return;
+    public void insertTimeSlot(TimeSlot timeSlot) {
+        if (timeSlot == null) return;
 
-            if(timeSlots == null) timeSlots = new ArrayList<>();
+        if (timeSlots == null) timeSlots = new ArrayList<>();
 
-            timeSlots.add(timeSlot);
-            notifyDataSetChanged();
-        }
+        timeSlots.add(timeSlot);
+        notifyDataSetChanged();
+    }
 
-        @NonNull
-        @Override
-        public WorkingHoursHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_time_slot, parent, false);
+    public void swapData(ArrayList<TimeSlot> timeSlots) {
+        if (timeSlots == null) return;
+        this.timeSlots = new ArrayList<>();
 
-            return new WorkingHoursHolder(itemView);
-        }
+        this.timeSlots.addAll(timeSlots);
+        notifyDataSetChanged();
+    }
+
+    @NonNull
+    @Override
+    public WorkingHoursHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_time_slot, parent, false);
+
+        return new WorkingHoursHolder(itemView);
+    }
 
     public class WorkingHoursHolder extends RecyclerView.ViewHolder {
 

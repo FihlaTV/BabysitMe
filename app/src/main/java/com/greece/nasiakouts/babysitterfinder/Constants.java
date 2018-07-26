@@ -27,6 +27,8 @@ public class Constants {
     public static final int PERSONAL_INFO_FRAGMENT_SEQ = 1;
     public static final int WORKING_INFO_FRAGMENT_SEQ = 2;
     public static final int SITTER_ADDITIONAL_INFO_FRAGMENT_SEQ = 3;
+    public static final int VIEW_PAGER_FRAGMENTS_FOR_SITTER = 4;
+    public static final int VIEW_PAGER_FRAGMENTS_FOR_USER = 2;
 
     // Find Sitter info - Inputs Indices
     public static final int INDEX_TOTAL_KIDS_INPUT = 0;
@@ -50,7 +52,6 @@ public class Constants {
 
     // Intent Codes
     public static final String INT_CODE = "int";
-    public static final String UID_CODE = "registered_uid";
 
     public static final int SITTER_MODE = 1;
     public static final int USER_MODE = 2;
@@ -65,6 +66,7 @@ public class Constants {
     public static final String FIREBASE_ALL_DAY = "allDay";
     public static final String FIREBASE_TIME_FROM = "timeFrom";
     public static final String FIREBASE_REGISTRATION_TOKEN = "registrationToken";
+    public static final String STORAGE_IMAGES_PATH = "images/";
 
     public static final int USER_FEMALE = 0;
     public static final int USER_MALE = 1;
@@ -76,8 +78,17 @@ public class Constants {
     public static final String DASH = " - ";
     public static final String SLASH = "/";
     public static final String ANOKATOTELEIA = ":";
+    public static final String UNDERSCORE = "_";
+    public static final String PERCENTAGE = "%";
+    public static final String PATTERN_SHORT_FULL_DATE_FORMAT = "dd/MM/yy";
+    public static final String AUTHORITY = "com.greece.nasiakouts.babysitterfinder.provider";
+    public static final String IMAGE_FILE_PREFIX = "image_";
+    public static final String IMAGE_FILE_SUFFIX = ".jpg";
 
     public static final int MIN_AGE_OF_USER = 17;
     public static final int DAYS_IN_DECEMBER = 31;
+    public static final int MULTIPLIER_WHEN_ALL_DAY = 18;
+
+
 
 }
