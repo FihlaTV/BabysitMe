@@ -61,9 +61,10 @@ public class FindSitterActivity extends AppCompatActivity
 
     private TimeSlotRvAdapter mAdapter;
     private boolean fromRegistration = false;
-    private FirebaseDatabase mFirebaseDatabase;
     private ArrayList<String> availableSitters = new ArrayList<>();
     private ArrayList<Appointment> appointments;
+
+    private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mWorkingInfoDatabaseReference;
     private DatabaseReference mAppointmentsDatabaseReference;
     private AlertDialog alertDialog;
@@ -212,7 +213,7 @@ public class FindSitterActivity extends AppCompatActivity
                             if (availableSitters.contains(snapshot.getKey())) continue;
                             String key = snapshot.getKey();
                             if (key == null) return;
-                            int index = key.indexOf("_");
+                            int index = key.indexOf(Constants.UNDERSCORE);
                             if (index == -1) index = key.length();
                             availableSitters.add(key.substring(0, index));
                             continue;

@@ -18,8 +18,6 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
@@ -33,8 +31,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.greece.nasiakouts.babysitterfinder.Constants.ANOKATOTELEIA;
 
 public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFocusChangeListener{
 
@@ -68,6 +64,10 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
     private int toMin;
     private Date mDateSelected = null;
     private int mMode = -1;
+
+    private DatePickerDialog mDatePickerDialog;
+    private TimePickerDialog mTimePickerDialog;
+    private int mTimeViewFocused;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,105 +131,153 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mDatePickerDialog != null && mDatePickerDialog.isShowing()) {
+            mDatePickerDialog.dismiss();
+            outState.putBoolean(DatePickerDialog.class.getName(), true);
+        }
+        if (mTimePickerDialog != null && mTimePickerDialog.isShowing()) {
+            mTimePickerDialog.dismiss();
+            outState.putBoolean(TimePickerDialog.class.getName(), true);
+            outState.putInt(AddTimeSlotActivity.class.getName(), mTimeViewFocused);
+        }
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState == null) return;
+        if (savedInstanceState.containsKey(DatePickerDialog.class.getName())) {
+            if (savedInstanceState.getBoolean(DatePickerDialog.class.getName())) {
+                openDatePicker();
+            }
+        }
+        if (savedInstanceState.containsKey(TimePickerDialog.class.getName())
+                && savedInstanceState.containsKey(AddTimeSlotActivity.class.getName())) {
+            if (savedInstanceState.getBoolean(TimePickerDialog.class.getName())) {
+                openTimePicker(savedInstanceState.getInt(AddTimeSlotActivity.class.getName()));
+            }
+        }
+    }
 
+    // region EditTexts with Pickers Handling
     @Override
     public void onFocusChange(final View view, boolean hasFocus) {
         if(hasFocus) {
             final int viewHavingFocusId = view.getId();
-            final EditText viewHavingFocus;
-
-            String prompt;
 
             if (viewHavingFocusId == R.id.specific_date) {
-                Calendar cal = Calendar.getInstance();
-
-                DatePickerDialog dialog = new DatePickerDialog(this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                                  int dayOfMonth) {
-
-                                Calendar cal = Calendar.getInstance();
-                                cal.set(Calendar.YEAR, year);
-                                cal.set(Calendar.MONTH, monthOfYear);
-                                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                mDateSelected = cal.getTime();
-
-                                SimpleDateFormat onlyDate = new SimpleDateFormat("EEE, dd MMM yyyy", Locale.US);
-
-                                specificDateEditText
-                                        .setText(onlyDate.format(mDateSelected));
-
-                                stubEditText.requestFocus();
-                                Utils.hideKeyboard(AddTimeSlotActivity.this);
-                                weeklyCheckbox.setChecked(false);
-                            }
-                        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
-                        cal.get(Calendar.DAY_OF_MONTH));
-                dialog.setCancelable(false);
-                dialog.setTitle(R.string.sitting_date);
-                dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        stubEditText.requestFocus();
-                        Utils.hideKeyboard(AddTimeSlotActivity.this);
-                    }
-                });
-
-                // Can not set time slot in the past
-                dialog.getDatePicker().setMinDate(cal.getTime().getTime());
-
-                dialog.show();
+                openDatePicker();
             } else {
-                if (viewHavingFocusId == R.id.from_hour_input) {
-                    viewHavingFocus = fromHourEditText;
-                    prompt = getString(R.string.from_hour_hint);
-                } else {
-                    viewHavingFocus = toHourEditText;
-                    prompt = getString(R.string.to_hour_hint);
-                }
-
-                Calendar time = Calendar.getInstance();
-
-                final TimePickerDialog mTimePicker = new TimePickerDialog(AddTimeSlotActivity.this,
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                Calendar time = Calendar.getInstance();
-                                time.set(Calendar.HOUR_OF_DAY, selectedHour);
-                                time.set(Calendar.MINUTE, selectedMinute);
-
-
-                                if (viewHavingFocusId == R.id.from_hour_input) {
-                                    fromHour = selectedHour;
-                                    fromMin = selectedMinute;
-                                } else {
-                                    toHour = selectedHour;
-                                    toMin = selectedMinute;
-                                }
-
-                                SimpleDateFormat onlyTime = new SimpleDateFormat("HH:mm", Locale.US);
-                                viewHavingFocus.setText(onlyTime.format(time.getTime()));
-
-                                allDayCheckBox.setChecked(false);
-                                Utils.hideKeyboard(AddTimeSlotActivity.this);
-                                stubEditText.requestFocus();
-                            }
-                        }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true);
-                mTimePicker.setTitle(prompt);
-                mTimePicker.setCancelable(false);
-                mTimePicker.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        Utils.hideKeyboard(AddTimeSlotActivity.this);
-                        stubEditText.requestFocus();
-                    }
-                });
-                mTimePicker.show();
+                openTimePicker(viewHavingFocusId);
             }
         }
     }
+
+    private void openDatePicker() {
+        if (mDatePickerDialog == null) {
+            Calendar cal = Calendar.getInstance();
+
+            mDatePickerDialog = new DatePickerDialog(this,
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                              int dayOfMonth) {
+
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(Calendar.YEAR, year);
+                            cal.set(Calendar.MONTH, monthOfYear);
+                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            mDateSelected = cal.getTime();
+
+                            SimpleDateFormat onlyDate =
+                                    new SimpleDateFormat(Constants.PATTERN_FULL_DATE_FORMAT,
+                                            Locale.US);
+
+                            specificDateEditText
+                                    .setText(onlyDate.format(mDateSelected));
+
+                            stubEditText.requestFocus();
+                            Utils.hideKeyboard(AddTimeSlotActivity.this);
+                            weeklyCheckbox.setChecked(false);
+                        }
+                    }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DAY_OF_MONTH));
+            mDatePickerDialog.setCancelable(false);
+            mDatePickerDialog.setTitle(R.string.sitting_date);
+            mDatePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    stubEditText.requestFocus();
+                    Utils.hideKeyboard(AddTimeSlotActivity.this);
+                }
+            });
+
+            // Can not set time slot in the past
+            mDatePickerDialog.getDatePicker().setMinDate(cal.getTime().getTime());
+        }
+
+        mDatePickerDialog.show();
+    }
+
+    private void openTimePicker(final int viewHavingFocusId) {
+        mTimeViewFocused = viewHavingFocusId;
+        if (mTimePickerDialog == null) {
+            Calendar time = Calendar.getInstance();
+
+            mTimePickerDialog = new TimePickerDialog(AddTimeSlotActivity.this,
+                    new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker timePicker,
+                                              int selectedHour, int selectedMinute) {
+
+                            if (viewHavingFocusId == R.id.to_hour_input) {
+                                selectedHour = selectedHour == 0 ? 24 : selectedHour;
+                            }
+
+                            EditText viewHavingFocus;
+
+                            if (viewHavingFocusId == R.id.from_hour_input) {
+                                viewHavingFocus = fromHourEditText;
+                                fromHour = selectedHour;
+                                fromMin = selectedMinute;
+
+                            } else {
+                                viewHavingFocus = toHourEditText;
+                                toHour = selectedHour;
+                                toMin = selectedMinute;
+                            }
+
+                            SimpleDateFormat onlyTime =
+                                    new SimpleDateFormat(Constants.PATTERN_HOUR_FORMAT, Locale.US);
+
+                            Calendar time = Calendar.getInstance();
+                            time.set(Calendar.HOUR_OF_DAY, selectedHour);
+                            time.set(Calendar.MINUTE, selectedMinute);
+
+                            viewHavingFocus.setText(onlyTime.format(time.getTime()));
+
+                            allDayCheckBox.setChecked(false);
+                            Utils.hideKeyboard(AddTimeSlotActivity.this);
+                            stubEditText.requestFocus();
+                        }
+                    }, time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE), true);
+            mTimePickerDialog.setTitle(viewHavingFocusId == R.id.from_hour_input ? getString(R.string.from_hour_hint) : getString(R.string.to_hour_hint));
+            mTimePickerDialog.setCancelable(false);
+            mTimePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    Utils.hideKeyboard(AddTimeSlotActivity.this);
+                    stubEditText.requestFocus();
+                }
+            });
+        }
+
+        mTimePickerDialog.show();
+    }
+    // endregion
 
     @OnClick(R.id.cancel_button)
     public void cancelPressed(View view) {
@@ -240,17 +288,64 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
 
     @OnClick(R.id.ok_button)
     public void okPressed(View view) {
+        if (areAllFilledAndValid()) {
+
+            SimpleDateFormat onlyDay =
+                    new SimpleDateFormat(Constants.PATTERN_ALL_DAY_FORMAT, Locale.US);
+
+            TimeSlot timeSlot = new TimeSlot(
+                    mMode == Constants.USER_MODE ?
+                            onlyDay.format(mDateSelected) : daySpinner.getSelectedItem().toString(),
+                    allDayCheckBox.isChecked(),
+                    mMode != Constants.USER_MODE || weeklyCheckbox.isChecked(),
+                    allDayCheckBox.isChecked() ?
+                            -1 : Double.parseDouble(fromHourEditText.getText()
+                            .toString().replace(Constants.ANOKATOTELEIA, Constants.DOT)),
+                    allDayCheckBox.isChecked() ?
+                            -1 : Double.parseDouble(toHourEditText.getText()
+                            .toString().replace(Constants.ANOKATOTELEIA, Constants.DOT)),
+                    mMode == Constants.USER_MODE ?
+                            specificDateEditText.getText().toString() : Constants.DASH
+            );
+
+            // getIsForever parameter exmplained
+            // if we are user mode thus the new timeslot is being added while searching
+            // for babysitter we give the value the user provided. if we are on sitter mode,
+            // thus the new timeslot is being added while setting the sitter's working hours,
+            // the getIsForever checkbox is invisible and we have the isforeever true by default
+            // because it is ok to assume that a babysitter will provide their working hours in general
+            // and not exceptions. In any case that's how the app works. if the user for some reason,
+            // can't babysit one monday for example even though she or he states it as her or his working
+            // hours, is ok since whenever a user tries to arrange a babysitting the sitter will
+            // have to confirm it.
+
+            Toast.makeText(getApplicationContext(),
+                    R.string.timeslot_added,
+                    Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent();
+            intent.putExtra(TimeSlot.class.getName(), timeSlot);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+    }
+
+    private boolean areAllFilledAndValid() {
         switch (mMode) {
             case Constants.USER_MODE:
                 if (TextUtils.isEmpty(specificDateEditText.getText().toString())) {
-                    Toast.makeText(this, getString(R.string.day_toast), Toast.LENGTH_LONG).show();
-                    return;
+                    Toast.makeText(this,
+                            getString(R.string.day_toast),
+                            Toast.LENGTH_LONG).show();
+                    return false;
                 }
                 break;
             default:
                 if (daySpinner.getSelectedItemPosition() == 0) {
-                    Toast.makeText(this, getString(R.string.day_toast), Toast.LENGTH_LONG).show();
-                    return;
+                    Toast.makeText(this,
+                            getString(R.string.day_toast),
+                            Toast.LENGTH_LONG).show();
+                    return false;
                 }
                 break;
         }
@@ -258,57 +353,22 @@ public class AddTimeSlotActivity extends AppCompatActivity implements View.OnFoc
         if (TextUtils.isEmpty(fromHourEditText.getText().toString())
                 && !allDayCheckBox.isChecked()) {
             fromHourEditText.setError(getString(R.string.not_filled_from));
-            return;
+            return false;
         }
 
         if (TextUtils.isEmpty(toHourEditText.getText().toString())
                 && !allDayCheckBox.isChecked()) {
             toHourEditText.setError(getString(R.string.not_filled_to));
-            return;
+            return false;
         }
 
-        if (fromHour > toHour ||
-                (fromHour < toHour && fromMin > toMin)) {
+        if (!allDayCheckBox.isChecked() &&
+                (fromHour > toHour || (fromHour == toHour && fromMin > toMin))) {
             Toast.makeText(AddTimeSlotActivity.this,
                     getString(R.string.to_hour_less_than),
                     Toast.LENGTH_LONG).show();
-            return;
+            return false;
         }
-
-        Toast.makeText(this, R.string.timeslot_added, Toast.LENGTH_LONG).show();
-
-        SimpleDateFormat onlyDay = new SimpleDateFormat("EEEE", Locale.US);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            Intent intent = new Intent(AddTimeSlotActivity.this, MainActivity.class);
-            Toast.makeText(getApplicationContext(),
-                    R.string.disconected, Toast.LENGTH_LONG).show();
-            startActivity(intent);
-        }
-        String userId = user.getUid();
-        TimeSlot timeSlot = new TimeSlot(
-                mMode == Constants.USER_MODE ? onlyDay.format(mDateSelected) : daySpinner.getSelectedItem().toString(),
-                allDayCheckBox.isChecked(),
-                mMode != Constants.USER_MODE || weeklyCheckbox.isChecked(),
-                allDayCheckBox.isChecked() ? -1 : Double.parseDouble(fromHourEditText.getText().toString().replace(":", ".")),
-                allDayCheckBox.isChecked() ? -1 : Double.parseDouble(toHourEditText.getText().toString().replace(":", ".")),
-                mMode == Constants.USER_MODE ? specificDateEditText.getText().toString() : "-"
-        );
-
-        // getIsForever parameter exmplained
-        // if we are user mode thus the new timeslot is being added while searching
-        // for babysitter we give the value the user provided. if we are on sitter mode,
-        // thus the new timeslot is being added while setting the sitter's working hours,
-        // the getIsForever checkbox is invisible and we have the isforeever true by default
-        // because it is ok to assume that a babysitter will provide their working hours in general
-        // and not exceptions. In any case that's how the app works. if the user for some reason,
-        // can't babysit one monday for example even though she or he states it as her or his working
-        // hours, is ok since whenever a user tries to arrange a babysitting the sitter will
-        // have to confirm it.
-
-        Intent intent = new Intent();
-        intent.putExtra(TimeSlot.class.getName(), timeSlot);
-        setResult(RESULT_OK, intent);
-        finish();
+        return true;
     }
 }

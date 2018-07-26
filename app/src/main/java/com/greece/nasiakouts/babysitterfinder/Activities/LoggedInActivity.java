@@ -1,6 +1,7 @@
 package com.greece.nasiakouts.babysitterfinder.Activities;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,11 +18,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Models.Appointment;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
+import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +45,10 @@ public class LoggedInActivity extends AppCompatActivity {
 
     private User mUser;
     private int mMode = -1;
+    private HashMap<String, ArrayList<Appointment>> appointments = new HashMap<>();
+
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mAppointmentsDatabaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +57,37 @@ public class LoggedInActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mAppointmentsDatabaseReference = mFirebaseDatabase
+                .getReference()
+                .child(Constants.FIREBASE_APPOINTMENTS);
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.diconect, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(LoggedInActivity.this, MainActivity.class);
+            startActivity(intent);
+            return;
+        }
+        String userId = firebaseUser.getUid();
+
         Intent intent = getIntent();
         if(intent == null) return;
         mUser = (User)intent.getSerializableExtra(User.class.getName());
         if(mUser == null) return;
 
+        Query query;
         if(mUser instanceof Babysitter) {
             mMode = Constants.SITTER_MODE;
+            query = mAppointmentsDatabaseReference
+                    .orderByChild(Constants.FIREBASE_SITTER_ID).equalTo(userId);
         }
         else {
             mMode = Constants.USER_MODE;
+            query = mAppointmentsDatabaseReference
+                    .orderByChild(Constants.FIREBASE_USER_ID).equalTo(userId);
         }
 
         if (savedInstanceState == null) {
@@ -65,6 +97,48 @@ public class LoggedInActivity extends AppCompatActivity {
 
             setSupportActionBar(toolbar);
         }
+
+        appointments.put(Constants.HASHMAP_APPOINTMENTS_WEEKLY, new ArrayList<Appointment>());
+        appointments.put(Constants.HASHMAP_APPOINTMENT_SIMPLE, new ArrayList<Appointment>());
+        appointments.put(Constants.HASHMAP_APPOINTMENT_PENDING, new ArrayList<Appointment>());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Appointment appointment = snapshot.getValue(Appointment.class);
+                        if (appointment == null) continue;
+
+                        if (appointment.getSlot().isForever()) {
+                            appointments
+                                    .get(Constants.HASHMAP_APPOINTMENTS_WEEKLY)
+                                    .add(appointment);
+                            continue;
+                        }
+
+                        if (appointment.isAcceptedBySitter()) {
+                            appointments
+                                    .get(Constants.HASHMAP_APPOINTMENT_SIMPLE)
+                                    .add(appointment);
+                            continue;
+                        }
+
+                        appointments
+                                .get(Constants.HASHMAP_APPOINTMENT_PENDING)
+                                .add(appointment);
+                    }
+
+                    System.out.print("");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // ..
+            }
+        });
     }
 
     @Override
