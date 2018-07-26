@@ -146,8 +146,7 @@ public class SittersResultActivity extends AppCompatActivity {
 
     private void storeAppointment(Appointment appointment) {
         final DatabaseReference mAppointmentDatabaseReference = mFirebaseDatabase.getReference()
-                .child(Constants.FIREBASE_APPOINTMENTS)
-                .child(appointment.getSlot().getDay());
+                .child(Constants.FIREBASE_APPOINTMENTS);
 
         mAppointmentDatabaseReference.push().setValue(this.appointment);
     }

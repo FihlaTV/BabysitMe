@@ -6,8 +6,6 @@ import android.os.Parcelable;
 import com.google.firebase.database.Exclude;
 
 public class TimeSlot implements Parcelable {
-    @Exclude
-    String day;
 
     public static final Creator<TimeSlot> CREATOR = new Creator<TimeSlot>() {
         @Override
@@ -20,6 +18,8 @@ public class TimeSlot implements Parcelable {
             return new TimeSlot[size];
         }
     };
+
+    private String day;
     private boolean allDay;
     private double timeFrom;
     private double timeTo;
@@ -43,12 +43,10 @@ public class TimeSlot implements Parcelable {
         this.specificDay = specificDay;
     }
 
-    @Exclude
     public String getDay() {
         return day;
     }
 
-    @Exclude
     public void setDay(String day) {
         this.day = day;
     }
