@@ -1,4 +1,4 @@
-package com.greece.nasiakouts.babysitterfinder;
+package com.greece.nasiakouts.babysitterfinder.Utils;
 
 import android.Manifest;
 import android.app.Activity;
@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
+
+import com.greece.nasiakouts.babysitterfinder.R;
 
 public class PermissionUtils {
     public static int requestCode = 111;

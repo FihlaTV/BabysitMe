@@ -1,4 +1,4 @@
-package com.greece.nasiakouts.babysitterfinder;
+package com.greece.nasiakouts.babysitterfinder.Utils;
 
 import android.app.Activity;
 import android.view.View;

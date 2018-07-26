@@ -26,7 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
 import com.greece.nasiakouts.babysitterfinder.R;
@@ -36,9 +36,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.greece.nasiakouts.babysitterfinder.Constants.INT_CODE;
-import static com.greece.nasiakouts.babysitterfinder.PermissionUtils.checkAndAskForPermissions;
-import static com.greece.nasiakouts.babysitterfinder.PermissionUtils.onPermissionResult;
+import static com.greece.nasiakouts.babysitterfinder.Utils.Constants.INT_CODE;
+import static com.greece.nasiakouts.babysitterfinder.Utils.PermissionUtils.checkAndAskForPermissions;
+import static com.greece.nasiakouts.babysitterfinder.Utils.PermissionUtils.onPermissionResult;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         checkAndAskForPermissions(this);
-        FirebaseRegistrationService.RegisterToPushService(this);
+        FirebaseRegistrationService firebaseRegistrationService = new FirebaseRegistrationService();
+        firebaseRegistrationService.registerToPushService(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
     }

@@ -15,7 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.greece.nasiakouts.babysitterfinder.Adapters.SittersResultRvAdapter;
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Appointment;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.R;

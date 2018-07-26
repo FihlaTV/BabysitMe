@@ -14,10 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
-import com.greece.nasiakouts.babysitterfinder.OnUploadPhotoEvent;
+import com.greece.nasiakouts.babysitterfinder.Interfaces.OnUploadPhotoEvent;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import java.util.List;

@@ -3,9 +3,7 @@ package com.greece.nasiakouts.babysitterfinder.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.greece.nasiakouts.babysitterfinder.Constants;
-
-import java.io.Serializable;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 
 public class Appointment implements Parcelable {
     private int totalKids;

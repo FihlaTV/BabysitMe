@@ -21,7 +21,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAnAtybbXPnt0EBUmyEYe_h3muPpEr8oag" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
@@ -57,7 +56,7 @@
         <activity android:name=".Activities.SitterProfileActivity" />
         <activity
             android:name=".Activities.LoggedInActivity"
-            android:theme="@style/LaunchActivityTheme"></activity>
+            android:theme="@style/LaunchActivityTheme" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -66,7 +65,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <service android:name=".Services.FirebasePushMessagingService">
@@ -74,6 +73,22 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".Widget.BabisitterFinderWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/babisitter_finder_widget_info" />
+        </receiver>
+
+        <activity android:name=".Widget.BabisitterFinderWidgetConfigureActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

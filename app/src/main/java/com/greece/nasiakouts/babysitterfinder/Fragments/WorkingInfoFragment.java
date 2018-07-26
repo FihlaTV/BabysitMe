@@ -17,11 +17,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.Models.User;
-import com.greece.nasiakouts.babysitterfinder.OnAddTimeSlotListener;
+import com.greece.nasiakouts.babysitterfinder.Interfaces.OnAddTimeSlotListener;
 import com.greece.nasiakouts.babysitterfinder.R;
 import com.mynameismidori.currencypicker.CurrencyPicker;
 import com.mynameismidori.currencypicker.CurrencyPickerListener;

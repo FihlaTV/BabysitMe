@@ -171,4 +171,16 @@
     <string name="phot_not_selected">Please select a photo profile first!</string>
     <string name="uploading_title">Uploading Image...</string>
     <string name="uploaded">Uploaded</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
+    <string name="appointments_label_widget">Here are your Appointments</string>
+    <string name="select_a_group_widget">Select a group</string>
+    <string name="widget_config_explaination">The widget will display these kind of appointments</string>
+    <string name="weekly_appointments">Weekly Appointments</string>
+    <string name="simple_appointments">Simple Appointments</string>
+    <string name="both">Both</string>
+    <string name="ready">Ready</string>
+    <string name="select_group_toast">You have to select a group</string>
+    <string name="each_week">for each week</string>
 </resources>

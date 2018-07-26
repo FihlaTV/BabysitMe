@@ -16,4 +16,7 @@
     <color name="button_fill_pressed">#CC64FFDA</color>
 
     <color name="hyperlink_color">#0B0080</color>
+
+    <color name="colorWidgetBg">#21000000</color>
+    <color name="colorWidgetRvBg">#BBFFFFFF</color>
 </resources>

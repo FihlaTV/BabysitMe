@@ -1,4 +1,4 @@
-package com.greece.nasiakouts.babysitterfinder;
+package com.greece.nasiakouts.babysitterfinder.Utils;
 
 public class Constants {
 
@@ -61,6 +61,7 @@ public class Constants {
     public static final String FIREBASE_USER_TYPE = "type";
     public static final String FIREBASE_SITTERS = "sitter";
     public static final String FIREBASE_USERS = "user";
+    public static final String FIREBASE_REG_TOKENS = "registration_tokens";
     public static final String FIREBASE_WORKING_DAYS = "working_day";
     public static final String FIREBASE_APPOINTMENTS = "appointment";
     public static final String FIREBASE_ALL_DAY = "allDay";
@@ -77,6 +78,8 @@ public class Constants {
     public static final int USER_FEMALE = 0;
     public static final int USER_MALE = 1;
     public static final int USER_ANY = 2;
+
+    public static final String LEGACY_SERVER_KEY = "AIzaSyDj054eXYfB6mWQRMreEE9yF9kuVJw_2xE";
 
     // Codes used on StartActivityForResult
     public static final int ADD_TIMESLOT_REQUEST_CODE = 100;
@@ -96,6 +99,8 @@ public class Constants {
     public static final String AUTHORITY = "com.greece.nasiakouts.babysitterfinder.provider";
     public static final String IMAGE_FILE_PREFIX = "image_";
     public static final String IMAGE_FILE_SUFFIX = ".jpg";
+
+    public static final String FETCHED_DATA_ACTION = "Firebase_fetch";
 
     public static final int MIN_AGE_OF_USER = 17;
     public static final int DAYS_IN_DECEMBER = 31;

@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.greece.nasiakouts.babysitterfinder.Activities.SittersResultActivity;
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Babysitter;
 import com.greece.nasiakouts.babysitterfinder.R;
 import com.makeramen.roundedimageview.RoundedImageView;

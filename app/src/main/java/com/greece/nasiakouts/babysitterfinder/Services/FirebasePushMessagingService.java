@@ -8,31 +8,14 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.greece.nasiakouts.babysitterfinder.Activities.MainActivity;
-import com.greece.nasiakouts.babysitterfinder.Constants;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import java.util.Random;
 
 public class FirebasePushMessagingService extends FirebaseMessagingService {
-    private FirebaseAuth mFirebaseAuth;
-    private DatabaseReference mUsersDatabaseReference;
-
-    public FirebasePushMessagingService() {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mUsersDatabaseReference = FirebaseDatabase
-                .getInstance()
-                .getReference()
-                .child(Constants.FIREBASE_USER_ALL_INFO)
-                .child(Constants.FIREBASE_USERS);
-    }
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getNotification() != null) {
@@ -44,14 +27,8 @@ public class FirebasePushMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken(String token) {
-        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
-        if (currentUser == null) return;
-
-        /* Update User Registration Token */
-        mUsersDatabaseReference
-                .child(currentUser.getUid())
-                .child(Constants.FIREBASE_REGISTRATION_TOKEN)
-                .setValue(token);
+        super.onNewToken(token);
+        new FirebaseRegistrationService().pushRegistrationToken(token);
     }
 
     private void createNotification(String title, String message) {

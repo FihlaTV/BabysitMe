@@ -18,10 +18,10 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
-import com.greece.nasiakouts.babysitterfinder.Utils;
+import com.greece.nasiakouts.babysitterfinder.Utils.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

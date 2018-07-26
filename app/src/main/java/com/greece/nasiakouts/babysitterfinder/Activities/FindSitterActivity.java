@@ -25,14 +25,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.greece.nasiakouts.babysitterfinder.Adapters.TimeSlotRvAdapter;
-import com.greece.nasiakouts.babysitterfinder.AvailabilityQueryExecutedListener;
-import com.greece.nasiakouts.babysitterfinder.Constants;
+import com.greece.nasiakouts.babysitterfinder.Interfaces.AvailabilityQueryExecutedListener;
+import com.greece.nasiakouts.babysitterfinder.Utils.Constants;
 import com.greece.nasiakouts.babysitterfinder.Models.Appointment;
 import com.greece.nasiakouts.babysitterfinder.Models.TimeSlot;
 import com.greece.nasiakouts.babysitterfinder.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,7 +39,7 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.greece.nasiakouts.babysitterfinder.Constants.ADD_TIMESLOT_REQUEST_CODE;
+import static com.greece.nasiakouts.babysitterfinder.Utils.Constants.ADD_TIMESLOT_REQUEST_CODE;
 
 public class FindSitterActivity extends AppCompatActivity
         implements AvailabilityQueryExecutedListener {

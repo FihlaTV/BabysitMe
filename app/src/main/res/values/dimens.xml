@@ -41,4 +41,8 @@
     <dimen name="min_item_height">40dp</dimen>
     <dimen name="appoitnment_item_min_height">60dp</dimen>
     <dimen name="toolbar_elavation">4dp</dimen>
+
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="min_height_widget_label">90dp</dimen>
+    <dimen name="min_height_widget_item">50dp</dimen>
 </resources>
